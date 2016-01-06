@@ -34,6 +34,21 @@
             <li class="header">HEADER</li>
             <!-- Optionally, you can add icons to the links -->
             <li class="active"><a href="{{ route('dashboard') }}"><i class='fa fa-link'></i> <span>Dashboard</span></a></li>
+            <li class="treeview {{ areActiveRoutes([
+            'itl.index',
+            'ctl.index',
+            'phone.show',
+            'eraser.bulk.index',
+            'eraser.bulk.show',
+            'eraser.bulk.create',
+            ]) }}">
+                <a href="#"><i class="fa fa-eraser"></i> <span>Cert Eraser</span> <i class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('ctl.index') }}">CTL</a></li>
+                    <li><a href="{{ route('itl.index') }}">ITL</a></li>
+                    <li><a href="{{ route('eraser.bulk.index') }}">Bulk</a></li>
+                </ul>
+            </li>
             <li><a href="#"><i class='fa fa-link'></i> <span>Another Link</span></a></li>
             <li class="treeview">
                 <a href="#"><i class='fa fa-link'></i> <span>ACL Test</span> <i class="fa fa-angle-left pull-right"></i></a>

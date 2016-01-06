@@ -136,3 +136,45 @@ Route::group(['middleware' => 'authorize'], function () {
         Route::get('power-users',           ['as' => 'power-users',         'uses' => 'TestController@acl_test_power_users']);
     }); // End of ACL-TEST group
 }); // end of AUTHORIZE group
+
+/*
+ * UC Insight Routes
+ */
+
+//ITL
+Route::get('itl', [
+    'as'   => 'itl.index',
+    'uses' => 'EraserController@itlIndex'
+]);
+Route::post('itl',[
+    'as'   => 'itl.store',
+    'uses' => 'EraserController@itlStore'
+]);
+
+//CTL
+Route::get('ctl', [
+    'as'   => 'ctl.index',
+    'uses' => 'EraserController@ctlIndex'
+]);
+Route::post('ctl',[
+    'as'   => 'ctl.store',
+    'uses' => 'EraserController@ctlStore'
+]);
+
+// Eraser Bulk
+Route::get('bulk',[
+    'as'   => 'eraser.bulk.index',
+    'uses' => 'EraserController@bulkIndex'
+]);
+Route::get('bulk/create',[
+    'as'   =>  'eraser.bulk.create',
+    'uses' => 'EraserController@bulkCreate'
+]);
+Route::get('bulk/{bulk}',[
+    'as'   =>  'eraser.bulk.show',
+    'uses' => 'EraserController@bulkShow'
+]);
+Route::post('bulk',[
+    'as'   => 'eraser.bulk.store',
+    'uses' => 'EraserController@bulkStore'
+]);
