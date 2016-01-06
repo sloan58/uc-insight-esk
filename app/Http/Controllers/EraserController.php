@@ -10,6 +10,7 @@ use Keboola\Csv\CsvFile;
 use Laracasts\Flash\Flash;
 use App\Jobs\EraseTrustList;
 use Illuminate\Http\Request;
+use App\Http\Requests\SubmitEraserRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
@@ -87,11 +88,13 @@ class EraserController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \App\Http\Requests\SubmitEraserRequest|\Illuminate\Http\Request $request
      * @return Response
      */
-    public function ctlStore(Request $request)
+    public function ctlStore(SubmitEraserRequest $request)
     {
+        dd('here');
+
         $this->dispatch(
             new EraseTrustList([
                 ['mac' => $request->input('macAddress'), 'type' => 'ctl']

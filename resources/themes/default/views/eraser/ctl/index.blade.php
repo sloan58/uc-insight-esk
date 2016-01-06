@@ -80,12 +80,11 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="new_folder_name" class="col-sm-3 control-label">
+                        <label class="col-sm-3 control-label">
                             MAC Address
                         </label>
                         <div class="col-sm-8">
-                            <input type="text" id="macAddress" name="macAddress"
-                                   class="form-control">
+                            <input type="text" id="name" name="name" class="form-control">
                         </div>
                     </div>
                 </div>

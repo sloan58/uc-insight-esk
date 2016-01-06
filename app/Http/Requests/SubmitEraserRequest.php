@@ -13,7 +13,7 @@ class SubmitEraserRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class SubmitEraserRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'regex|/([a-fA-F0-9]{2}){6}/'
+            'name' => 'regex:(([a-fA-F0-9]{2}){6})'
         ];
     }
 }
