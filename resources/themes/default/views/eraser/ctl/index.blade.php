@@ -4,13 +4,17 @@
 <div class='row'>
     <div class='col-md-12'>
         <!-- Box -->
-        {!! Form::open( array('route' => 'admin.users.enable-selected', 'id' => 'frmUserList') ) !!}
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('admin/users/general.page.index.table-title') }}</h3>
+                <h3 class="box-title">{{ trans('erasers/ctl/general.page.index.table-title') }}</h3>
                 &nbsp;
                 <div class="box-tools pull-right">
-                    <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-success btn-md"
+                                onclick="erase_ctl()">
+                            <i class="fa fa-plus-circle fa-lg"></i>
+                            Erase CTLs
+                        </button>
                 </div>
             </div>
             <div class="box-body">
@@ -19,85 +23,84 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th style="text-align: center">
-                                <a class="btn" href="#" onclick="toggleCheckbox(); return false;" title="{{ trans('general.button.toggle-select') }}">
-                                    <i class="fa fa-check-square-o"></i>
-                                </a>
-                            </th>
-                            <th>{{ trans('admin/users/general.columns.username') }}</th>
-                            <th>{{ trans('admin/users/general.columns.name') }}</th>
-                            <th>{{ trans('admin/users/general.columns.roles') }}</th>
-                            <th>{{ trans('admin/users/general.columns.email') }}</th>
-                            <th>{{ trans('admin/users/general.columns.type') }}</th>
-                            <th>{{ trans('admin/users/general.columns.actions') }}</th>
+                            <th>{{ trans('erasers/ctl/general.columns.name') }}</th>
+                            <th>{{ trans('erasers/ctl/general.columns.description') }}</th>
+                            <th>{{ trans('erasers/ctl/general.columns.ip_address') }}</th>
+                            <th>{{ trans('erasers/ctl/general.columns.result') }}</th>
+                            <th>{{ trans('erasers/ctl/general.columns.fail_reason') }}</th>
+                            <th>{{ trans('erasers/ctl/general.columns.last_updated') }}</th>
                         </tr>
                         </thead>
                         <tfoot>
-                        <tr>
-                            <th style="text-align: center">
-                                <a class="btn" href="#" onclick="toggleCheckbox(); return false;" title="{{ trans('general.button.toggle-select') }}">
-                                    <i class="fa fa-check-square-o"></i>
-                                </a>
-                            </th>
-                            <th>{{ trans('admin/users/general.columns.username') }}</th>
-                            <th>{{ trans('admin/users/general.columns.name') }}</th>
-                            <th>{{ trans('admin/users/general.columns.roles') }}</th>
-                            <th>{{ trans('admin/users/general.columns.email') }}</th>
-                            <th>{{ trans('admin/users/general.columns.type') }}</th>
-                            <th>{{ trans('admin/users/general.columns.actions') }}</th>
-                        </tr>
                         </tfoot>
                         <tbody>
-                        @foreach($users as $user)
+                        @foreach ($ctls as $ctl)
+                            @if(!$ctl->failure_reason)
+                                {{$ctl->failure_reason == 'Passed'}}
+                            @endif
                         <tr>
-                            <td align="center">
-                                @if ($user->canBeDisabled())
-                                {!! Form::checkbox('chkUser[]', $user->id); !!}
-                                @endif
+                            <td>{{ $ctl->phone->mac }}</td>
+                            <td>{{ $ctl->phone->description}}</td>
+                            <td>{{ $ctl->ip_address}}</td>
+                            <td >
+                                <i class="{{ $ctl->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
                             </td>
-                            <td>{!! link_to_route('admin.users.show', $user->username, [$user->id], []) !!}</td>
-                            <td>{!! link_to_route('admin.users.show', $user->full_name, [$user->id], []) !!}</td>
-                            <td>{{ $user->roles->count() }}</td>
-                            <td>{{ $user->email }}</td>
-                            <td>{{ $user->auth_type }}</td>
+                            <td>{{ $ctl->failure_reason}}</td>
                             <td>
-                                @if ( $user->isEditable() )
-                                <a href="{!! route('admin.users.edit', $user->id) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-pencil-square-o"></i></a>
-                                @else
-                                <i class="fa fa-pencil-square-o text-muted" title="{{ trans('admin/users/general.error.cant-be-edited') }}"></i>
-                                @endif
-
-                                @if ($user->canBeDisabled())
-                                @if ( $user->enabled )
-                                <a href="{!! route('admin.users.disable', $user->id) !!}" title="{{ trans('general.button.disable') }}"><i class="fa fa-check-circle-o enabled"></i></a>
-                                @else
-                                <a href="{!! route('admin.users.enable', $user->id) !!}" title="{{ trans('general.button.enable') }}"><i class="fa fa-ban disabled"></i></a>
-                                @endif
-                                @else
-                                <i class="fa fa-ban text-muted" title="{{ trans('admin/users/general.error.cant-be-disabled') }}"></i>
-                                @endif
-
-                                @if ( $user->isDeletable() )
-                                <a href="{!! route('admin.users.confirm-delete', $user->id) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
-                                @else
-                                <i class="fa fa-trash-o text-muted" title="{{ trans('admin/users/general.error.cant-be-deleted') }}"></i>
-                                @endif
+                                {{ $ctl->updated_at->toDayDateTimeString() }}
                             </td>
                         </tr>
                         @endforeach
                         </tbody>
                     </table>
-                    {!! $users->render() !!}
+                    {!! $ctls->render() !!}
                 </div> <!-- table-responsive -->
 
             </div><!-- /.box-body -->
         </div><!-- /.box -->
-        {!! Form::close() !!}
     </div><!-- /.col -->
 
 </div><!-- /.row -->
 @endsection
 
+
+{{-- Create Folder Modal --}}
+<div class="modal fade" id="modal-erase-ctl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{route('ctl.store')}}"
+                  class="form-horizontal">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="folder" value="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="modal-title">Erase CTL File</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="new_folder_name" class="col-sm-3 control-label">
+                            MAC Address
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="macAddress" name="macAddress"
+                                   class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
@@ -107,6 +110,10 @@
         for(var i=0, n=checkboxes.length;i<n;i++) {
             checkboxes[i].checked = !checkboxes[i].checked;
         }
+    }
+
+    function erase_ctl() {
+        $("#modal-erase-ctl").modal("show");
     }
 </script>
 @endsection

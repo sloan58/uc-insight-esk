@@ -14,16 +14,27 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 
+/**
+ * Class EraserController
+ * @package App\Http\Controllers
+ */
 class EraserController extends Controller
 {
     /**
+     * @var \App\Models\Eraser
+     */
+    private $eraser;
+
+    /**
      * Create a new controller instance.
      *
+     * @param \App\Models\Eraser $eraser
      * @return \App\Http\Controllers\EraserController
      */
-    public function __construct()
+    public function __construct(Eraser $eraser)
     {
         $this->middleware('auth');
+        $this->eraser = $eraser;
     }
 
     /**
@@ -65,9 +76,12 @@ class EraserController extends Controller
     public function ctlIndex()
     {
 
-        $ctls = Eraser::where('type','ctl')->get();
+        $page_title = 'Eraser';
+        $page_description = 'CTL\'s';
 
-        return view('eraser.ctl.index', compact('ctls'));
+        $ctls = $this->eraser->where('type','ctl')->paginate(10);
+        return view('eraser.ctl.index', compact('ctls','page_title','page_description'));
+
     }
 
     /**
