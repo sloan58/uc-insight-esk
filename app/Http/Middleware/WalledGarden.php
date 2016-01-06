@@ -42,10 +42,16 @@ class WalledGarden
 
         // TODO: Get these arrays from config.
         $exemptionPath = [
-            '/',                'home',                             'faust',
-            'auth/login',       'auth/register',
-            'password/email',   'password/reset',
-            '_debugbar/open',   '_debugbar/assets/stylesheets',    '_debugbar/assets/javascript',
+//            '/',
+//            'home',
+            'faust',
+            'auth/login',
+            'auth/register',
+            'password/email',
+            'password/reset',
+            '_debugbar/open',
+            '_debugbar/assets/stylesheets',
+            '_debugbar/assets/javascript',
         ];
         $exemptionsRegEx = [
             '/password\/reset\/.*/',
