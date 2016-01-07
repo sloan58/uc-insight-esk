@@ -5,6 +5,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class DatabaseSeeder extends Seeder
 {
+
+    /**
+     * @var array
+     */
+    protected $tables = [
+        'audits', 'cluster_user', 'clusters', 'devices', 'erasers','ip_addresses', 'permission_role', 'permission_user', 'permissions', 'role_user', 'roles', 'routes', 'users'
+    ];
+
     /**
      * Run the database seeds.
      *
@@ -14,6 +22,8 @@ class DatabaseSeeder extends Seeder
     {
         Model::unguard();
 
+        $this->cleanDatabase();
+
         $this->call('ProductionSeeder');
 
         if( App::environment() === 'development' )
@@ -22,5 +32,25 @@ class DatabaseSeeder extends Seeder
         }
 
         Model::reguard();
+    }
+
+    /**
+     * Clean out the database for a new seed generation
+     */
+    private function cleanDatabase()
+    {
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        foreach($this->tables as $table)
+        {
+
+            DB::table($table)->truncate();
+
+        }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+
     }
 }
