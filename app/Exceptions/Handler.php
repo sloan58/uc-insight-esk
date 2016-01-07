@@ -54,8 +54,8 @@ class Handler extends ExceptionHandler
         if ($e instanceof SoapException) {
             switch($e) {
                 case isset($e->message->faultcode) && $e->message->faultcode == 'HTTP':
-                    Flash::error('Server Error.  Please check your WSDL version is correct for the active cluster.');
-                    Log::error('Soap Client Error.', [ 'Incorrect WSDL Version' ]);
+                    Flash::error('Server Error.  Please check your WSDL version and verify the Username and Password.');
+                    Log::error('Soap Client Error.', [ 'Incorrect WSDL Version OR authentication error' ]);
                     return redirect()->back();
                     break;
 

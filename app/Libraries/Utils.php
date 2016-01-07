@@ -9,19 +9,18 @@ class Utils {
      */
     public function generateEraserList($deviceList)
     {
-
         $macList = array_column($deviceList, 'mac');
 
         $axl = new AxlSoap();
         $user = $axl->getAxlUser();
         $devices = $this->createDeviceArray($user,$macList);
         $res = $axl->updateAxlUser($devices);
-        $risArray = createRisPhoneArray($macList);
 
         // Get Device IP's
         $sxml = new RisSoap();
+        $risArray = $sxml->createRisPhoneArray($macList);
         $risResults = $sxml->getDeviceIP($risArray);
-        $risPortResults = processRisResults($risResults,$risArray);
+        $risPortResults = $sxml->processRisResults($risResults,$risArray);
 
         //Fetch device model from type product
         for($i=0; $i<count($risPortResults); $i++)
@@ -109,5 +108,4 @@ class Utils {
 
         return $devices;
     }
-
 }

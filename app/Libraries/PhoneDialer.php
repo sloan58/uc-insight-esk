@@ -1,7 +1,7 @@
 <?php namespace App\Libraries;
 
 
-use App\Eraser;
+use App\Models\Eraser;
 use Sabre\Xml\Reader;
 use GuzzleHttp\Client;
 use App\Exceptions\SoapException;
@@ -34,13 +34,13 @@ class PhoneDialer {
      */
     function __construct($phoneIP)
     {
-        if(!Auth::user()->activeCluster()) {
+        if(!\Auth::user()->activeCluster()) {
             throw new SoapException("You have no Active Cluster Selected");
         }
 
         $this->phoneIP = $phoneIP;
 
-        $this->cluster = Auth::user()->activeCuster();
+        $this->cluster = \Auth::user()->activeCluster();
 
         $this->client = new Client([
             'base_uri' => 'http://' . $this->phoneIP,
@@ -60,7 +60,8 @@ class PhoneDialer {
 
     public function dial(Eraser $tle,$keys)
     {
-        $mac = $tle->phone->mac;
+        $mac = $tle->device->name;
+        dd($tle->device);
         $ip = $this->phoneIP;
 
         foreach ($keys as $k)
@@ -85,21 +86,21 @@ class PhoneDialer {
                 if($e instanceof ClientException)
                 {
                     //Unauthorized
-                    $tle->failure_reason = "Authentication Exception";
+                    $tle->fail_reason = "Authentication Exception";
                     $tle->save();
                     throw new PhoneDialerException("$mac @ $ip Authentication Exception");
                 }
                 elseif($e instanceof ConnectException)
                 {
                     //Can't Connect
-                    $tle->failure_reason = "Connection Exception";
+                    $tle->fail_reason = "Connection Exception";
                     $tle->save();
                     throw new PhoneDialerException("$mac @ $ip Connection Exception");
                 }
                 else
                 {
                     //Other exception
-                    $tle->failure_reason = "Unknown Exception";
+                    $tle->fail_reason = "Unknown Exception";
                     $tle->save();
                     throw new PhoneDialerException("$mac @ $ip $e->getMessage()");
                 }
@@ -135,7 +136,7 @@ class PhoneDialer {
                         break;
                 }
 
-                $tle->failure_reason = $errorType;
+                $tle->fail_reason = $errorType;
                 $tle->result = "Fail";
                 $tle->save();
                 throw new PhoneDialerException("$mac @ $ip $errorType");

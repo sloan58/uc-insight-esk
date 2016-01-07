@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Phone;
-use App\Eraser;
+use App\Models\Device as Phone;
+use App\Models\Eraser;
 use App\Libraries\Utils;
 use App\Libraries\PhoneDialer;
+use App\Models\IpAddress;
 use Illuminate\Contracts\Bus\SelfHandling;
 
 class EraseTrustList extends Job implements SelfHandling
@@ -42,15 +43,20 @@ class EraseTrustList extends Job implements SelfHandling
         {
             //Create the Phone model
             $phone = Phone::firstOrCreate([
-                'mac' => $device['DeviceName'],
-                'description' => $device['Description']
+                'name' => $device['DeviceName'],
+            ]);
+
+            $ipAddress = IpAddress::create([
+                'ip_address' => $device['IpAddress'],
+                'device_id' => $phone->id
             ]);
 
             //Start creating Eraser
             $tleObj = Eraser::create([
                 'phone_id' => $phone->id,
-                'ip_address' => $device['IpAddress'],
-                'eraser_type' => $device['type'],
+                'device_description' => $device['Description'],
+                'ip_address_id' => $ipAddress->id,
+                'type' => $device['type'],
             ]);
 
             if(isset($device['bulk_id']))
@@ -61,7 +67,7 @@ class EraseTrustList extends Job implements SelfHandling
             if($device['IpAddress'] == "Unregistered/Unknown")
             {
                 $tleObj->result = 'Fail';
-                $tleObj->failure_reason = 'Unregistered/Unknown';
+                $tleObj->fail_reason = 'Unregistered/Unknown';
                 $tleObj->save();
                 continue;
             }
@@ -71,7 +77,7 @@ class EraseTrustList extends Job implements SelfHandling
             if(!$keys)
             {
                 $tleObj->result = 'Fail';
-                $tleObj->failure_reason = 'Unsupported Model';
+                $tleObj->fail_reason = 'Unsupported Model';
                 $tleObj->save();
                 return;
             }

@@ -149,11 +149,12 @@ class ClusterController extends Controller
         {
             \Auth::user()->activateCluster($cluster->id);
 
-        } elseif (!isset($request->active) && \Auth::user()->activeCluster()->id == $cluster->id)
+        } elseif (!isset($request->active) && \Auth::user()->activeClusterId() == $cluster->id)
         {
             \Auth::user()->deactivateCluster();
         }
 
+        $cluster->fill($request->all());
         $cluster->save();
 
         Flash::success('Cluster info updated!');

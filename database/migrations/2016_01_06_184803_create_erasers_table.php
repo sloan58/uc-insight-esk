@@ -18,8 +18,6 @@ class CreateErasersTable extends Migration
             $table->string('device_description');
             $table->string('result');
             $table->string('fail_reason');
-            $table->integer('device_id')->unsigned();
-            $table->foreign('device_id')->references('id')->on('devices');
             $table->integer('ip_address_id')->unsigned();
             $table->foreign('ip_address_id')->references('id')->on('ip_addresses');
             $table->timestamps();

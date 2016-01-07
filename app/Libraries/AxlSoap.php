@@ -52,6 +52,7 @@ class AxlSoap extends SoapClient {
                 'sql' => $sql,
             ]);
         } catch(SoapFault $e) {
+            \Log::error('Axl Error', [$this->__getLastRequest()]);
             throw new SoapException($e);
         }
     }
@@ -70,6 +71,7 @@ class AxlSoap extends SoapClient {
                 'userid' => $this->cluster->username
             ]);
         } catch(SoapFault $e) {
+            \Log::error('Axl Error', [$this->__getLastRequest()]);
             throw new SoapException($e);
         }
     }
@@ -92,6 +94,7 @@ class AxlSoap extends SoapClient {
                 ]
             ]);
         } catch(SoapFault $e) {
+            \Log::error('Axl Error', [$this->__getLastRequest()]);
             throw new SoapException($e);
         }
     }

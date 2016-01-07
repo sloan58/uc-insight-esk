@@ -23,7 +23,7 @@ class Eraser extends Model
      */
     public function device()
     {
-        return $this->belongsTo('App\Models\Device');
+        return $this->hasManyThrough('App\Models\IpAddress','App\Models\Device');
     }
 
     /**
