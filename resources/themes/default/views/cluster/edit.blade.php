@@ -23,7 +23,7 @@
                     ])
 
                     <div class="form-group">
-                        {!! Form::submit( trans('general.button.edit'), ['class' => 'btn btn-primary'] ) !!}
+                        {!! Form::submit( trans('general.button.save'), ['class' => 'btn btn-primary'] ) !!}
                         <a href="{!! route('cluster.index') !!}" title="{{ trans('general.button.cancel') }}" class='btn btn-default'>{{ trans('general.button.cancel') }}</a>
                     </div>
 

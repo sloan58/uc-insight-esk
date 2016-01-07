@@ -45,7 +45,7 @@ class EraserController extends Controller
      */
     public function itlIndex()
     {
-        $itls = Eraser::where('eraser_type','itl')->get();
+        $itls =$this->eraser->where('eraser_type','itl')->get();
 
         return view('eraser.itl.index', compact('itls'));
     }

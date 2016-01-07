@@ -13,8 +13,8 @@ class AddActiveClusterToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('clusters_id')->unsigned()->index()->after('password')->nullable();
-            $table->foreign('clusters_id')->references('id')->on('clusters');
+            $table->integer('clusters_id')->unsigned()->after('password')->nullable();
+            $table->foreign('clusters_id')->references('id')->on('clusters')->onDelete('set null');
         });
     }
 

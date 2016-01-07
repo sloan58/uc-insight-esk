@@ -21,7 +21,6 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        @if(isset($clusters))
                         <table class="table table-hover">
                             <thead>
                             <tr>
@@ -60,7 +59,6 @@
                             </tbody>
                         </table>
                         {!! $clusters->render() !!}
-                        @endif
                     </div> <!-- table-responsive -->
                 </div><!-- /.box-body -->
             </div><!-- /.box -->

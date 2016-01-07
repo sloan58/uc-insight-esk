@@ -49,10 +49,10 @@ class ClusterController extends Controller
         $page_title = 'Clusters';
         $page_description = 'List';
 
-        if($clusters->isEmpty())
-        {
-            return view('cluster.index',compact('page_title','page_description'));
-        }
+//        if($clusters->isEmpty())
+//        {
+//            return view('cluster.index',compact('page_title','page_description'));
+//        }
 
         return view('cluster.index', compact('clusters','page_title', 'page_description'));
     }
@@ -83,8 +83,8 @@ class ClusterController extends Controller
      */
     public function store(CreateClusterRequest $request)
     {
-        $cluster = Cluster::firstOrNew(
-            $request->except('_token')
+        $cluster = $this->cluster->firstOrNew(
+            $request->except(['_token','active'])
         );
 
         if($request->active)
@@ -128,6 +128,7 @@ class ClusterController extends Controller
 
     /**
      * @param UpdateClusterRequest $request
+     * @param $id
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update(UpdateClusterRequest $request, $id)
@@ -161,7 +162,7 @@ class ClusterController extends Controller
      */
     public function destroy($id)
     {
-        Cluster::destroy($id);
+        $this->cluster->destroy($id);
 
         Flash::success('Cluster Deleted!');
 
