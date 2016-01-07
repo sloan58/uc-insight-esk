@@ -62,6 +62,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * A User can have many Clusters
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function clusters()
+    {
+        return $this->belongsToMany('App\Models\Cluster');
+    }
+
+    /**
      * Alias to eloquent many-to-many relation's sync() method.
      *
      * @param array $attributes

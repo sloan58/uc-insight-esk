@@ -49,28 +49,6 @@
                     <li><a href="{{ route('eraser.bulk.index') }}">Bulk</a></li>
                 </ul>
             </li>
-            <li><a href="#"><i class='fa fa-link'></i> <span>Another Link</span></a></li>
-            <li class="treeview">
-                <a href="#"><i class='fa fa-link'></i> <span>ACL Test</span> <i class="fa fa-angle-left pull-right"></i></a>
-                <ul class="treeview-menu">
-                    <li><a href="{{ route('do-not-load') }}">           Route not loaded</a></li>
-                    <li><a href="{{ route('no-perm')    }}">            No perm   </a></li>
-                    <li><a href="{{ route('guest-only')   }}">          Guest only  </a></li>
-                    <li><a href="{{ route('open-to-all')   }}">         Open to all  </a></li>
-                    <li><a href="{{ route('basic-authenticated') }}">   Basic authenticated</a></li>
-                    <li><a href="{{ route('admins')   }}">              Admins  </a></li>
-                    <li><a href="{{ route('power-users')   }}">         Power users  </a></li>
-                </ul>
-            </li>
-            <li class="treeview">
-                <a href="#"><i class='fa fa-link'></i> <span>Multilevel</span> <i class="fa fa-angle-left pull-right"></i></a>
-                <ul class="treeview-menu">
-                    <li><a href="{{ route('flash_test_success') }}"><i class='fa fa-check'>  </i> Success flash</a></li>
-                    <li><a href="{{ route('flash_test_info')    }}"><i class='fa fa-info'>   </i> Info flash   </a></li>
-                    <li><a href="{{ route('flash_test_warning') }}"><i class='fa fa-warning'></i> Warning flash</a></li>
-                    <li><a href="{{ route('flash_test_error')   }}"><i class='fa fa-ban'>    </i> Error flash  </a></li>
-                </ul>
-            </li>
             <li class="treeview">
                 <a href="#"><i class='fa fa-cog'></i> <span>Admin</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
@@ -84,6 +62,7 @@
                             <li><a href="{{ route('admin.routes.index')      }}"><i class='fa fa-road'> </i> Routes     </a></li>
                         </ul>
                     </li>
+                    <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
                     <li><a href="{{ route('flash_test_warning')     }}"><i class='fa fa-cogs'> </i> Settings   </a></li>
                 </ul>
             </li>

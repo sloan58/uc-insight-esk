@@ -76,7 +76,6 @@ class EraserController extends Controller
      */
     public function ctlIndex()
     {
-
         $page_title = 'Eraser';
         $page_description = 'CTL\'s';
 

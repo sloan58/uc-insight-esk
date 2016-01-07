@@ -44,7 +44,8 @@
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
         "phpspec/phpspec": "~2.1",
-        "jeroen-g/laravel-packager": "dev-master"
+        "jeroen-g/laravel-packager": "dev-master",
+        "laracasts/generators": "^1.1"
     },
     "autoload": {
         "classmap": [

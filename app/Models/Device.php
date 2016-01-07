@@ -16,6 +16,8 @@ class Device extends Model
     protected $fillable = ['name', 'model', 'protocol'];
 
     /**
+     * A Device can run many Eraser try's
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function Eraser()
@@ -24,6 +26,8 @@ class Device extends Model
     }
 
     /**
+     * A Device can be known by many IP Addresses
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function ipAddress()

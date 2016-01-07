@@ -6,7 +6,7 @@
         <!-- Box -->
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('erasers/ctl/general.page.index.table-title') }}</h3>
+                <h3 class="box-title">{{ trans('eraser/ctl/general.page.index.table-title') }}</h3>
                 &nbsp;
                 <div class="box-tools pull-right">
                     <div class="col-md-6 text-right">
@@ -23,12 +23,12 @@
                     <table class="table table-hover">
                         <thead>
                         <tr>
-                            <th>{{ trans('erasers/ctl/general.columns.name') }}</th>
-                            <th>{{ trans('erasers/ctl/general.columns.description') }}</th>
-                            <th>{{ trans('erasers/ctl/general.columns.ip_address') }}</th>
-                            <th>{{ trans('erasers/ctl/general.columns.result') }}</th>
-                            <th>{{ trans('erasers/ctl/general.columns.fail_reason') }}</th>
-                            <th>{{ trans('erasers/ctl/general.columns.last_updated') }}</th>
+                            <th>{{ trans('eraser/ctl/general.columns.name') }}</th>
+                            <th>{{ trans('eraser/ctl/general.columns.description') }}</th>
+                            <th>{{ trans('eraser/ctl/general.columns.ip_address') }}</th>
+                            <th>{{ trans('eraser/ctl/general.columns.result') }}</th>
+                            <th>{{ trans('eraser/ctl/general.columns.fail_reason') }}</th>
+                            <th>{{ trans('eraser/ctl/general.columns.last_updated') }}</th>
                         </tr>
                         </thead>
                         <tfoot>
@@ -104,13 +104,6 @@
 <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
 <script language="JavaScript">
-    function toggleCheckbox() {
-        checkboxes = document.getElementsByName('chkUser[]');
-        for(var i=0, n=checkboxes.length;i<n;i++) {
-            checkboxes[i].checked = !checkboxes[i].checked;
-        }
-    }
-
     function erase_ctl() {
         $("#modal-erase-ctl").modal("show");
     }

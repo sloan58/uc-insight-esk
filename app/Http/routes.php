@@ -141,6 +141,9 @@ Route::group(['middleware' => 'authorize'], function () {
  * UC Insight Routes
  */
 
+//Cluster
+Route::resource('cluster', 'ClusterController');
+
 //ITL
 Route::get('itl', [
     'as'   => 'itl.index',

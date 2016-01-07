@@ -29,8 +29,9 @@ class AppServiceProvider extends ServiceProvider
 //        // Manually registering provider only if the environment is set to
 //        // development. That prevents a loading failure in PROD when the
 //        // package is not present.
-//        if ($this->app->environment('development')) {
+        if ($this->app->environment('development')) {
+            $this->app->register('Laracasts\Generators\GeneratorsServiceProvider');
 //            $this->app->register('JeroenG\Packager\PackagerServiceProvider');
-//        }
+        }
     }
 }

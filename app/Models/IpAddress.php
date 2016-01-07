@@ -17,6 +17,8 @@ class IpAddress extends Model
 
 
     /**
+     *  An IP Address belongs to a Device
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function device()
@@ -25,6 +27,8 @@ class IpAddress extends Model
     }
 
     /**
+     *  An IP Address can belong to many Bulk processes
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function bulks()

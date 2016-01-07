@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "1e5d06677749ac6da959509ef9c5a0b0",
-    "content-hash": "ad7043d22532358cfac84e435ddd20e5",
+    "hash": "a32847ecabb615aa3ce0edb5527d8db6",
+    "content-hash": "a3bbab2e4f6056dd9f34a14bf3b12b0e",
     "packages": [
         {
             "name": "adldap2/adldap2",
@@ -652,7 +652,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/ca4eea9f83cc1947f51460d5d87d0187a040ae41",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/fbd6ab259240880e3a2bb2dc8e6f0c1a89521cfa",
                 "reference": "bfe166af1e52b85f1101db19f3437ae87a7e291b",
                 "shasum": ""
             },
@@ -3125,6 +3125,50 @@
                 "packager"
             ],
             "time": "2015-06-27 12:07:00"
+        },
+        {
+            "name": "laracasts/generators",
+            "version": "1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laracasts/Laravel-5-Generators-Extended.git",
+                "reference": "d6afcc60dff846980393d59f6df2074b8a297b08"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laracasts/Laravel-5-Generators-Extended/zipball/d6afcc60dff846980393d59f6df2074b8a297b08",
+                "reference": "d6afcc60dff846980393d59f6df2074b8a297b08",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "phpspec/phpspec": "~2.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laracasts\\Generators\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jeffrey Way",
+                    "email": "jeffrey@laracasts.com"
+                }
+            ],
+            "description": "Extend Laravel 5's generators.",
+            "keywords": [
+                "generators",
+                "laravel"
+            ],
+            "time": "2015-12-31 18:44:32"
         },
         {
             "name": "mockery/mockery",

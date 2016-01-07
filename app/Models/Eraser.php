@@ -17,6 +17,8 @@ class Eraser extends Model
 
 
     /**
+     * An Eraser belongs to a Device
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function device()
@@ -25,6 +27,8 @@ class Eraser extends Model
     }
 
     /**
+     * An Eraser can have many IP Addresses
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function ipAddress()
@@ -33,6 +37,8 @@ class Eraser extends Model
     }
 
     /**
+     *  An Eraser belongs to many Bulk processes
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function bulks()
