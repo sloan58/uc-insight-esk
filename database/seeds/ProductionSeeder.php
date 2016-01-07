@@ -89,7 +89,13 @@ class ProductionSeeder extends Seeder
             'description'   => 'Allows a user to purge old items from the audit log.',
             'enabled'       => true,
         ]);
-
+        // Create permission for managing CUCM Clusters
+        $permManageClusters = Permission::create([
+            'name'          => 'manage-clusters',
+            'display_name'  => 'Manage clusters',
+            'description'   => 'Allows a user to manage CUCM cluster settings.',
+            'enabled'       => true,
+        ]);
 
         ////////////////////////////////////
         // Associate open-to-all permission to some routes
@@ -208,7 +214,14 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleAuditPurgers->perms()->attach($permAuditPurge->id);
-
+        // Create role: cluster-managers
+        // Assign permission: permManageClusters
+        $roleClusterManagers = Role::create([
+            "name"          => "cluster-managers",
+            "display_name"  => "Cluster managers",
+            "description"   => "Cluster managers are granted all permissions to the Admin|Clusters section.",
+            "enabled"       => true
+        ]);
 
         ////////////////////////////////////
         // Create user: root

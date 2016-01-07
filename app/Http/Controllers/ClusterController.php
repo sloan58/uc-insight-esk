@@ -8,6 +8,8 @@ use App\Http\Requests;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UpdateClusterRequest;
+use App\Http\Requests\CreateClusterRequest;
 
 /**
  * Class ClusterController
@@ -37,8 +39,12 @@ class ClusterController extends Controller
      */
     public function index()
     {
-//        $clusters = $this->cluster->all();
-        $clusters = \Auth::user()->clusters()->get();
+        if(\Auth::user()->hasRole(['admins']))
+        {
+            $clusters = $this->cluster->paginate(10);
+        } else {
+            $clusters = \Auth::user()->clusters()->paginate(10);
+        }
 
         $page_title = 'Clusters';
         $page_description = 'List';
@@ -72,34 +78,25 @@ class ClusterController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param CreateClusterRequest|Request $request
      * @return Response
      */
-    public function store(Request $request)
+    public function store(CreateClusterRequest $request)
     {
-        $this->validate($request, [
-            'name' => 'required',
-            'ip' => 'required',
-            'username' => 'required',
-            'password' => 'required',
-        ]);
-
-        $cluster = new Cluster();
-
-        $cluster->name = $request->name;
-        $cluster->ip = $request->ip;
-        $cluster->version = $request->version;
-        $cluster->username = $request->username;
-        $cluster->password = $request->password;
-        $cluster->user_type = $request->user_type;
-        $cluster->save();
+        $cluster = Cluster::firstOrNew(
+            $request->except('_token')
+        );
 
         if($request->active)
         {
             \Auth::user()->clusters_id = $cluster->id;
             \Auth::user()->save();
-
         }
+        if($request->verify_peer)
+        {
+            $cluster->verify_peer = true;
+        }
+        $cluster->save();
 
         Flash::success('Cluster added!');
 
@@ -110,11 +107,14 @@ class ClusterController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param $cluster
+     * @param $id
      * @return Response
+     * @internal param $cluster
      */
-    public function edit(Cluster $cluster)
+    public function edit($id)
     {
+        $cluster = $this->cluster->find($id);
+
         $directories = Storage::directories('axl/');
         $versions= [];
         foreach($directories as $directory)
@@ -125,24 +125,16 @@ class ClusterController extends Controller
         return view('cluster.edit', compact('cluster','versions'));
     }
 
+
     /**
-     * Update the specified resource in storage.
-     *
-     * @param Request $request
-     * @param Cluster $cluster
-     * @return Response
-     * @internal param int $id
+     * @param UpdateClusterRequest $request
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Cluster $cluster)
+    public function update(UpdateClusterRequest $request, $id)
     {
-        $cluster->name = $request->name;
-        $cluster->ip = $request->ip;
-        $cluster->username = $request->username;
-        $cluster->user_type = $request->user_type;
-        $cluster->version = $request->version;
-        $cluster->verify_peer = $request->verify_peer ? true : false;
+        $cluster = $this->cluster->find($id);
         $cluster->password = checkPassword($cluster->password,$request->password);
-        $cluster->save();
+        $cluster->verify_peer = $request->verify_peer ? true : false;
 
         if($request->active)
         {
@@ -152,8 +144,9 @@ class ClusterController extends Controller
         {
             \Auth::user()->clusters_id = null;
         }
-
         \Auth::user()->save();
+
+        $cluster->save();
 
         Flash::success('Cluster info updated!');
 
@@ -162,15 +155,40 @@ class ClusterController extends Controller
     }
 
     /**
-     * @param Cluster $cluster
+     * @param $id
      * @return \Illuminate\Http\RedirectResponse
+     * @internal param Cluster $cluster
      */
-    public function destroy(Cluster $cluster)
+    public function destroy($id)
     {
-        Cluster::destroy($cluster->id);
+        Cluster::destroy($id);
 
         Flash::success('Cluster Deleted!');
 
         return redirect()->action('ClusterController@index');
+    }
+
+    /**
+     * Delete Confirm
+     *
+     * @param   int   $id
+     * @return  View
+     */
+    public function getModalDelete($id)
+    {
+        $error = null;
+
+        $modal_title = trans('cluster/dialog.delete-confirm.title');
+        $modal_cancel = trans('general.button.cancel');
+        $modal_ok = trans('general.button.ok');
+
+        $cluster = $this->cluster->find($id);
+        $modal_route = route('cluster.delete', ['id' => $cluster->id]);
+
+        $modal_body = trans('cluster/dialog.delete-confirm.body', ['id' => $cluster->id, 'name' => $cluster->name]);
+
+        return view('modal_confirmation', compact('error', 'modal_route',
+            'modal_title', 'modal_body', 'modal_cancel', 'modal_ok'));
+
     }
 }

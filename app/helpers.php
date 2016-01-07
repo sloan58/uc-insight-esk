@@ -9,15 +9,6 @@
 | Very useful for navigation, marking if the link is active.
 |
 */
-/**
- * @param $route
- * @param string $output
- * @return string
- */
-function isActiveRoute($route, $output = "active")
-{
-    if (Route::currentRouteName() == $route) return $output;
-}
 
 /*
 |--------------------------------------------------------------------------
@@ -40,4 +31,34 @@ function areActiveRoutes(Array $routes, $output = "active")
         if (Route::currentRouteName() == $route) return $output;
     }
 
+}
+/**
+ * @param $route
+ * @param string $output
+ * @return string
+ */
+function isActiveRoute($route, $output = "active")
+{
+    if (Route::currentRouteName() == $route) return $output;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Check Passwords
+|--------------------------------------------------------------------------
+|
+| Compare passwords to see if they need to be updated in the database.
+|
+*/
+function checkPassword($currentPassword,$toCheckPassword)
+{
+    if($currentPassword != $toCheckPassword && $toCheckPassword != '')
+    {
+
+        return $toCheckPassword;
+
+    } else {
+
+        return $currentPassword;
+    }
 }

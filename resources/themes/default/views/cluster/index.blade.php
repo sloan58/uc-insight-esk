@@ -8,14 +8,15 @@
             <div class="box-header with-border">
                 <h3 class="box-title">{{ trans('cluster/general.page.index.table-title') }}</h3>
                 &nbsp;
+                @if(\Auth::user()->hasRole(['admins']))
+                    <a class="btn btn-default btn-sm" href="{!! route('cluster.create') !!}" title="{{ trans('cluster/general.button.create') }}">
+                        <i class="fa fa-plus-square"></i>
+                    </a>
+                    &nbsp;
+                @endif
                 <div class="box-tools pull-right">
                     <div class="col-md-6 text-right">
-                        @if(\Auth::user()->hasRole(['admins']))
-                        <a type="button" class="btn btn-md btn-success pull-right" href="{{route('cluster.create')}}" role="button">
-                            <i class="fa fa-plus-circle fa-lg"></i>
-                            Add Cluster
-                        </a>
-                        @endif
+                        <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
                 <div class="box-body">
@@ -28,6 +29,8 @@
                                 <th>{{ trans('cluster/general.columns.active') }}</th>
                                 <th>{{ trans('cluster/general.columns.ip') }}</th>
                                 <th>{{ trans('cluster/general.columns.username') }}</th>
+                                <th>{{ trans('cluster/general.columns.actions') }}</th>
+
                             </tr>
                             </thead>
                             <tfoot>
@@ -40,11 +43,17 @@
                                 <td>{{$cluster->ip}}</td>
                                 <td>{{$cluster->username}}</td>
                                 <td>
-                                    <!-- edit this Cluster -->
-                                    <a href="{!! route('cluster.edit', $cluster->id) !!}" title="Edit Cluster"><i class="fa fa-pencil-square-o fa-2x enabled editable"></i></a>
+                                    @if ( \Auth::user()->hasRole(['admins','cluster-managers']) )
+                                        <a href="{!! route('cluster.edit', $cluster->id) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-pencil-square-o"></i></a>
+                                    @else
+                                        <i class="fa fa-pencil-square-o text-muted" title="{{ trans('cluster/general.error.cant-be-edited') }}"></i>
+                                    @endif
 
-                                    <!-- delete this User -->
-                                    <a href="{!! route('cluster.destroy', $cluster->id) !!}" data-toggle="modal" data-target="#modal-delete" title="Delete Clustetr"><i class="fa fa-trash-o fa-2x enabled deletable"></i></a>
+                                    @if ( \Auth::user()->hasRole(['admins','cluster-managers']) )
+                                        <a href="{!! route('cluster.confirm-delete', $cluster->id) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
+                                    @else
+                                        <i class="fa fa-trash-o text-muted" title="{{ trans('cluster/general.error.cant-be-deleted') }}"></i>
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach

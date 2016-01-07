@@ -18,9 +18,9 @@ class CreateClustersTable extends Migration
             $table->string('ip')->unique();
             $table->string('user_type')->default('AppUser');
             $table->string('version');
+            $table->boolean('verify_peer')->default(true);
             $table->string('username');
             $table->string('password');
-            $table->boolean('active');
             $table->timestamps();
         });
     }

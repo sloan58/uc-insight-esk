@@ -141,10 +141,18 @@ Route::group(['middleware' => 'authorize'], function () {
  * UC Insight Routes
  */
 
-//Cluster
+//Cluster Routes
+Route::get('cluster/{clusterId}/confirm-delete', [
+    'as' => 'cluster.confirm-delete',
+    'uses' => 'ClusterController@getModalDelete'
+]);
+Route::get('cluster/{clusterId}/delete', [
+    'as' => 'cluster.delete',
+    'uses' => 'ClusterController@destroy'
+]);
 Route::resource('cluster', 'ClusterController');
 
-//ITL
+//ITL Routes
 Route::get('itl', [
     'as'   => 'itl.index',
     'uses' => 'EraserController@itlIndex'
@@ -154,7 +162,7 @@ Route::post('itl',[
     'uses' => 'EraserController@itlStore'
 ]);
 
-//CTL
+//CTL Routes
 Route::get('ctl', [
     'as'   => 'ctl.index',
     'uses' => 'EraserController@ctlIndex'
@@ -164,7 +172,7 @@ Route::post('ctl',[
     'uses' => 'EraserController@ctlStore'
 ]);
 
-// Eraser Bulk
+// Eraser Bulk Routes
 Route::get('bulk',[
     'as'   => 'eraser.bulk.index',
     'uses' => 'EraserController@bulkIndex'
