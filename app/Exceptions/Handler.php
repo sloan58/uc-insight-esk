@@ -2,7 +2,12 @@
 
 namespace App\Exceptions;
 
+use Log;
 use Exception;
+use Laracasts\Flash\Flash;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -13,7 +18,8 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        HttpException::class,
+        ModelNotFoundException::class,
     ];
 
     /**
@@ -38,6 +44,64 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        if ($e instanceof ModelNotFoundException) {
+            $e = new NotFoundHttpException($e->getMessage(), $e);
+        }
+
+        /*
+         * Soap Fault Exceptions
+         */
+        if ($e instanceof SoapException) {
+            switch($e) {
+                case isset($e->message->faultcode) && $e->message->faultcode == 'HTTP':
+                    Flash::error('Server Error.  Please check your WSDL version is correct for the active cluster.');
+                    Log::error('Soap Client Error.', [ 'Incorrect WSDL Version' ]);
+                    return redirect()->back();
+                    break;
+
+                case isset($e->message->faultstring):
+                    Flash::error($e->message->faultstring);
+                    Log::error('Soap Client Error.', [ $e->message->faultstring ]);
+                    return redirect()->back();
+                    break;
+
+                default:
+                    Flash::error($e->message);
+                    Log::error('Soap Client Error.', [ $e->message ]);
+                    return redirect()->back();
+            }
+        }
+
+        /*
+         * SQL Query Exceptions
+         */
+        if($e instanceof SqlQueryException)
+        {
+            Flash::error('SQL Query Error: ' . $e->message);
+            Log::error('SQL Query Error: ', [ $e->message ]);
+            return redirect()->back();
+        }
+
+        /*
+         * Twilio Fault Exceptions
+         */
+        if($e instanceof TwilioException)
+        {
+            Flash::error('Twilio Service Error: ' . $e->message);
+            Log::error('Twilio Client Error: ', [ $e->message ]);
+            return redirect()->back();
+        }
+
+        /*
+         * Phone Control Fault Exceptions
+         */
+        if($e instanceof PhoneDialerException)
+        {
+            Flash::error('Phone Dialer Error: ' . $e->message);
+            Log::error('Phone Dialer Error: ', [ $e->message ]);
+            return redirect()->back();
+        }
+
         return parent::render($request, $e);
     }
 }

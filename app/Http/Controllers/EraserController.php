@@ -92,11 +92,9 @@ class EraserController extends Controller
      */
     public function ctlStore(SubmitEraserRequest $request)
     {
-        dd('here');
-
         $this->dispatch(
             new EraseTrustList([
-                ['mac' => $request->input('macAddress'), 'type' => 'ctl']
+                ['mac' => $request->input('name'), 'type' => 'ctl']
             ])
         );
 

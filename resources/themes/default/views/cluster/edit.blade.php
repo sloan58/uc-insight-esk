@@ -1,8 +1,8 @@
 @extends('layouts.master')
 
 @section('content')
-    <div class='row'>
-        <div class='col-md-12'>
+<div class='row'>
+    <div class='col-md-12'>
             <!-- Box -->
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -17,7 +17,7 @@
 
                     {!! Form::open(['route' => 'cluster.store']) !!}
                     @include('partials._cluster_form', [
-                        'active' => \Auth::user()->clusters_id == $cluster->id ? true : false,
+                        'active' => $activeClusterId == $cluster->id ? true : false,
                         'version' => $cluster->version,
                         'userType' => $cluster->user_type
                     ])

@@ -37,7 +37,8 @@
         "zizaco/entrust": "dev-laravel-5",
         "bosnadev/repositories": "0.*",
         "sroutier/eloquent-ldap": "^1.0@dev",
-        "keboola/csv": "^1.1"
+        "keboola/csv": "^1.1",
+        "sabre/xml": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

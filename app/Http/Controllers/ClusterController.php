@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use DB;
+use App\User;
+use App\Models\Role;
 use App\Models\Cluster;
 use App\Http\Requests;
 use Laracasts\Flash\Flash;
@@ -46,15 +48,12 @@ class ClusterController extends Controller
             $clusters = \Auth::user()->clusters()->paginate(10);
         }
 
+        $activeClusterId = \Auth::user()->activeClusterId();
+
         $page_title = 'Clusters';
         $page_description = 'List';
 
-//        if($clusters->isEmpty())
-//        {
-//            return view('cluster.index',compact('page_title','page_description'));
-//        }
-
-        return view('cluster.index', compact('clusters','page_title', 'page_description'));
+        return view('cluster.index', compact('clusters','activeClusterId','page_title', 'page_description'));
     }
 
     /**
@@ -87,16 +86,24 @@ class ClusterController extends Controller
             $request->except(['_token','active'])
         );
 
+        $cluster->verify_peer = $request->verify_peer ? true : false;
+
         if($request->active)
         {
-            \Auth::user()->clusters_id = $cluster->id;
-            \Auth::user()->save();
+            \Auth::user()->activateCluster($cluster->id);
         }
-        if($request->verify_peer)
-        {
-            $cluster->verify_peer = true;
-        }
+
         $cluster->save();
+
+        $users = User::all();
+
+        foreach($users as $user)
+        {
+            if($user->hasRole('admins','cluster-managers'))
+            {
+                $user->clusters()->attach($cluster);
+            }
+        }
 
         Flash::success('Cluster added!');
 
@@ -114,6 +121,7 @@ class ClusterController extends Controller
     public function edit($id)
     {
         $cluster = $this->cluster->find($id);
+        $activeClusterId = \Auth::user()->activeClusterId();
 
         $directories = Storage::directories('axl/');
         $versions= [];
@@ -122,7 +130,7 @@ class ClusterController extends Controller
             preg_match('/\/(.*)/',$directory,$matches);
             $versions[$matches[1]] = $matches[1];
         }
-        return view('cluster.edit', compact('cluster','versions'));
+        return view('cluster.edit', compact('cluster','activeClusterId','versions'));
     }
 
 
@@ -139,13 +147,12 @@ class ClusterController extends Controller
 
         if($request->active)
         {
-            \Auth::user()->clusters_id = $cluster->id;
+            \Auth::user()->activateCluster($cluster->id);
 
-        } elseif (!isset($request->active) && \Auth::user()->clusters_id == $cluster->id)
+        } elseif (!isset($request->active) && \Auth::user()->activeCluster()->id == $cluster->id)
         {
-            \Auth::user()->clusters_id = null;
+            \Auth::user()->deactivateCluster();
         }
-        \Auth::user()->save();
 
         $cluster->save();
 

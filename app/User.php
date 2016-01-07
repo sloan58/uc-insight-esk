@@ -14,6 +14,10 @@ use Auth;
 use Config;
 use Sroutier\EloquentLDAP\Contracts\EloquentLDAPUserInterface;
 
+/**
+ * Class User
+ * @package App
+ */
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract, EloquentLDAPUserInterface
 {
     use Authenticatable, CanResetPassword;
@@ -68,7 +72,47 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function clusters()
     {
-        return $this->belongsToMany('App\Models\Cluster');
+        return $this->belongsToMany('App\Models\Cluster')->withPivot('active');
+    }
+
+    /**
+     *  Get the active cluster for this user
+     *
+     * @return mixed
+     */
+    public function activeCluster()
+    {
+        return $this->clusters()->wherePivot('active',true)->first();
+    }
+
+    /**
+     *  Set the supplied Cluster to active
+     * @param $clusterId
+     */
+    public function activateCluster($clusterId)
+    {
+        if(count($this->activeCluster()))
+        {
+            $this->clusters()->updateExistingPivot($this->activeCluster()->id,['active' => 0]);
+        }
+        $this->clusters()->updateExistingPivot($clusterId,['active' => 1]);
+    }
+
+    public function activeClusterId()
+    {
+        $activeCluster = $this->activeCluster();
+
+        if(!$activeCluster)
+        {
+            return '';
+        }
+
+        return $activeCluster->id;
+    }
+
+    public function deactivateCluster()
+    {
+        $this->clusters()->updateExistingPivot($this->activeCluster()->id,['active' => 0]);
     }
 
     /**

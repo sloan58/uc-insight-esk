@@ -38,7 +38,7 @@
                             @foreach($clusters as $cluster)
                             <tr>
                                 <td>{{$cluster->name}}</td>
-                                <td>{{\Auth::user()->clusters_id == $cluster->id ? 'Active' : ''}}</td>
+                                <td>{{ $activeClusterId == $cluster->id ? 'Active' : ''}}</td>
                                 <td>{{$cluster->ip}}</td>
                                 <td>{{$cluster->username}}</td>
                                 <td>
