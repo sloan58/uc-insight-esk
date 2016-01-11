@@ -60,9 +60,8 @@ class PhoneDialer {
 
     public function dial(Eraser $tle,$keys)
     {
-        $mac = $tle->device->name;
-        dd($tle->device);
-        $ip = $this->phoneIP;
+        $mac = $tle->device()->first()->name;
+        $ip = $tle->ipAddress()->first()->ip_address;
 
         foreach ($keys as $k)
         {
@@ -76,7 +75,7 @@ class PhoneDialer {
 
             try {
 
-                $response = $this->client->post('http://' . $tle->ip_address . '/CGI/Execute',['body' => $xml]);
+                $response = $this->client->post('http://' . $ip . '/CGI/Execute',['body' => $xml]);
 
                 //Temp workaround for USC NAT
 //                $response = $this->client->post('http://10.134.174.78/CGI/Execute',['body' => $xml]);

@@ -13,26 +13,17 @@ class IpAddress extends Model
      *
      * @var array
      */
-    protected $fillable = ['device_id', 'ip_address', 'eraser_type', 'result'];
+    protected $fillable = ['ip_address'];
 
 
     /**
-     *  An IP Address belongs to a Device
+     *  An IP Address belongs to many Devices
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function device()
+    public function devices()
     {
-        return $this->belongsTo('App\Models\Device');
+        return $this->belongsToMany('App\Models\Device');
     }
 
-    /**
-     *  An IP Address can belong to many Bulk processes
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function bulks()
-    {
-        return $this->belongsToMany('App\Models\Bulk');
-    }
 }

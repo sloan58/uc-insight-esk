@@ -13,16 +13,16 @@ class Device extends Model
      *
      * @var array
      */
-    protected $fillable = ['name', 'model', 'protocol'];
+    protected $fillable = ['name', 'description', 'model', 'protocol'];
 
     /**
      * A Device can run many Eraser try's
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Eraser()
+    public function erasers()
     {
-        return $this->hasMany('App\Models\Device');
+        return $this->hasMany('App\Models\Eraser');
     }
 
     /**
@@ -30,8 +30,8 @@ class Device extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function ipAddress()
+    public function ipAddresses()
     {
-        return $this->hasMany('App\Models\IpAddress');
+        return $this->belongsToMany('App\Models\IpAddress');
     }
 }

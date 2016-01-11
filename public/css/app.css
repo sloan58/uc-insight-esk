@@ -21,4 +21,11 @@ i.enabled {
 i.disabled {
   color: orange; }
 
+/* Format table check's and x's */
+.fa-check {
+  color: green; }
+
+.fa-times {
+  color: red; }
+
 /*# sourceMappingURL=app.css.map */

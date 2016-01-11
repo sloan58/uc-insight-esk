@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use DB;
 use App\User;
+use Datatables;
 use App\Models\Role;
 use App\Models\Cluster;
 use App\Http\Requests;
@@ -82,18 +83,11 @@ class ClusterController extends Controller
      */
     public function store(CreateClusterRequest $request)
     {
-        $cluster = $this->cluster->firstOrNew(
+        $cluster = $this->cluster->firstOrCreate(
             $request->except(['_token','active'])
         );
 
         $cluster->verify_peer = $request->verify_peer ? true : false;
-
-        if($request->active)
-        {
-            \Auth::user()->activateCluster($cluster->id);
-        }
-
-        $cluster->save();
 
         $users = User::all();
 
@@ -104,6 +98,13 @@ class ClusterController extends Controller
                 $user->clusters()->attach($cluster);
             }
         }
+
+        if($request->active)
+        {
+            \Auth::user()->activateCluster($cluster->id);
+        }
+
+        $cluster->save();
 
         Flash::success('Cluster added!');
 

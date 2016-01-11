@@ -12,7 +12,7 @@ return [
         'name' => 'Phone Name',
         'description' => 'Description',
         'ip_address' => 'IP Address',
-        'result' => 'Fail Reason',
+        'result' => 'Result',
         'fail_reason' => 'Fail Reason',
         'last_updated' => 'Last Updated At',
     ],

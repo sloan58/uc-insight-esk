@@ -45,9 +45,11 @@ class EraserController extends Controller
      */
     public function itlIndex()
     {
-        $itls =$this->eraser->where('eraser_type','itl')->get();
+        $page_title = 'Eraser';
+        $page_description = 'IT\'s';
 
-        return view('eraser.itl.index', compact('itls'));
+        $itls = $this->eraser->where('type','itl')->paginate(10);
+        return view('eraser.itl.index', compact('itls','page_title','page_description'));
     }
 
     /**
@@ -61,7 +63,7 @@ class EraserController extends Controller
 
         $this->dispatch(
             new EraseTrustList([
-                ['mac' => $request->input('macAddress'), 'type' => 'itl']
+                ['mac' => $request->input('name'), 'type' => 'itl']
             ])
         );
 

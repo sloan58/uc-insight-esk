@@ -13,7 +13,7 @@ class Eraser extends Model
      *
      * @var array
      */
-    protected $fillable = ['device_id', 'device_description', 'ip_address_id', 'eraser_type', 'result', 'fail_reason'];
+    protected $fillable = ['device_id', 'ip_address_id', 'type', 'result', 'fail_reason'];
 
 
     /**
@@ -23,7 +23,7 @@ class Eraser extends Model
      */
     public function device()
     {
-        return $this->hasManyThrough('App\Models\IpAddress','App\Models\Device');
+        return $this->belongsTo('App\Models\Device');
     }
 
     /**
@@ -33,7 +33,7 @@ class Eraser extends Model
      */
     public function ipAddress()
     {
-        return $this->hasMany('App\Models\IpAddress');
+        return $this->belongsTo('App\Models\IpAddress');
     }
 
     /**

@@ -2,11 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Models\Device as Phone;
 use App\Models\Eraser;
 use App\Libraries\Utils;
-use App\Libraries\PhoneDialer;
 use App\Models\IpAddress;
+use App\Libraries\PhoneDialer;
+use App\Models\Device as Phone;
 use Illuminate\Contracts\Bus\SelfHandling;
 
 class EraseTrustList extends Job implements SelfHandling
@@ -41,22 +41,26 @@ class EraseTrustList extends Job implements SelfHandling
 
         foreach($formattedEraserList as $device)
         {
-            //Create the Phone model
+            //Create the Phone
             $phone = Phone::firstOrCreate([
                 'name' => $device['DeviceName'],
+                'description' => $device['Description'],
+                'model' => $device['Model']
             ]);
 
-            $ipAddress = IpAddress::create([
-                'ip_address' => $device['IpAddress'],
-                'device_id' => $phone->id
+            // Create the IpAddress
+            $ipAddress = IpAddress::firstOrCreate([
+                'ip_address' => $device['IpAddress']
             ]);
+
+            // Attach the Phone and IpAddress
+            $phone->ipAddresses()->sync([$ipAddress->id],false);
 
             //Start creating Eraser
             $tleObj = Eraser::create([
-                'phone_id' => $phone->id,
-                'device_description' => $device['Description'],
+                'device_id' => $phone->id,
                 'ip_address_id' => $ipAddress->id,
-                'type' => $device['type'],
+                'type' => $device['type']
             ]);
 
             if(isset($device['bulk_id']))

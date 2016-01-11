@@ -1,5 +1,4 @@
 @extends('layouts.master')
-
 @section('content')
 <div class='row'>
     <div class='col-md-12'>
@@ -20,7 +19,7 @@
             <div class="box-body">
 
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="ctls-table">
                         <thead>
                         <tr>
                             <th>{{ trans('eraser/ctl/general.columns.name') }}</th>
@@ -35,17 +34,17 @@
                         </tfoot>
                         <tbody>
                         @foreach ($ctls as $ctl)
-                            @if(!$ctl->failure_reason)
-                                {{$ctl->failure_reason == 'Passed'}}
+                            @if(!$ctl->fail_reason)
+                                {{$ctl->fail_reason == 'Passed'}}
                             @endif
                         <tr>
-                            <td>{{ $ctl->phone->mac }}</td>
-                            <td>{{ $ctl->phone->description}}</td>
-                            <td>{{ $ctl->ip_address}}</td>
+                            <td>{{ $ctl->device->name }}</td>
+                            <td>{{ $ctl->device->description}}</td>
+                            <td>{{ $ctl->ipAddress->ip_address}}</td>
                             <td >
                                 <i class="{{ $ctl->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
                             </td>
-                            <td>{{ $ctl->failure_reason}}</td>
+                            <td>{{ $ctl->fail_reason}}</td>
                             <td>
                                 {{ $ctl->updated_at->toDayDateTimeString() }}
                             </td>
@@ -107,5 +106,22 @@
     function erase_ctl() {
         $("#modal-erase-ctl").modal("show");
     }
+
+    // DataTable
+    $(function() {
+        $("#ctls-table").DataTable({
+            order: [[5, "desc"]],
+            "aoColumnDefs": [
+                {
+                    "aTargets": [ 0 ], // Column to target
+                    "mRender": function ( data, type, full ) {
+                        // 'full' is the row's data object, and 'data' is this column's data
+                        // e.g. 'full is the row object, and 'data' is the phone mac
+                        return '<a href="/phone/' + full[0] + '">' + data + '</a>';
+                    }
+                }
+            ]
+        });
+    });
 </script>
 @endsection

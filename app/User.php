@@ -91,11 +91,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      */
     public function activateCluster($clusterId)
     {
-        if(count($this->activeCluster()))
-        {
-            $this->clusters()->updateExistingPivot($this->activeCluster()->id,['active' => 0]);
-        }
-        $this->clusters()->updateExistingPivot($clusterId,['active' => 1]);
+        $this->deactivateCluster();
+        return $this->clusters()->updateExistingPivot($clusterId,['active' => 1]);
     }
 
     public function activeClusterId()
@@ -112,7 +109,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function deactivateCluster()
     {
-        $this->clusters()->updateExistingPivot($this->activeCluster()->id,['active' => 0]);
+        if(count($this->activeCluster()))
+        {
+            return $this->clusters()->updateExistingPivot($this->activeCluster()->id,['active' => 0]);
+        }
     }
 
     /**

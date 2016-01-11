@@ -17,3 +17,11 @@ div.col-4 {
 i.deletable { color: red; }
 i.enabled { color: green; }
 i.disabled { color: orange; }
+
+/* Format table check's and x's */
+.fa-check {
+  color: green;
+}
+.fa-times{
+  color: red;
+}

@@ -15,8 +15,6 @@ class CreateIpAddressesTable extends Migration
         Schema::create('ip_addresses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('ip_address');
-            $table->integer('device_id')->unsigned();
-            $table->foreign('device_id')->references('id')->on('devices');
             $table->timestamps();
         });
     }
