@@ -78,7 +78,7 @@ class PhoneDialer {
                 $response = $this->client->post('http://' . $ip . '/CGI/Execute',['body' => $xml]);
 
                 //Temp workaround for USC NAT
-//                $response = $this->client->post('http://10.134.174.78/CGI/Execute',['body' => $xml]);
+//                $response = $this->client->post('http://10.134.174.64/CGI/Execute',['body' => $xml]);
 
             } catch (RequestException $e) {
 

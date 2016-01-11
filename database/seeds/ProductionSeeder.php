@@ -96,6 +96,13 @@ class ProductionSeeder extends Seeder
             'description'   => 'Allows a user to manage CUCM cluster settings.',
             'enabled'       => true,
         ]);
+        // Create permission for erasing IP Phone certificates
+        $permEraseCertificates = Permission::create([
+            'name'          => 'eraser-certificate',
+            'display_name'  => 'Erase Certificates',
+            'description'   => 'Allows a user to eraser IP Phone security certificates.',
+            'enabled'       => true,
+        ]);
 
         ////////////////////////////////////
         // Associate open-to-all permission to some routes
@@ -169,6 +176,7 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
             ]);
         $roleUsers->perms()->attach($permBasicAuthenticated->id);
+
         // Create role: user-manager
         // Assign permission manage-users
         $roleUserManagers = Role::create([
@@ -178,6 +186,7 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleUserManagers->perms()->attach($permManageUsers->id);
+
         // Create role: role-manager
         // Assign permission: manage-roles
         $roleRoleManagers = Role::create([
@@ -187,6 +196,7 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleRoleManagers->perms()->attach($permManageRoles->id);
+
         // Create role: audit-viewers
         // Assign permission: audit-log-view
         $roleAuditViewers = Role::create([
@@ -196,6 +206,7 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleAuditViewers->perms()->attach($permAuditLogView->id);
+
         // Create role: audit-replayers
         // Assign permission: audit-log-replay
         $roleAuditReplayers = Role::create([
@@ -205,6 +216,7 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleAuditReplayers->perms()->attach($permAuditReplay->id);
+
         // Create role: audit-purgers
         // Assign permission: audit-log-purge
         $roleAuditPurgers = Role::create([
@@ -214,6 +226,7 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleAuditPurgers->perms()->attach($permAuditPurge->id);
+
         // Create role: cluster-managers
         // Assign permission: permManageClusters
         $roleClusterManagers = Role::create([
@@ -222,6 +235,17 @@ class ProductionSeeder extends Seeder
             "description"   => "Cluster managers are granted all permissions to the Admin|Clusters section.",
             "enabled"       => true
         ]);
+        $roleClusterManagers->perms()->attach($permManageClusters->id);
+
+        // Create role: cert-erasers
+        // Assign permission: permManageClusters
+        $roleCertErasers = Role::create([
+            "name"          => "cert-erasers",
+            "display_name"  => "Certificate erasers",
+            "description"   => "Certificate erasers are granted permissions to erase IP Phone security certificates.",
+            "enabled"       => true
+        ]);
+        $roleCertErasers->perms()->attach($permEraseCertificates->id);
 
         ////////////////////////////////////
         // Create user: root

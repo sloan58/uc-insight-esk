@@ -31,9 +31,8 @@
 
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
-            <li class="header">HEADER</li>
-            <!-- Optionally, you can add icons to the links -->
-            <li class="active"><a href="{{ route('dashboard') }}"><i class='fa fa-link'></i> <span>Dashboard</span></a></li>
+            <li class="header">Menu</li>
+            @if(\Auth::user()->hasRole(['admins','cert-erasers']))
             <li class="treeview {{ areActiveRoutes([
             'itl.index',
             'ctl.index',
@@ -44,28 +43,36 @@
             ]) }}">
                 <a href="#"><i class="fa fa-eraser"></i> <span>Cert Eraser</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
-                    <li><a href="{{ route('ctl.index') }}">CTL</a></li>
                     <li><a href="{{ route('itl.index') }}">ITL</a></li>
+                    <li><a href="{{ route('ctl.index') }}">CTL</a></li>
                     <li><a href="{{ route('eraser.bulk.index') }}">Bulk</a></li>
                 </ul>
             </li>
-            <li class="treeview">
+            @endif
+            @if(\Auth::user()->hasRole(['admins']))
+            <li class="treeview {{ areActiveRoutes([
+            'admin.audit.index',
+            'admin.users.index',
+            'admin.roles.index',
+            'admin.permissions.index',
+            'admin.routes.index'
+            ]) }}">
                 <a href="#"><i class='fa fa-cog'></i> <span>Admin</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
                     <li><a href="{{ route('admin.audit.index')     }}"><i class='fa fa-binoculars'> </i> Audit   </a></li>
                     <li class="treeview">
                         <a href="#"><i class='fa fa-user-secret'></i> <span>Security</span> <i class="fa fa-angle-left pull-right"></i></a>
-                        <ul class="treeview-menu">
+                        <ul class="treeview-menu active menu-open">
                             <li><a href="{{ route('admin.users.index')       }}"><i class='fa fa-user'> </i> Users      </a></li>
                             <li><a href="{{ route('admin.roles.index')       }}"><i class='fa fa-users'></i> Roles      </a></li>
                             <li><a href="{{ route('admin.permissions.index') }}"><i class='fa fa-bolt'> </i> Permissions</a></li>
                             <li><a href="{{ route('admin.routes.index')      }}"><i class='fa fa-road'> </i> Routes     </a></li>
                         </ul>
                     </li>
-                    <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
-                    <li><a href="{{ route('flash_test_warning')     }}"><i class='fa fa-cogs'> </i> Settings   </a></li>
                 </ul>
             </li>
+            @endif
+            <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->
