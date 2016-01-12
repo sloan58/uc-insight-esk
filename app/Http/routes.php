@@ -189,3 +189,25 @@ Route::post('bulk',[
     'as'   => 'eraser.bulk.store',
     'uses' => 'EraserController@bulkStore'
 ]);
+
+// SQL Routes
+Route::get('sql/history', [
+    'as' => 'sql.history',
+    'uses' => 'SqlController@history'
+]);
+Route::get('sql/favorites', [
+    'as' => 'sql.favorites',
+    'uses' => 'SqlController@favorites'
+]);
+Route::resource('sql','SqlController', [
+    'except' => [
+        'destroy',
+        'edit'
+    ]
+]);
+Route::resource('favorite', 'FavoriteController', [
+    'only' => [
+        'store',
+        'destroy'
+    ]
+]);

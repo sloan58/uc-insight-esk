@@ -41,5 +41,4 @@ desired effect
 
     <!-- Application JS-->
     <script href="{{ asset(elixir('js/all.js')) }}"></script>
-
 </body>

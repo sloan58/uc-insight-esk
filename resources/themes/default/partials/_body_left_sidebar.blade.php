@@ -32,6 +32,22 @@
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
             <li class="header">Menu</li>
+            @if(\Auth::user()->hasRole(['admins']))
+            <li class="treeview {{ areActiveRoutes([
+            'sql.index',
+            'sql.store',
+            'sql.history',
+            'sql.show',
+            'sql.favorites'
+            ]) }}">
+                <a href="#"><i class="fa fa-database"></i> <span>SQL Query Tool</span> <i class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ url('/sql') }}">New Query</a></li>
+                    <li><a href="{{ url('/sql/history') }}">Query History</a></li>
+                    <li><a href="{{ url('/sql/favorites') }}">Favorite Queries</a></li>
+                </ul>
+            </li>
+            @endif
             @if(\Auth::user()->hasRole(['admins','cert-erasers']))
             <li class="treeview {{ areActiveRoutes([
             'itl.index',
@@ -49,6 +65,7 @@
                 </ul>
             </li>
             @endif
+            <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
             @if(\Auth::user()->hasRole(['admins']))
             <li class="treeview {{ areActiveRoutes([
             'admin.audit.index',
@@ -72,7 +89,6 @@
                 </ul>
             </li>
             @endif
-            <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->

@@ -25,3 +25,10 @@ i.disabled { color: orange; }
 .fa-times{
   color: red;
 }
+
+// Move DataTables Search to the right
+.dataTables_filter {
+  width: 50%;
+  float: right;
+  text-align: right;
+}

@@ -15,12 +15,33 @@ var elixir = require('laravel-elixir');
 elixir(function(mix) {
 
     var bowerLoc = 'bower_components/';
-    var resourceLoc = 'public/js/';
+    var resourceLoc = 'public/';
+
+    // Copy CSS Dependencies
+    mix.copy(
+        bowerLoc + 'CodeMirror/lib/codemirror.css',
+        resourceLoc + 'css/codemirror.css'
+    );
 
     // Copy JS Dependencies
     mix.copy(
+        bowerLoc + 'jquery/dist/jquery.js',
+        resourceLoc + 'js/jquery.js'
+    ).copy(
         bowerLoc + 'datatables/media/js/jquery.dataTables.js',
-        resourceLoc + 'dataTables.js'
+        resourceLoc + 'js/dataTables.js'
+    ).copy(
+        bowerLoc + 'datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js',
+        resourceLoc + 'js/dataTables.bootstrap.js'
+    ).copy(
+        bowerLoc + 'CodeMirror/lib/codemirror.js',
+        resourceLoc + 'js/codemirror.js'
+    ).copy(
+        bowerLoc + 'datatables-buttons/js',
+        resourceLoc + 'js/'
+    ).copy(
+        bowerLoc + 'CodeMirror/mode/sql/sql.js',
+        resourceLoc + 'js/codemirror-sql.js'
     );
 
     // Compile our SASS file to CSS.
@@ -29,6 +50,7 @@ elixir(function(mix) {
     // Combine the various CSS into one.
     mix.styles([
         //'vendor.css',
+        'codemirror.css',
         'app.css',
     ], null, 'public/css');
 
@@ -38,6 +60,9 @@ elixir(function(mix) {
     // Combine the various JS into one.
     mix.scripts([
        //'vendor.js',
+        'jquery.js',
+        'codemirror.js',
+        'codemirror-sql.js',
         'close-modal.js',
         'dataTables.js',
         'app.js',

@@ -95,6 +95,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->clusters()->updateExistingPivot($clusterId,['active' => 1]);
     }
 
+    /**
+     * @return string
+     */
     public function activeClusterId()
     {
         $activeCluster = $this->activeCluster();
@@ -107,12 +110,23 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $activeCluster->id;
     }
 
+    /**
+     * @return mixed
+     */
     public function deactivateCluster()
     {
         if(count($this->activeCluster()))
         {
             return $this->clusters()->updateExistingPivot($this->activeCluster()->id,['active' => 0]);
         }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function sqls()
+    {
+        return $this->belongsToMany('App\Models\Sql');
     }
 
     /**

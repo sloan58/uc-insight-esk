@@ -1,0 +1,21 @@
+{
+  "name": "uc-insight-esk",
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "https://github.com/sloan58/uc-insight-esk",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "datatables": "~1.10.10",
+    "codemirror": "CodeMirror#~5.10.0",
+    "datatables-plugins": "~1.10.10",
+    "datatables-buttons": "~1.1.0"
+  }
+}
