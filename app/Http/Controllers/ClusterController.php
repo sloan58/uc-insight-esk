@@ -93,10 +93,16 @@ class ClusterController extends Controller
 
         foreach($users as $user)
         {
-            if($user->hasRole('admins','cluster-managers'))
-            {
-                $user->clusters()->attach($cluster);
-            }
+//            TODO: Create front end system to manage users and clsuters
+//            TODO: In the meantime, give all users access to every cluster.
+
+//            if($user->hasRole('admins','cluster-managers'))
+//            {
+//                $user->clusters()->attach($cluster);
+//            }
+
+            $user->clusters()->attach($cluster);
+
         }
 
         if($request->active)

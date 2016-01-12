@@ -32,7 +32,7 @@
         <!-- Sidebar Menu -->
         <ul class="sidebar-menu">
             <li class="header">Menu</li>
-            @if(\Auth::user()->hasRole(['admins']))
+            @if(\Auth::user()->hasRole(['admins','sql-runner','sql-creator','sql-admin']))
             <li class="treeview {{ areActiveRoutes([
             'sql.index',
             'sql.store',
@@ -42,7 +42,9 @@
             ]) }}">
                 <a href="#"><i class="fa fa-database"></i> <span>SQL Query Tool</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
+                    @if(\Auth::user()->hasRole(['admins','sql-creator','sql-admin']))
                     <li><a href="{{ url('/sql') }}">New Query</a></li>
+                    @endif
                     <li><a href="{{ url('/sql/history') }}">Query History</a></li>
                     <li><a href="{{ url('/sql/favorites') }}">Favorite Queries</a></li>
                 </ul>

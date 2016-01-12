@@ -98,9 +98,30 @@ class ProductionSeeder extends Seeder
         ]);
         // Create permission for erasing IP Phone certificates
         $permEraseCertificates = Permission::create([
-            'name'          => 'eraser-certificate',
+            'name'          => 'erase-certificates',
             'display_name'  => 'Erase Certificates',
             'description'   => 'Allows a user to eraser IP Phone security certificates.',
+            'enabled'       => true,
+        ]);
+        // Create permission for running SQL queries
+        $permRunSqlQuery    = Permission::create([
+            'name'          => 'sql-run',
+            'display_name'  => 'Run SQL Queries',
+            'description'   => 'Allows a user to run pre-existing queries against the active CUCM cluster.',
+            'enabled'       => true,
+        ]);
+        // Create permission for running new SQL queries
+        $permAddSqlQuery    = Permission::create([
+            'name'          => 'sql-add',
+            'display_name'  => 'Add SQL Queries',
+            'description'   => 'Allows a user to run new SQL queries against the active CUCM cluster.',
+            'enabled'       => true,
+        ]);
+        // Create permission for deleting SQL queries
+        $permDeleteSqlQuery    = Permission::create([
+            'name'          => 'sql-delete',
+            'display_name'  => 'Delete SQL Queries',
+            'description'   => 'Allows a user to delete existing SQL queries.',
             'enabled'       => true,
         ]);
 
@@ -246,6 +267,42 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleCertErasers->perms()->attach($permEraseCertificates->id);
+
+        // Create role: sql-runner
+        // Assign permission: permRunSqlQuery
+        $roleCertErasers = Role::create([
+            "name"          => "sql-runner",
+            "display_name"  => "SQL Runner",
+            "description"   => "SQL Runners can run existing queries against the active CUCM cluster.",
+            "enabled"       => true
+        ]);
+        $roleCertErasers->perms()->attach($permRunSqlQuery->id);
+
+        // Create role: sql-creator
+        // Assign permission: permRunSqlQuery
+        // Assign permission: permAddSqlQuery
+        $roleCertErasers = Role::create([
+            "name"          => "sql-creator",
+            "display_name"  => "SQL Creator",
+            "description"   => "SQL Creators can run new and existing queries against the active CUCM cluster.",
+            "enabled"       => true
+        ]);
+        $roleCertErasers->perms()->attach($permRunSqlQuery->id);
+        $roleCertErasers->perms()->attach($permAddSqlQuery->id);
+
+        // Create role: sql-admin
+        // Assign permission: permRunSqlQuery
+        // Assign permission: permAddSqlQuery
+        // Assign permission: permDeleteSqlQuery
+        $roleCertErasers = Role::create([
+            "name"          => "sql-admin",
+            "display_name"  => "SQL Admin",
+            "description"   => "SQL Admins can run new and existing queries against the active CUCM cluster and delete queries.",
+            "enabled"       => true
+        ]);
+        $roleCertErasers->perms()->attach($permRunSqlQuery->id);
+        $roleCertErasers->perms()->attach($permAddSqlQuery->id);
+        $roleCertErasers->perms()->attach($permDeleteSqlQuery->id);
 
         ////////////////////////////////////
         // Create user: root

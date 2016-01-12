@@ -2,6 +2,7 @@
 
 @section('content')
 <div class='row'>
+    @if(\Auth::user()->hasRole(['admins','sql-creator','sql-admin']))
     <div class="col-md-8 col-md-offset-3">
         <form method="POST" action="/sql"
               class="form-horizontal">
@@ -17,6 +18,7 @@
             </div>
         </form>
     </div>
+    @endif
     @if(isset($data) && $data != '')
     <div class='col-md-12'>
         <!-- Box -->

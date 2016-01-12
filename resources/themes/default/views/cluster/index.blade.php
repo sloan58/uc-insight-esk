@@ -42,17 +42,11 @@
                                 <td>{{$cluster->ip}}</td>
                                 <td>{{$cluster->username}}</td>
                                 <td>
-                                    @if ( \Auth::user()->hasRole(['admins','cluster-managers']) )
                                         <a href="{!! route('cluster.edit', $cluster->id) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-pencil-square-o"></i></a>
-                                    @else
-                                        <i class="fa fa-pencil-square-o text-muted" title="{{ trans('cluster/general.error.cant-be-edited') }}"></i>
-                                    @endif
+<!--                                        <i class="fa fa-pencil-square-o text-muted" title="{{ trans('cluster/general.error.cant-be-edited') }}"></i>-->
 
-                                    @if ( \Auth::user()->hasRole(['admins','cluster-managers']) )
                                         <a href="{!! route('cluster.confirm-delete', $cluster->id) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
-                                    @else
-                                        <i class="fa fa-trash-o text-muted" title="{{ trans('cluster/general.error.cant-be-deleted') }}"></i>
-                                    @endif
+<!--                                        <i class="fa fa-trash-o text-muted" title="{{ trans('cluster/general.error.cant-be-deleted') }}"></i>-->
                                 </td>
                             </tr>
                             @endforeach
