@@ -124,6 +124,13 @@ class ProductionSeeder extends Seeder
             'description'   => 'Allows a user to delete existing SQL queries.',
             'enabled'       => true,
         ]);
+        // Create permission for deleting SQL queries
+        $permAutoDialer    = Permission::create([
+            'name'          => 'autodialer',
+            'display_name'  => 'AutoDialer',
+            'description'   => 'Allows a user to place calls using AutoDialer.',
+            'enabled'       => true,
+        ]);
 
         ////////////////////////////////////
         // Associate open-to-all permission to some routes
@@ -303,6 +310,16 @@ class ProductionSeeder extends Seeder
         $roleCertErasers->perms()->attach($permRunSqlQuery->id);
         $roleCertErasers->perms()->attach($permAddSqlQuery->id);
         $roleCertErasers->perms()->attach($permDeleteSqlQuery->id);
+
+        // Create role: autodialer
+        // Assign permission: permAutoDialer
+        $roleCertErasers = Role::create([
+            "name"          => "autodialer",
+            "display_name"  => "AutoDialer",
+            "description"   => "AutoDialer can use the AutoDialer system.",
+            "enabled"       => true
+        ]);
+        $roleCertErasers->perms()->attach($permAutoDialer->id);
 
         ////////////////////////////////////
         // Create user: root

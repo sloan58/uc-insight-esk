@@ -67,6 +67,7 @@
                 </ul>
             </li>
             @endif
+            @if(\Auth::user()->hasRole(['admins','autodialer']))
             <li class="treeview {{ areActiveRoutes([
             'autodialer.index',
             'autodialer.bulk.index'
@@ -81,6 +82,7 @@
                 <a href="{!! route('cdrs.index') !!}"><i class="fa fa-random"></i> <span>CDR's</span>
                     <i class=""></i></a>
             </li>
+            @endif
             <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
             @if(\Auth::user()->hasRole(['admins']))
             <li class="treeview {{ areActiveRoutes([
