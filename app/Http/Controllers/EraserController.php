@@ -25,17 +25,23 @@ class EraserController extends Controller
      * @var \App\Models\Eraser
      */
     private $eraser;
+    /**
+     * @var \App\Bulk
+     */
+    private $bulk;
 
     /**
      * Create a new controller instance.
      *
      * @param \App\Models\Eraser $eraser
+     * @param \App\Bulk $bulk
      * @return \App\Http\Controllers\EraserController
      */
-    public function __construct(Eraser $eraser)
+    public function __construct(Eraser $eraser, Bulk $bulk)
     {
         $this->middleware('auth');
         $this->eraser = $eraser;
+        $this->bulk = $bulk;
     }
 
     /**
@@ -111,7 +117,7 @@ class EraserController extends Controller
      */
     public function bulkIndex()
     {
-        $bulks = Bulk::all();
+        $bulks = $this->bulk->all();
 
         return view('eraser.bulk.index', compact('bulks'));
     }
@@ -189,7 +195,7 @@ class EraserController extends Controller
 
         Flash::success("File loaded successfully!  Check the Bulk Process table for progress on $bulk->process_id.");
 
-        $bulks = Bulk::all();
+        $bulks = $this->bulk->all();
         return view('eraser.bulk.index', compact('bulks'));
 
     }
