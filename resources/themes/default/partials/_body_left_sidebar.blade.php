@@ -76,11 +76,11 @@
                 <ul class="treeview-menu">
                     <li><a href="{{ url('/autodialer') }}">Single Call</a></li>
                     <li><a href="{{ url('/autodialer/bulk') }}">Bulk Calls</a></li>
+                    <li class=" {{isActiveRoute('cdrs.index')}}">
+                        <a href="{!! route('cdrs.index') !!}"><i class="fa fa-random"></i> <span>CDR's</span>
+                            <i class=""></i></a>
+                    </li>
                 </ul>
-            </li>
-            <li class=" {{isActiveRoute('cdrs.index')}}">
-                <a href="{!! route('cdrs.index') !!}"><i class="fa fa-random"></i> <span>CDR's</span>
-                    <i class=""></i></a>
             </li>
             @endif
             <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
