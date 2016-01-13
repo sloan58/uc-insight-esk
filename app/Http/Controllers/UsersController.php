@@ -114,6 +114,10 @@ class UsersController extends Controller {
         if ( array_key_exists('selected_roles', $attributes) ) {
             $attributes['role'] = explode(",", $attributes['selected_roles']);
         }
+        if($attributes['role'][0] == '')
+        {
+            $attributes['role'][0] = "2";
+        }
         // Create basic user.
         $user = $this->user->create($attributes);
         // Run the update method to set enabled status and roles membership.
