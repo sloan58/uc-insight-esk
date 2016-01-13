@@ -373,5 +373,4 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function membershipList() {
         return $this->roles();
     }
-
 }

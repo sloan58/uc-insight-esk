@@ -271,6 +271,13 @@ class UsersController extends Controller {
         // Get all attribute from the request.
         $attributes = $request->all();
 
+        if(!\Hash::check($attributes['password'],$user->password) && $attributes['password'] != '')
+        {
+            $attributes['password'] = \Hash::make($attributes['password']);
+        } else {
+            unset($attributes['password']);
+        }
+
         // Get a copy of the attributes that we will modify to save for a replay.
         $replayAtt = $attributes;
         // Add the id of the current user for the replay action.
