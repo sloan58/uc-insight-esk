@@ -211,3 +211,27 @@ Route::resource('favorite', 'FavoriteController', [
         'destroy'
     ]
 ]);
+
+// AutoDialer Routes
+Route::get('autodialer/bulk', [
+    'as'   => 'autodialer.bulk.index',
+    'uses' => 'AutoDialerController@bulkIndex'
+]);
+Route::post('autodialer/bulk', [
+    'as'   => 'autodialer.bulk.store',
+    'uses' => 'AutoDialerController@bulkStore'
+]);
+Route::get('autodialer', [
+    'as'   => 'autodialer.index',
+    'uses' => 'AutoDialerController@index'
+]);
+Route::post('autodialer',[
+    'as'   => 'autodialer.store',
+    'uses' => 'AutoDialerController@placeCall'
+]);
+
+// CDR Routes
+Route::get('cdrs', [
+    'as' => 'cdrs.index',
+    'uses' => 'CdrController@index'
+]);
