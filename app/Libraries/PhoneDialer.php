@@ -60,6 +60,9 @@ class PhoneDialer {
 
     public function dial(Eraser $tle,$keys)
     {
+
+        // TODO: Fix timeout issue which returns 503 bad gateway.  Need to fail better.
+
         $mac = $tle->device()->first()->name;
         $ip = $tle->ipAddress()->first()->ip_address;
 

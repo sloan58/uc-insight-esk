@@ -45,6 +45,7 @@ class SqlController extends Controller
      */
     public function store(Request $request)
     {
+
         $sql = $request->input('sqlStatement');
 
         $data = $this->sql->executeQuery($sql);
@@ -61,9 +62,10 @@ class SqlController extends Controller
         return view('sql.index',compact('data','format','sql','page_title', 'page_description'));
     }
 
-    public function show(Request $request)
+    public function show($sql)
     {
-        $sql = $this->sql->find($request->sql)->lists('sql')->first();
+
+        $sql = $this->sql->find($sql)->lists('sql')->first();
 
         $data = $this->sql->executeQuery($sql);
         $format = $this->sql->getHeaders($data);
