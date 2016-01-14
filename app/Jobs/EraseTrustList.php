@@ -63,6 +63,7 @@ class EraseTrustList extends Job implements SelfHandling
                 'type' => $device['type']
             ]);
 
+
             if(isset($device['bulk_id']))
             {
                 $tleObj->bulks()->attach($device['bulk_id']);
@@ -83,8 +84,11 @@ class EraseTrustList extends Job implements SelfHandling
                 $tleObj->result = 'Fail';
                 $tleObj->fail_reason = 'Unsupported Model';
                 $tleObj->save();
+                \Log::debug('Bulk', [$tleObj]);
+
                 return;
             }
+
             $dialer = new PhoneDialer($device['IpAddress']);
             $status = $dialer->dial($tleObj,$keys);
 
@@ -92,6 +96,7 @@ class EraseTrustList extends Job implements SelfHandling
             $passFail = $status ? 'Success' : 'Fail';
             $tleObj->result = $passFail;
             $tleObj->save();
+
         }
     }
 }
