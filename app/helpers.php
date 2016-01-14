@@ -133,12 +133,14 @@ function setKeys($model,$tleType)
                         'Key:KeyPad5',
                         'Key:KeyPad2',
                         'Key:Soft4',
+                        'Key:Soft2',
                         'Key:Sleep',
                         'Key:KeyPadStar',
                         'Key:KeyPadStar',
                         'Key:KeyPadPound',
                         'Key:Sleep',
                         'Key:Soft4',
+                        'Key:Soft2',
                         'Init:Services'
                     ];
                     break;
