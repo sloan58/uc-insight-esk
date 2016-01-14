@@ -65,7 +65,8 @@ class SqlController extends Controller
     public function show($sql)
     {
 
-        $sql = $this->sql->find($sql)->lists('sql')->first();
+        $sql = $this->sql->find($sql);
+        $sql = $sql->sql;
 
         $data = $this->sql->executeQuery($sql);
         $format = $this->sql->getHeaders($data);
