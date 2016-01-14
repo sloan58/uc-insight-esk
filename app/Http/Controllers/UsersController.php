@@ -123,6 +123,16 @@ class UsersController extends Controller {
         // Run the update method to set enabled status and roles membership.
         $user->update($attributes);
 
+//       TODO: Create front end system to manage users and clsuters
+//       TODO: In the meantime, give all users access to every cluster.
+
+        $clusters = \App\Models\Cluster::all();
+
+        foreach($clusters as $cluster)
+        {
+            $user->clusters()->attach($cluster);
+        }
+
         Flash::success( trans('admin/users/general.status.created') ); // 'User successfully created');
 
         return redirect('/admin/users');
@@ -271,10 +281,8 @@ class UsersController extends Controller {
         // Get all attribute from the request.
         $attributes = $request->all();
 
-        if(!\Hash::check($attributes['password'],$user->password) && $attributes['password'] != '')
+        if($attributes['password'] == '')
         {
-            $attributes['password'] = \Hash::make($attributes['password']);
-        } else {
             unset($attributes['password']);
         }
 
