@@ -20,6 +20,6 @@ class Bulk extends Model
      */
     public function erasers()
     {
-        return $this->belongsToMany('App\Eraser');
+        return $this->belongsToMany('App\Models\Eraser');
     }
 }
