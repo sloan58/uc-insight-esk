@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Bulk;
+use App\Http\Requests\ProcessBulkEraserRequest;
+use App\Models\Bulk;
 use App\Models\Eraser;
 use Carbon\Carbon;
 use App\Http\Requests;
@@ -25,17 +26,23 @@ class EraserController extends Controller
      * @var \App\Models\Eraser
      */
     private $eraser;
+    /**
+     * @var \App\Bulk
+     */
+    private $bulk;
 
     /**
      * Create a new controller instance.
      *
      * @param \App\Models\Eraser $eraser
+     * @param \App\Bulk|\App\Models\Bulk $bulk
      * @return \App\Http\Controllers\EraserController
      */
-    public function __construct(Eraser $eraser)
+    public function __construct(Eraser $eraser, Bulk $bulk)
     {
         $this->middleware('auth');
         $this->eraser = $eraser;
+        $this->bulk = $bulk;
     }
 
     /**
@@ -111,19 +118,25 @@ class EraserController extends Controller
      */
     public function bulkIndex()
     {
-        $bulks = Bulk::all();
+        $bulks = $this->bulk->paginate(10);
 
-        return view('eraser.bulk.index', compact('bulks'));
+        $page_title = 'Bulk';
+        $page_description = 'Eraser';
+
+        return view('eraser.bulk.index', compact('bulks','page_title','page_description'));
     }
 
     /**
-     * @param \App\Bulk $bulk
+     * @param \App\Bulk|\App\Models\Bulk $bulk
      * @internal param $Bulk
      * @return Response
      */
     public function bulkShow(Bulk $bulk)
     {
-        return view('eraser.bulk.show', compact('bulk'));
+        $page_title = 'Bulk';
+        $page_description = 'Details';
+
+        return view('eraser.bulk.show', compact('bulk','page_title','page_description'));
     }
 
     /**
@@ -134,19 +147,19 @@ class EraserController extends Controller
         return view('eraser.bulk.create');
     }
 
+
     /**
-     * @param \Illuminate\Http\Request $request
-     * @internal param $Request
-     * @return Response
+     * @param ProcessBulkEraserRequest $request
+     * @return \BladeView|bool|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function bulkStore(Request $request)
+    public function bulkStore(ProcessBulkEraserRequest $request)
     {
 
         $file = $request->file('file');
         $fileName = $request->input('file_name');
         $fileName = $fileName ?: $file->getClientOriginalName();
 
-        $bulk = Bulk::create([
+        $bulk = $this->bulk->create([
             'file_name' => $fileName
         ]);
 
@@ -189,8 +202,7 @@ class EraserController extends Controller
 
         Flash::success("File loaded successfully!  Check the Bulk Process table for progress on $bulk->process_id.");
 
-        $bulks = Bulk::all();
-        return view('eraser.bulk.index', compact('bulks'));
+        return redirect()->action('EraserController@bulkIndex');
 
     }
 }

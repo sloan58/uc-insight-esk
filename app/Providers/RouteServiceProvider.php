@@ -27,6 +27,10 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot($router);
+
+        $router->bind('bulk', function($process_id) {
+            return \App\Models\Bulk::where('process_id', $process_id)->first();
+        });
     }
 
     /**
