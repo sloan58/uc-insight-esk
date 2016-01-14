@@ -1,6 +1,10 @@
 <?php namespace App\Libraries;
 
 
+/**
+ * Class Utils
+ * @package App\Libraries
+ */
 class Utils {
 
     /**

@@ -148,24 +148,20 @@ class ClusterController extends Controller
      */
     public function update(UpdateClusterRequest $request, $id)
     {
+
         $cluster = $this->cluster->find($id);
         $cluster->password = checkPassword($cluster->password,$request->password);
         $cluster->verify_peer = $request->verify_peer ? true : false;
-
         if($request->active)
         {
             \Auth::user()->activateCluster($cluster->id);
-
         } elseif (!isset($request->active) && \Auth::user()->activeClusterId() == $cluster->id)
         {
             \Auth::user()->deactivateCluster();
         }
-
-        $cluster->fill($request->all());
+        $cluster->fill($request->except(['password','verify_peer']));
         $cluster->save();
-
         Flash::success('Cluster info updated!');
-
         return redirect()->action('ClusterController@index');
 
     }
