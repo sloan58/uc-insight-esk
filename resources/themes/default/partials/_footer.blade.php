@@ -20,9 +20,19 @@
 <script src="{{ asset ("/js/buttons.jqueryui.js") }}" type="text/javascript"></script>
 <script src="{{ asset ("/js/buttons.print.js") }}" type="text/javascript"></script>
 <script src="{{ asset ("/js/sweetalert.min.js") }}" type="text/javascript"></script>
-
 @include('sweet::alert')
-
+<script>
+    // DataTable
+    $(function() {
+        $("#table").DataTable({
+            order: [[0, "asc"]],
+            dom: '<"top">Bfrt<"bottom"lip><"clear">',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ]
+        });
+    });
+</script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
       Both of these plugins are recommended to enhance the
       user experience. Slimscroll is required when using the

@@ -19,7 +19,7 @@
             <div class="box-body">
 
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table table-hover" id="table">
                         <thead>
                         <tr>
                             <th>{{ trans('eraser/itl/general.columns.name') }}</th>
@@ -38,7 +38,13 @@
                                 {{$itl->fail_reason == 'Passed'}}
                             @endif
                         <tr>
-                            <td>{{ $itl->device->name }}</td>
+                            <td>
+                                <a href="/phone/{{$itl->device->id}}">
+                                    <div>
+                                        {{ $itl->device->name }}
+                                    </div>
+                                </a>
+                            </td>
                             <td>{{ $itl->device->description}}</td>
                             <td>{{ $itl->ipAddress->ip_address}}</td>
                             <td >
@@ -103,8 +109,11 @@
 <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
 <script language="JavaScript">
+
+    // Modal
     function erase_itl() {
         $("#modal-erase-itl").modal("show");
     }
+
 </script>
 @endsection

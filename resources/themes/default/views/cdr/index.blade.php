@@ -15,7 +15,7 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table id="cdr-table" class="table">
+                        <table id="table" class="table">
                             <thead>
                             <th data-field="dialed" data-sortable="true">Dialed Number</th>
                             <th data-field="callerid" data-sortable="true">Caller ID</th>
@@ -51,15 +51,6 @@
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
     <script>
-        // DataTable
-        $(function() {
-            $("#cdr-table").DataTable({
-                order: [[0, "asc"]],
-                dom: '<"top">Bfrt<"bottom"lip><"clear">',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
-            });
-        });
+
     </script>
     @endsection

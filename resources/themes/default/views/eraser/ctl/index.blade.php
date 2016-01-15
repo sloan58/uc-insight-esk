@@ -19,7 +19,7 @@
             <div class="box-body">
 
                 <div class="table-responsive">
-                    <table class="table table-hover" id="ctls-table">
+                    <table class="table table-hover" id="table">
                         <thead>
                         <tr>
                             <th>{{ trans('eraser/ctl/general.columns.name') }}</th>
@@ -38,7 +38,13 @@
                                 {{$ctl->fail_reason == 'Passed'}}
                             @endif
                         <tr>
-                            <td>{{ $ctl->device->name }}</td>
+                            <td>
+                                <a href="/phone/{{$ctl->device->id}}">
+                                    <div>
+                                        {{ $ctl->device->name }}
+                                    </div>
+                                </a>
+                            </td>
                             <td>{{ $ctl->device->description}}</td>
                             <td>{{ $ctl->ipAddress->ip_address}}</td>
                             <td >
@@ -103,25 +109,11 @@
 <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
 <script language="JavaScript">
+
+    // Modal
     function erase_ctl() {
         $("#modal-erase-ctl").modal("show");
     }
 
-    // DataTable
-    $(function() {
-        $("#ctls-table").DataTable({
-            order: [[5, "desc"]],
-            "aoColumnDefs": [
-                {
-                    "aTargets": [ 0 ], // Column to target
-                    "mRender": function ( data, type, full ) {
-                        // 'full' is the row's data object, and 'data' is this column's data
-                        // e.g. 'full is the row object, and 'data' is the phone mac
-                        return '<a href="/phone/' + full[0] + '">' + data + '</a>';
-                    }
-                }
-            ]
-        });
-    });
 </script>
 @endsection

@@ -33,7 +33,7 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table class="table table-hover" id="sql-table">
+                        <table class="table table-hover" id="table">
                             <thead>
                             <tr>
                                 @foreach($format as $header)
@@ -64,17 +64,6 @@
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
     <script>
-
-        // DataTable
-        $(function() {
-            $("#sql-table").DataTable({
-                order: [[0, "asc"]],
-                dom: '<"top">Bfrt<"bottom"lip><"clear">',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
-            });
-        });
 
         //Codemirror
         var myCodeMirror = CodeMirror.fromTextArea(sqlStatement, {
