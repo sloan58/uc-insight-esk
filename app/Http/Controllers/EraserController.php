@@ -2,19 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProcessBulkEraserRequest;
-use App\Models\Bulk;
-use App\Models\Eraser;
+use Alert;
 use Carbon\Carbon;
+use App\Models\Bulk;
 use App\Http\Requests;
+use App\Models\Eraser;
 use Keboola\Csv\CsvFile;
-use Laracasts\Flash\Flash;
 use App\Jobs\EraseTrustList;
 use Illuminate\Http\Request;
 use App\Http\Requests\SubmitEraserRequest;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Input;
+use App\Http\Requests\ProcessBulkEraserRequest;
 
 /**
  * Class EraserController
@@ -74,7 +71,7 @@ class EraserController extends Controller
             ])
         );
 
-        Flash::success('Processed Request.  Check table below for status.');
+        alert()->success('Processed Request.  Check table below for status.');
         return redirect('itl');
     }
 
@@ -107,7 +104,7 @@ class EraserController extends Controller
             ])
         );
 
-        Flash::success('Processed Request.  Check table below for status.');
+        alert()->success('Processed Request.  Check table below for status.');
         return redirect('ctl');
     }
 
@@ -170,7 +167,7 @@ class EraserController extends Controller
             $bulk->file_extension = $file->getClientOriginalExtension();
             $bulk->save();
 
-            Flash::error('File type invalid.  Please use a CSV file format.');
+            alert()->error('File type invalid.  Please use a CSV file format.')->persistent('Close');
             return redirect()->back();
         }
 
@@ -200,7 +197,7 @@ class EraserController extends Controller
 
         $file->move(storage_path() . '/uploaded_files/',$fileName);
 
-        Flash::success("File loaded successfully!  Check the Bulk Process table for progress on $bulk->process_id.");
+        alert()->success("File loaded successfully!  Check the Bulk Process table for progress on $bulk->process_id.");
 
         return redirect()->action('EraserController@bulkIndex');
 

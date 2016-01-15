@@ -167,6 +167,7 @@ return [
         YAAP\Theme\ThemeServiceProvider::class,
         Zizaco\Entrust\EntrustServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        UxWeb\SweetAlert\SweetAlertServiceProvider::class,
     ],
 
     /*
@@ -221,6 +222,7 @@ return [
         'Flash'      => Laracasts\Flash\Flash::class,
         'Theme'      => YAAP\Theme\Facades\Theme::class,
         'Entrust'    => Zizaco\Entrust\EntrustFacade::class,
+        'Alert'      => UxWeb\SweetAlert\SweetAlert::class,
     ],
 
 ];

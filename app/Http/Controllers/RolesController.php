@@ -1,16 +1,15 @@
 <?php namespace App\Http\Controllers;
 
+use Auth;
+use Alert;
+use Illuminate\Http\Request;
+use App\Repositories\RoleRepository as Role;
+use App\Repositories\UserRepository as User;
+use App\Repositories\AuditRepository as Audit;
 use App\Repositories\Criteria\Role\RolesWithPermissions;
+use App\Repositories\PermissionRepository as Permission;
 use App\Repositories\Criteria\Role\RolesByNamesAscending;
 use App\Repositories\Criteria\Role\RolesWhereDisplayNameOrDescriptionLike;
-use App\Repositories\RoleRepository as Role;
-use App\Repositories\PermissionRepository as Permission;
-use App\Repositories\UserRepository as User;
-use Illuminate\Http\Request;
-use Flash;
-use DB;
-use App\Repositories\AuditRepository as Audit;
-use Auth;
 
 class RolesController extends Controller {
 
@@ -114,7 +113,8 @@ class RolesController extends Controller {
         $role->forcePermission('basic-authenticated');
         $role->saveUsers($attributes['users']);
 
-        Flash::success( trans('admin/roles/general.status.created') ); // 'Role successfully created');
+        alert()->success(trans('admin/roles/general.status.created'));
+
 
         return redirect('/admin/roles');
     }
@@ -183,7 +183,7 @@ class RolesController extends Controller {
             $role->saveUsers($attributes['users']);
         }
 
-        Flash::success( trans('admin/roles/general.status.updated') ); // 'Role successfully updated');
+        alert()->success(trans('admin/roles/general.status.updated'));
 
         return redirect('/admin/roles');
     }
@@ -205,7 +205,7 @@ class RolesController extends Controller {
 
         $this->role->delete($id);
 
-        Flash::success( trans('admin/roles/general.status.deleted') ); // 'Role successfully deleted');
+        alert()->success(trans('admin/roles/general.status.deleted'));
 
         return redirect('/admin/roles');
     }
@@ -254,7 +254,7 @@ class RolesController extends Controller {
         $role->enabled = true;
         $role->save();
 
-        Flash::success(trans('admin/roles/general.status.enabled'));
+        alert()->success(trans('admin/roles/general.status.enabled'));
 
         return redirect('/admin/roles');
     }
@@ -274,7 +274,7 @@ class RolesController extends Controller {
         $role->enabled = false;
         $role->save();
 
-        Flash::success(trans('admin/roles/general.status.disabled'));
+        alert()->success(trans('admin/roles/general.status.disabled'));
 
         return redirect('/admin/roles');
     }
@@ -296,11 +296,12 @@ class RolesController extends Controller {
                 $role->enabled = true;
                 $role->save();
             }
-            Flash::success(trans('admin/roles/general.status.global-enabled'));
+            alert()->success(trans('admin/roles/general.status.global-enabled'));
         }
         else
         {
-            Flash::warning(trans('admin/roles/general.status.no-role-selected'));
+            alert()->warning(trans('admin/roles/general.status.no-role-selected'));
+
         }
         return redirect('/admin/roles');
     }
@@ -324,11 +325,11 @@ class RolesController extends Controller {
                 $role->enabled = false;
                 $role->save();
             }
-            Flash::success(trans('admin/roles/general.status.global-disabled'));
+            alert()->success(trans('admin/roles/general.status.global-disabled'));
         }
         else
         {
-            Flash::warning(trans('admin/roles/general.status.no-role-selected'));
+            alert()->warning(trans('admin/roles/general.status.no-role-selected'));
         }
         return redirect('/admin/roles');
     }

@@ -1,20 +1,19 @@
 <?php namespace App\Http\Controllers;
 
+use Auth;
+use Alert;
+use Illuminate\Http\Request;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Repositories\Criteria\User\UsersWhereFirstNameOrLastNameOrUsernameLike;
-use Illuminate\Http\Request;
-use App\Repositories\Criteria\User\UsersWithRoles;
-use App\Repositories\Criteria\User\UsersByUsernamesAscending;
-use App\Repositories\Criteria\Permission\PermissionsByNamesAscending;
-use App\Repositories\Criteria\Role\RolesByNamesAscending;
 use App\Repositories\UserRepository as User;
-use App\Repositories\PermissionRepository as Permission;
 use App\Repositories\RoleRepository as Role;
 use App\Repositories\AuditRepository as Audit;
-use Flash;
-use Auth;
-use DB;
+use App\Repositories\Criteria\User\UsersWithRoles;
+use App\Repositories\PermissionRepository as Permission;
+use App\Repositories\Criteria\Role\RolesByNamesAscending;
+use App\Repositories\Criteria\User\UsersByUsernamesAscending;
+use App\Repositories\Criteria\Permission\PermissionsByNamesAscending;
+use App\Repositories\Criteria\User\UsersWhereFirstNameOrLastNameOrUsernameLike;
 
 class UsersController extends Controller {
 
@@ -133,7 +132,7 @@ class UsersController extends Controller {
             $user->clusters()->attach($cluster);
         }
 
-        Flash::success( trans('admin/users/general.status.created') ); // 'User successfully created');
+        alert()->success( trans('admin/users/general.status.created') ); // 'User successfully created');
 
         return redirect('/admin/users');
     }
@@ -232,7 +231,7 @@ class UsersController extends Controller {
         $user = $this->user->find($att['id']);
 
         if (null == $user) {
-            Flash::warning( trans('admin/users/general.error.user_not_found', [ 'id' => $att['id'] ]) );
+            alert()->warning( trans('admin/users/general.error.user_not_found', [ 'id' => $att['id'] ]) );
             return \Redirect::route('admin.audit.index');
         }
 
@@ -306,7 +305,7 @@ class UsersController extends Controller {
 
         $user->update($attributes);
 
-        Flash::success( trans('admin/users/general.status.updated') );
+        alert()->success( trans('admin/users/general.status.updated') );
 
         return redirect('/admin/users');
     }
@@ -328,7 +327,7 @@ class UsersController extends Controller {
 
         $this->user->delete($id);
 
-        Flash::success( trans('admin/users/general.status.deleted') );
+        alert()->success( trans('admin/users/general.status.deleted') );
 
         return redirect('/admin/users');
     }
@@ -382,7 +381,7 @@ class UsersController extends Controller {
         $user->enabled = true;
         $user->save();
 
-        Flash::success(trans('admin/users/general.status.enabled'));
+        alert()->success(trans('admin/users/general.status.enabled'));
 
         return redirect('/admin/users');
     }
@@ -397,7 +396,7 @@ class UsersController extends Controller {
 
         if (!$user->canBeDisabled())
         {
-            Flash::error(trans('admin/users/general.error.cant-be-disabled'));
+            alert()->error(trans('admin/users/general.error.cant-be-disabled'));
         }
         else
         {
@@ -405,7 +404,7 @@ class UsersController extends Controller {
 
             $user->enabled = false;
             $user->save();
-            Flash::success(trans('admin/users/general.status.disabled'));
+            alert()->success(trans('admin/users/general.status.disabled'));
         }
 
         return redirect('/admin/users');
@@ -428,11 +427,11 @@ class UsersController extends Controller {
                 $user->enabled = true;
                 $user->save();
             }
-            Flash::success(trans('admin/users/general.status.global-enabled'));
+            alert()->success(trans('admin/users/general.status.global-enabled'));
         }
         else
         {
-            Flash::warning(trans('admin/users/general.status.no-user-selected'));
+            alert()->warning(trans('admin/users/general.status.no-user-selected'));
         }
         return redirect('/admin/users');
     }
@@ -453,7 +452,7 @@ class UsersController extends Controller {
                 $user = $this->user->find($user_id);
                 if (!$user->canBeDisabled())
                 {
-                    Flash::error(trans('admin/users/general.error.cant-be-disabled'));
+                    alert()->error(trans('admin/users/general.error.cant-be-disabled'));
                 }
                 else
                 {
@@ -461,11 +460,11 @@ class UsersController extends Controller {
                     $user->save();
                 }
             }
-            Flash::success(trans('admin/users/general.status.global-disabled'));
+            alert()->success(trans('admin/users/general.status.global-disabled'));
         }
         else
         {
-            Flash::warning(trans('admin/users/general.status.no-user-selected'));
+            alert()->warning(trans('admin/users/general.status.no-user-selected'));
         }
         return redirect('/admin/users');
     }

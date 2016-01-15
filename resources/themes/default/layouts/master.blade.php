@@ -22,6 +22,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- Application CSS-->
       <link href="{{ asset('/css/uc-insight.css') }}" rel="stylesheet" type="text/css" />
+      <link href="{{ asset('/css/sweetalert.css') }}" rel="stylesheet" type="text/css" />
       <link href="{{ asset(elixir('css/all.css')) }}" rel="stylesheet" type="text/css" />
 
     <!-- Head -->

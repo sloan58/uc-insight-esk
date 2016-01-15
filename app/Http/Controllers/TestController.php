@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use Flash;
 use Auth;
-
+use Alert;
+use App\Http\Requests;
 use App\Repositories\AuditRepository as Audit;
+
 
 class TestController extends Controller
 {
@@ -21,7 +19,7 @@ class TestController extends Controller
         $page_title = "Flash test";
         $page_description = "Testing the flash mechanism with a success level";
 
-        Flash::success('This is a success message!');
+        alert()->success('This is a success message!');
 
         return view('flash_test', compact('page_title', 'page_description'));
     }
@@ -31,7 +29,7 @@ class TestController extends Controller
         $page_title = "Flash test";
         $page_description = "Testing the flash mechanism with an info level";
 
-        Flash::info('This is an info message!');
+        alert()->info('This is an info message!');
 
         return view('flash_test', compact('page_title', 'page_description'));
     }
@@ -41,7 +39,7 @@ class TestController extends Controller
         $page_title = "Flash test";
         $page_description = "Testing the flash mechanism with a warning level";
 
-        Flash::warning('This is a warning message!');
+        alert()->warning('This is a warning message!');
 
         return view('flash_test', compact('page_title', 'page_description'));
     }
@@ -51,7 +49,7 @@ class TestController extends Controller
         $page_title = "Flash test";
         $page_description = "Testing the flash mechanism with a error level";
 
-        Flash::error('This is an error message!');
+        alert()->error('This is an error message!');
 
         return view('flash_test', compact('page_title', 'page_description'));
     }

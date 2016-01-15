@@ -19,6 +19,10 @@
 <script src="{{ asset ("/js/buttons.html5.js") }}" type="text/javascript"></script>
 <script src="{{ asset ("/js/buttons.jqueryui.js") }}" type="text/javascript"></script>
 <script src="{{ asset ("/js/buttons.print.js") }}" type="text/javascript"></script>
+<script src="{{ asset ("/js/sweetalert.min.js") }}" type="text/javascript"></script>
+
+@include('sweet::alert')
+
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
       Both of these plugins are recommended to enhance the
       user experience. Slimscroll is required when using the

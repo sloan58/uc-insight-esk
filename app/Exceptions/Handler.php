@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Log;
+use Alert;
 use Exception;
 use Laracasts\Flash\Flash;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -54,19 +55,20 @@ class Handler extends ExceptionHandler
         if ($e instanceof SoapException) {
             switch($e) {
                 case isset($e->message->faultcode) && $e->message->faultcode == 'HTTP':
-                    Flash::error('Server Error.  Please check your WSDL version and verify the Username and Password.');
+                    alert()->error('Server Error.  Please check your WSDL version and verify the Username and Password.')->persistent('Close');
                     Log::error('Soap Client Error.', [ 'Incorrect WSDL Version OR authentication error' ]);
                     return redirect()->back();
                     break;
 
                 case isset($e->message->faultstring):
-                    Flash::error($e->message->faultstring);
+                    alert()->error($e->message->faultstring)->persistent('Close');
                     Log::error('Soap Client Error.', [ $e->message->faultstring ]);
                     return redirect()->back();
                     break;
 
                 default:
                     Flash::error($e->message);
+                    alert()->error($e->message)->persistent('Close');
                     Log::error('Soap Client Error.', [ $e->message ]);
                     return redirect()->back();
             }
@@ -77,7 +79,7 @@ class Handler extends ExceptionHandler
          */
         if($e instanceof SqlQueryException)
         {
-            Flash::error('SQL Query Error: ' . $e->message);
+            alert()->error('SQL Query Error: ' . $e->message)->persistent('Close');
             Log::error('SQL Query Error: ', [ $e->message ]);
             return redirect()->back();
         }
@@ -87,7 +89,7 @@ class Handler extends ExceptionHandler
          */
         if($e instanceof TwilioException)
         {
-            Flash::error('Twilio Service Error: ' . $e->message);
+            alert()->error('Twilio Service Error: ' . $e->message)->persistent('Close');
             Log::error('Twilio Client Error: ', [ $e->message ]);
             return redirect()->back();
         }
@@ -97,7 +99,7 @@ class Handler extends ExceptionHandler
          */
         if($e instanceof PhoneDialerException)
         {
-            Flash::error('Phone Dialer Error: ' . $e->message);
+            alert()->error('Phone Dialer Error: ' . $e->message)->persistent('Close');
             Log::error('Phone Dialer Error: ', [ $e->message ]);
             return redirect()->back();
         }

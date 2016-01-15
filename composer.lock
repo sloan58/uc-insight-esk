@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f5151b5db4bd1ab61ce9523ff8c1e492",
-    "content-hash": "33996920dc4d47a0f1c169dad6169987",
+    "hash": "dcffcb4be85404c3a6b820499d6cb5d8",
+    "content-hash": "1445bcde9122018082c213173fd923f1",
     "packages": [
         {
             "name": "adldap2/adldap2",
@@ -706,7 +706,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/5f0dfd29ed807e4dacba0ae69c70300ded8050c3",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/02e5b61baedbeb1832702d0feac3174e70c32c74",
                 "reference": "bfe166af1e52b85f1101db19f3437ae87a7e291b",
                 "shasum": ""
             },
@@ -3130,6 +3130,52 @@
                 "twilio"
             ],
             "time": "2015-12-17 01:05:48"
+        },
+        {
+            "name": "uxweb/sweet-alert",
+            "version": "1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/uxweb/sweet-alert.git",
+                "reference": "24a963cb788357b354a861a9b96484ade0e45b56"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/uxweb/sweet-alert/zipball/24a963cb788357b354a861a9b96484ade0e45b56",
+                "reference": "24a963cb788357b354a861a9b96484ade0e45b56",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/session": "~5.0",
+                "illuminate/support": "~5.0",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "UxWeb\\SweetAlert\\": "src/SweetAlert/"
+                },
+                "files": [
+                    "src/SweetAlert/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Uziel Bueno",
+                    "email": "ux.webs@gmail.com"
+                }
+            ],
+            "description": "A simple PHP package to show Sweet Alerts with the Laravel Framework",
+            "keywords": [
+                "alert",
+                "laravel",
+                "sweet"
+            ],
+            "time": "2015-12-22 05:01:51"
         },
         {
             "name": "vlucas/phpdotenv",
