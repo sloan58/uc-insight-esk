@@ -53,6 +53,7 @@ class RoutesController extends Controller {
                                 ->pushCriteria(new RoutesByMethodAscending())
                                 ->paginate(20);
         $perms = $this->permission->all()->lists('display_name', 'id');
+
         $perms = $perms->toArray(0);
         array_unshift($perms, '');
 

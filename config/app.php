@@ -168,6 +168,8 @@ return [
         Zizaco\Entrust\EntrustServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
         UxWeb\SweetAlert\SweetAlertServiceProvider::class,
+        Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
+
     ],
 
     /*
@@ -223,6 +225,8 @@ return [
         'Theme'      => YAAP\Theme\Facades\Theme::class,
         'Entrust'    => Zizaco\Entrust\EntrustFacade::class,
         'Alert'      => UxWeb\SweetAlert\SweetAlert::class,
+        'Gravatar'   => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
+
     ],
 
 ];
