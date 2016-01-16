@@ -52,7 +52,7 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'IT\'s';
 
-        $itls = $this->eraser->where('type','itl')->paginate(10);
+        $itls = $this->eraser->where('type','itl')->get();
         return view('eraser.itl.index', compact('itls','page_title','page_description'));
     }
 
@@ -85,7 +85,7 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'CTL\'s';
 
-        $ctls = $this->eraser->where('type','ctl')->paginate(10);
+        $ctls = $this->eraser->where('type','ctl')->get();
         return view('eraser.ctl.index', compact('ctls','page_title','page_description'));
 
     }
