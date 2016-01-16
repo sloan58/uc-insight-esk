@@ -13,7 +13,7 @@
     var termPrompt = $('span#login').text();
     var newLine = $('span#login').clone();
     var captionLength = 0;
-    var caption = ' Welcome to UC Insight.</br>';
+    var caption = 'Welcome to UC Insight.</br>';
 
     $(document).ready(function() {
         setInterval ('cursorAnimation()', 600);
