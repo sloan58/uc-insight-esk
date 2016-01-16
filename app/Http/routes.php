@@ -235,3 +235,9 @@ Route::get('cdrs', [
     'as' => 'cdrs.index',
     'uses' => 'CdrController@index'
 ]);
+
+// Show Phone
+Route::get('phone/{phone}', [
+    'as'   => 'phone.show',
+    'uses' => 'DeviceController@phoneIndex'
+]);

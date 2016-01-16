@@ -58,7 +58,6 @@
                         @endforeach
                         </tbody>
                     </table>
-                    {!! $ctls->render() !!}
                 </div> <!-- table-responsive -->
 
             </div><!-- /.box-body -->
