@@ -18,7 +18,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="skin-blue sidebar-mini">
+<body class="skin-blue sidebar-mini {{isActiveRoute('backslash') ? 'sidebar-collapse' : ''}}">
 
     <!-- Main body content -->
     @include('partials._body_content')

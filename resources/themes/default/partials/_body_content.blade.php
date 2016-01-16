@@ -7,16 +7,16 @@
     @include('partials._body_left_sidebar')
 
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
+    <div class="content-wrapper {{areActiveRoutes(['backslash','home']) ? 'console': ''}}">
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                {{ $page_title or "Page Title" }}
-                <small>{{ $page_description or "Page description" }}</small>
+                {{ $page_title or "" }}
+                <small>{{ $page_description or "" }}</small>
             </h1>
             <ol class="breadcrumb">
-                <li><a href="{{ route('home') }}"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li class="active">Here</li>
+                {{--<li><a href="{{ route('home') }}"><i class="fa fa-dashboard"></i> Home</a></li>--}}
+                {{--<li class="active">Here</li>--}}
             </ol>
         </section>
 

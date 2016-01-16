@@ -100,7 +100,7 @@ class AuthController extends Controller
             {
                 Audit::log(Auth::user()->id, trans('general.audit-log.category-login'), trans('general.audit-log.msg-login-success', ['username' => $user->username]));
 
-                alert()->success("Welcome " . Auth::user()->first_name, 'You\'re Logged In.');
+//                alert()->success("Welcome " . Auth::user()->first_name, 'You\'re Logged In.');
 
                 return redirect()->intended($this->redirectPath());
             }
