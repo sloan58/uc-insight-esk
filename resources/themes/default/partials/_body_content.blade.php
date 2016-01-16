@@ -35,7 +35,7 @@
     </div><!-- /.content-wrapper -->
 
     <!-- Body Footer -->
-    @include('partials._body_footer')
+{{--    @include('partials._body_footer')--}}
 
     <!-- Body right sidebar -->
     @include('partials._body_right_sidebar')
