@@ -89,8 +89,8 @@ class EraseTrustList extends Job implements SelfHandling
                 return;
             }
 
-            $dialer = new PhoneDialer($device['IpAddress']);
-            $status = $dialer->dial($tleObj,$keys);
+            $dialer = new PhoneDialer($tleObj);
+            $status = $dialer->dial($keys);
 
             //Successful if returned true
             $passFail = $status ? 'Success' : 'Fail';

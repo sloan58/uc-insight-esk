@@ -11,34 +11,24 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 
+/**
+ * Class PhoneDialer
+ * @package App\Libraries
+ */
 class PhoneDialer {
 
-    /**
-     * @var Client
-     */
-    private $client;
 
     /**
-     * @var cluster
+     * @param Eraser $tleObj
+     * @throws \App\Exceptions\SoapException
      */
-    private $cluster;
-
-    /**
-     * @var phoneIp
-     */
-    private $phoneIp;
-
-    /**
-     * @param $phoneIP
-     * @throws SoapException
-     */
-    function __construct($phoneIP)
+    function __construct(Eraser $tleObj)
     {
         if(!\Auth::user()->activeCluster()) {
             throw new SoapException("You have no Active Cluster Selected");
         }
 
-        $this->phoneIP = $phoneIP;
+        $this->tleObj = $tleObj;
 
         $this->cluster = \Auth::user()->activeCluster();
 
@@ -58,13 +48,18 @@ class PhoneDialer {
         $this->reader = new Reader;
     }
 
-    public function dial(Eraser $tle,$keys)
+    /**
+     * @param $keys
+     * @return bool
+     * @throws \App\Exceptions\PhoneDialerException
+     */
+    public function dial($keys)
     {
 
         // TODO: Fix timeout issue which returns 503 bad gateway.  Need to fail better.
 
-        $mac = $tle->device()->first()->name;
-        $ip = $tle->ipAddress()->first()->ip_address;
+        $mac = $this->tleObj->device()->first()->name;
+        $ip = $this->tleObj->ipAddress()->first()->ip_address;
 
         foreach ($keys as $k)
         {
@@ -88,22 +83,22 @@ class PhoneDialer {
                 if($e instanceof ClientException)
                 {
                     //Unauthorized
-                    $tle->fail_reason = "Authentication Exception";
-                    $tle->save();
+                    $this->tleObj->fail_reason = "Authentication Exception";
+                    $this->tleObj->save();
                     throw new PhoneDialerException("$mac @ $ip Authentication Exception");
                 }
                 elseif($e instanceof ConnectException)
                 {
                     //Can't Connect
-                    $tle->fail_reason = "Connection Exception";
-                    $tle->save();
+                    $this->tleObj->fail_reason = "Connection Exception";
+                    $this->tleObj->save();
                     throw new PhoneDialerException("$mac @ $ip Connection Exception");
                 }
                 else
                 {
                     //Other exception
-                    $tle->fail_reason = "Unknown Exception";
-                    $tle->save();
+                    $this->tleObj->fail_reason = "Unknown Exception";
+                    $this->tleObj->save();
                     throw new PhoneDialerException("$mac @ $ip $e->getMessage()");
                 }
 
@@ -138,9 +133,9 @@ class PhoneDialer {
                         break;
                 }
 
-                $tle->fail_reason = $errorType;
-                $tle->result = "Fail";
-                $tle->save();
+                $this->tleObj->fail_reason = $errorType;
+                $this->tleObj->result = "Fail";
+                $this->tleObj->save();
                 throw new PhoneDialerException("$mac @ $ip $errorType");
             }
 
