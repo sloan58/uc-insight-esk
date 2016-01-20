@@ -164,6 +164,12 @@ function setKeys($model,$tleType)
                     ];
                     break;
 
+                case "Cisco 8945":
+                    return [
+                        'Init:Settings'
+                    ];
+                    break;
+
                 case "Cisco 8961":
                 case "Cisco 9951":
                 case "Cisco 9971":
