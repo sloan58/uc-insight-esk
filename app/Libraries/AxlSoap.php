@@ -1,5 +1,6 @@
 <?php namespace App\Libraries;
 
+use App\User;
 use SoapFault;
 use SoapClient;
 use App\Cluster;
@@ -15,17 +16,27 @@ class AxlSoap extends SoapClient {
      * @var resource
      */
     private $cluster;
+    /**
+     * @var \App\User
+     */
+    private $user;
 
     /**
      *
      */
-    public function __construct()
+    public function __construct(User $user = null)
     {
-        if(!\Auth::user()->activeCluster()) {
-            throw new SoapException("You have no Active Cluster Selected");
-        }
 
-        $this->cluster = \Auth::user()->activeCluster();
+        if(is_null($user))
+        {
+            if(!\Auth::user()->activeCluster()) {
+                throw new SoapException("You have no Active Cluster Selected");
+            }
+            $this->cluster = \Auth::user()->activeCluster();
+        } else {
+            $this->user = $user;
+            $this->cluster = $this->user->activeCluster();
+        }
 
         parent::__construct(storage_path() . '/app/axl/' . $this->cluster->version . '/AXLAPI.wsdl',
             [

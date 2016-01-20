@@ -68,7 +68,7 @@ class EraserController extends Controller
         $this->dispatch(
             new EraseTrustList([
                 ['mac' => $request->input('name'), 'type' => 'itl']
-            ])
+            ],\Auth::user())
         );
 
         alert()->success('Processed Request.  Check table below for status.');
@@ -101,7 +101,7 @@ class EraserController extends Controller
         $this->dispatch(
             new EraseTrustList([
                 ['mac' => $request->input('name'), 'type' => 'ctl']
-            ])
+            ],\Auth::user())
         );
 
         alert()->success('Processed Request.  Check table below for status.');
@@ -186,7 +186,7 @@ class EraserController extends Controller
         }
 
         $this->dispatch(
-            new EraseTrustList($eraserArray)
+            new EraseTrustList($eraserArray,\Auth::user())
         );
 
         $bulk->result = "Processed";

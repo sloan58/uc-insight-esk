@@ -1,9 +1,10 @@
 <?php namespace App\Libraries;
 
 
-use App\Models\Eraser;
+use App\User;
 use Sabre\Xml\Reader;
 use GuzzleHttp\Client;
+use App\Models\Eraser;
 use App\Exceptions\SoapException;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\PhoneDialerException;
@@ -20,17 +21,23 @@ class PhoneDialer {
 
     /**
      * @param Eraser $tleObj
+     * @param User $user
      * @throws \App\Exceptions\SoapException
      */
-    function __construct(Eraser $tleObj)
+    function __construct(Eraser $tleObj,User $user = null)
     {
-        if(!\Auth::user()->activeCluster()) {
-            throw new SoapException("You have no Active Cluster Selected");
+        if(is_null($user))
+        {
+            if(!\Auth::user()->activeCluster()) {
+                throw new SoapException("You have no Active Cluster Selected");
+            }
+            $this->cluster = \Auth::user()->activeCluster();
+        } else {
+            $this->user = $user;
+            $this->cluster = $this->user->activeCluster();
         }
 
         $this->tleObj = $tleObj;
-
-        $this->cluster = \Auth::user()->activeCluster();
 
         $this->client = new Client([
             'base_uri' => 'http://' . $this->tleObj->ipAddress()->first()->ip_address,

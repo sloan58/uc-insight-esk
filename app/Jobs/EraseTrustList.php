@@ -2,32 +2,42 @@
 
 namespace App\Jobs;
 
-use App\Models\Eraser;
 use App\Libraries\Utils;
-use App\Models\IpAddress;
-use App\Libraries\PhoneDialer;
-use App\Models\Device as Phone;
+use App\User;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
-class EraseTrustList extends Job implements SelfHandling
+class EraseTrustList extends Job implements SelfHandling, ShouldQueue
 {
+
+    use InteractsWithQueue,  DispatchesJobs, SerializesModels;
 
     private $eraserList;
     /**
      * @var Utils
      */
     private $utils;
+    /**
+     * @var \App\User
+     */
+    private $user;
 
     /**
      * Create a new job instance.
      *
      * @param array $eraserList
+     * @param \App\User $user
      * @internal param \App\Libraries\Utils $utils
      */
-    public function __construct(Array $eraserList)
+    public function __construct(Array $eraserList, User $user)
     {
         $this->eraserList = $eraserList;
         $this->utils = new Utils;
+        $this->user = $user;
+
     }
 
     /**
@@ -37,66 +47,11 @@ class EraseTrustList extends Job implements SelfHandling
      */
     public function handle()
     {
-        $formattedEraserList = $this->utils->generateEraserList($this->eraserList);
+        $formattedEraserList = $this->utils->generateEraserList($this->eraserList,$this->user);
 
         foreach($formattedEraserList as $device)
         {
-            //Create the Phone
-            $phone = Phone::firstOrCreate([
-                'name' => $device['DeviceName'],
-                'description' => $device['Description'],
-                'model' => $device['Model']
-            ]);
-
-            // Create the IpAddress
-            $ipAddress = IpAddress::firstOrCreate([
-                'ip_address' => $device['IpAddress']
-            ]);
-
-            // Attach the Phone and IpAddress
-            $phone->ipAddresses()->sync([$ipAddress->id],false);
-
-            //Start creating Eraser
-            $tleObj = Eraser::create([
-                'device_id' => $phone->id,
-                'ip_address_id' => $ipAddress->id,
-                'type' => $device['type']
-            ]);
-
-
-            if(isset($device['bulk_id']))
-            {
-                $tleObj->bulks()->attach($device['bulk_id']);
-            }
-
-            if($device['IpAddress'] == "Unregistered/Unknown")
-            {
-                $tleObj->result = 'Fail';
-                $tleObj->fail_reason = 'Unregistered/Unknown';
-                $tleObj->save();
-                continue;
-            }
-
-            $keys = setKeys($device['Model'],$device['type']);
-
-            if(!$keys)
-            {
-                $tleObj->result = 'Fail';
-                $tleObj->fail_reason = 'Unsupported Model';
-                $tleObj->save();
-                \Log::debug('Bulk', [$tleObj]);
-
-                return;
-            }
-
-            $dialer = new PhoneDialer($tleObj);
-            $status = $dialer->dial($keys);
-
-            //Successful if returned true
-            $passFail = $status ? 'Success' : 'Fail';
-            $tleObj->result = $passFail;
-            $tleObj->save();
-
+            $this->dispatch(new ControlPhone($device,$this->user));
         }
     }
 }
