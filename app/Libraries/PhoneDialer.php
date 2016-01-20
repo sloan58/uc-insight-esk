@@ -33,7 +33,7 @@ class PhoneDialer {
         $this->cluster = \Auth::user()->activeCluster();
 
         $this->client = new Client([
-            'base_uri' => 'http://' . $this->phoneIP,
+            'base_uri' => 'http://' . $this->tleObj->ipAddress()->first()->ip_address,
             'verify' => false,
             'connect_timeout' => 2,
             'headers' => [
