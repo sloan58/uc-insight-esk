@@ -110,6 +110,7 @@ class Utils {
          */
         $devices = array_values($devices);
 
+
         return $devices;
     }
 }
