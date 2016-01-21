@@ -26,6 +26,8 @@ desired effect
 
     <!-- Footer -->
     @include('partials._footer')
+    @include('partials._sweetAlert')
+    @stack('scripts')
 
     <!-- Optional bottom section for modals etc... -->
     @yield('body_bottom')

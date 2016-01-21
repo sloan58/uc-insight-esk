@@ -48,6 +48,9 @@
     </div><!-- /.row -->
     @endsection
 
+    <!--    DataTables  -->
+    @include('partials._dataTables',['column' => '6'])
+
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
     <script>

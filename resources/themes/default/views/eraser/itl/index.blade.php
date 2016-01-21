@@ -17,9 +17,8 @@
                 </div>
             </div>
             <div class="box-body">
-
                 <div class="table-responsive">
-                    <table class="table table-hover" id="table">
+                    <table id="table" class="table">
                         <thead>
                         <tr>
                             <th>{{ trans('eraser/itl/general.columns.name') }}</th>
@@ -105,7 +104,10 @@
     </div>
 </div>
 
-<!-- Optional bottom section for modals etc... -->
+<!--    DataTables  -->
+@include('partials._dataTables',['column' => '5'])
+
+    <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
 <script language="JavaScript">
 

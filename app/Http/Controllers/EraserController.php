@@ -58,7 +58,7 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'IT\'s';
 
-        $phones = $this->device->all();
+        $phones = $this->device->has('erasers')->get();
         foreach($phones as $phone)
         {
             $itls[] = $phone->erasers()->where('type','ITL')->orderBy('updated_at','desc')->first();
@@ -96,7 +96,7 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'CTL\'s';
 
-        $phones = $this->device->all();
+        $phones = $this->device->has('erasers')->get();
         foreach($phones as $phone)
         {
             $ctls[] = $phone->erasers()->where('type','CTL')->orderBy('updated_at','desc')->first();

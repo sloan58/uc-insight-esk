@@ -105,6 +105,9 @@
     </div>
 </div>
 
+<!--    DataTables  -->
+@include('partials._dataTables',['column' => '5'])
+
 <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
 <script language="JavaScript">
