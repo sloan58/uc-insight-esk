@@ -68,48 +68,55 @@ class PhoneDialer {
         $mac = $this->tleObj->device()->first()->name;
         $ip = $this->tleObj->ipAddress()->first()->ip_address;
 
-        foreach ($keys as $k)
+        foreach ($keys as $index => $key)
         {
-            if ( $k == "Key:Sleep")
+            if ( $key == "Key:Sleep")
             {
                 sleep(2);
                 continue;
             }
 
-            $xml = 'XML=<CiscoIPPhoneExecute><ExecuteItem Priority="0" URL="' . $k . '"/></CiscoIPPhoneExecute>';
+            $xml = 'XML=<CiscoIPPhoneExecute><ExecuteItem Priority="0" URL="' . $key . '"/></CiscoIPPhoneExecute>';
 
             try {
 
-//                $response = $this->client->post('http://' . $ip . '/CGI/Execute',['body' => $xml]);
+                $response = $this->client->post('http://' . $ip . '/CGI/Execute',['body' => $xml]);
 
-                //Temp workaround for USC NAT
-                $response = $this->client->post('http://10.134.174.64/CGI/Execute',['body' => $xml]);
+                //Workaround for USC NAT
+                //$response = $this->client->post('http://10.134.174.64/CGI/Execute',['body' => $xml]);
 
             } catch (RequestException $e) {
 
-                if($e instanceof ClientException)
+                if($index == 0)
                 {
-                    //Unauthorized
-                    $this->tleObj->fail_reason = "Authentication Exception";
-                    $this->tleObj->save();
-                    throw new PhoneDialerException("$mac @ $ip Authentication Exception");
-                }
-                elseif($e instanceof ConnectException)
-                {
-                    //Can't Connect
-                    $this->tleObj->fail_reason = "Connection Exception";
-                    $this->tleObj->save();
-                    throw new PhoneDialerException("$mac @ $ip Connection Exception");
-                }
-                else
-                {
-                    //Other exception
-                    $this->tleObj->fail_reason = "Unknown Exception";
-                    $this->tleObj->save();
-                    throw new PhoneDialerException("$mac @ $ip $e->getMessage()");
+                    if($e instanceof ClientException)
+                    {
+                        //Unauthorized
+                        $this->tleObj->fail_reason = "Authentication Exception";
+                        $this->tleObj->save();
+                        throw new PhoneDialerException("$mac @ $ip Authentication Exception");
+                    }
+                    elseif($e instanceof ConnectException)
+                    {
+                        //Can't Connect
+                        $this->tleObj->fail_reason = "Connection Exception";
+                        $this->tleObj->save();
+                        throw new PhoneDialerException("$mac @ $ip Connection Exception");
+                    }
+                    else
+                    {
+                        //Other exception
+                        $this->tleObj->fail_reason = "Unknown Exception";
+                        $this->tleObj->save();
+                        throw new PhoneDialerException("$mac @ $ip " . $e->getMessage());
+                    }
+
+                    return false;
+                } else {
+                    \Log::error('Guzzle error after successful messages have been sent.  We are on message #' . ($index + 1),[$e]);
+                    break;
                 }
 
-                return false;
             }
 
             /*

@@ -176,7 +176,7 @@ function setKeys($model,$tleType)
                         'Key:Sleep',
                         'Key:NavBack',
                         'Key:Sleep',
-                        'Key:Applications',
+                        'Key:Settings',
                         'Key:Sleep',
                         'Key:Sleep',
                         'Key:KeyPad4',
@@ -186,14 +186,6 @@ function setKeys($model,$tleType)
                         'Key:KeyPad3',
                         'Key:Sleep',
                         'Key:Soft3',
-
-
-                        'Key:KeyPad3',
-                        'Key:Sleep',
-                        'Key:KeyPad3',
-                        'Key:Sleep',
-                        'Key:KeyPad3',
-                        'Key:Sleep',
                     ];
                     break;
 

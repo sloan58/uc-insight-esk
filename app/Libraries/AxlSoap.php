@@ -106,7 +106,7 @@ class AxlSoap extends SoapClient {
             ]);
         } catch(SoapFault $e) {
             \Log::error('Axl Error', [$this->__getLastRequest()]);
-            throw new SoapException($e);
+            throw new SoapException($e->getMessage());
         }
     }
 
