@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Alert;
 use Carbon\Carbon;
 use App\Models\Bulk;
 use App\Http\Requests;
+use App\Models\Device;
 use App\Models\Eraser;
 use Keboola\Csv\CsvFile;
 use App\Jobs\EraseTrustList;
@@ -27,19 +27,25 @@ class EraserController extends Controller
      * @var \App\Bulk
      */
     private $bulk;
+    /**
+     * @var Device
+     */
+    private $device;
 
     /**
      * Create a new controller instance.
      *
      * @param \App\Models\Eraser $eraser
      * @param \App\Bulk|\App\Models\Bulk $bulk
+     * @param Device $device
      * @return \App\Http\Controllers\EraserController
      */
-    public function __construct(Eraser $eraser, Bulk $bulk)
+    public function __construct(Eraser $eraser, Bulk $bulk,Device $device)
     {
         $this->middleware('auth');
         $this->eraser = $eraser;
         $this->bulk = $bulk;
+        $this->device = $device;
     }
 
     /**
@@ -52,7 +58,12 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'IT\'s';
 
-        $itls = $this->eraser->where('type','itl')->get();
+        $phones = $this->device->all();
+        foreach($phones as $phone)
+        {
+            $itls[] = $phone->erasers()->where('type','ITL')->orderBy('updated_at','desc')->first();
+        }
+
         return view('eraser.itl.index', compact('itls','page_title','page_description'));
     }
 
@@ -85,7 +96,12 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'CTL\'s';
 
-        $ctls = $this->eraser->where('type','ctl')->get();
+        $phones = $this->device->all();
+        foreach($phones as $phone)
+        {
+            $ctls[] = $phone->erasers()->where('type','CTL')->orderBy('updated_at','desc')->first();
+        }
+
         return view('eraser.ctl.index', compact('ctls','page_title','page_description'));
 
     }
