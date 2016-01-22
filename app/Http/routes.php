@@ -241,3 +241,10 @@ Route::get('phone/{phone}', [
     'as'   => 'phone.show',
     'uses' => 'DeviceController@phoneIndex'
 ]);
+
+// Test Vue-Resource Route
+Route::get('api/v1/itls', function(){
+
+    return App\Models\Device::with(['latestEraser'])->get()->toArray();
+
+});

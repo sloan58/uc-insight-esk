@@ -26,6 +26,15 @@ class Device extends Model
     }
 
     /**
+     * Return the latest Eraser Job
+     * @return mixed
+     */
+    public function latestEraser()
+    {
+        return $this->hasOne('App\Models\Eraser')->latest('updated_at');
+    }
+
+    /**
      * A Device can be known by many IP Addresses
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -34,4 +43,5 @@ class Device extends Model
     {
         return $this->belongsToMany('App\Models\IpAddress');
     }
+
 }

@@ -7,7 +7,10 @@
                 dom: '<"top">Bfrt<"bottom"lip><"clear">',
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
+                ],
+                "language": {
+                    "emptyTable": " "
+                }
             });
         });
 </script>

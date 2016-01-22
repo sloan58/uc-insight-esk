@@ -31,7 +31,7 @@
                                             <i class="{{ $attempt->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
                                         </td>
                                         <td>{{ $attempt->fail_reason}}</td>
-                                        <td>{{ $attempt->created_at->toDayDateTimeString()}}</td>
+                                        <td>{{ $attempt->updated_at->toDayDateTimeString()}}</td>
                                     </tr>
                                 @endforeach
                                 </tbody>

@@ -32,20 +32,20 @@
                                 <tfoot>
                                 </tfoot>
                                 <tbody v-for="itl in itls">
-                                <tr>
-                                    <td>
-                                        <a href="/phone/@{{ itl.id }}">
-                                            <div>
-                                                @{{ itl.name }}
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td>@{{ itl.description }}</td>
-                                    <td>@{{ itl.latest_eraser.ip_address.ip_address }}</td>
-                                    <td>@{{ itl.latest_eraser.result }}</td>
-                                    <td>@{{ itl.latest_eraser.fail_reason ? itl.latest_eraser.fail_reason : 'Passed' }}</td>
-                                    <td>@{{ itl.latest_eraser.updated_at }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="/phone/@{{ itl.id }}">
+                                                <div>
+                                                    @{{ itl.name }}
+                                                </div>
+                                            </a>
+                                        </td>
+                                        <td>@{{ itl.description }}</td>
+                                        <td>@{{ itl.latest_eraser.ip_address.ip_address }}</td>
+                                        <td>@{{ itl.latest_eraser.result }}</td>
+                                        <td>@{{ itl.latest_eraser.fail_reason ? itl.latest_eraser.fail_reason : 'Passed' }}</td>
+                                        <td>@{{ itl.latest_eraser.updated_at }}</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div> <!-- table-responsive -->
@@ -95,37 +95,37 @@
             </div>
         </div>
 
-        <!--    DataTables  -->
-        @include('partials._dataTables',['column' => '5'])
+<!--    DataTables  -->
+@include('partials._dataTables',['column' => '5'])
 
-        <!-- Optional bottom section for modals etc... -->
-        @section('body_bottom')
-            <script language="JavaScript">
+<!-- Optional bottom section for modals etc... -->
+@section('body_bottom')
+        <script language="JavaScript">
 
-                // Modal
-                function erase_itl() {
-                    $("#modal-erase-itl").modal("show");
+            // Modal
+            function erase_itl() {
+                $("#modal-erase-itl").modal("show");
+            }
+
+        </script>
+        <script>
+            new Vue({
+
+                el: '#vue-table',
+
+                data: {
+                    itls: []
+                },
+
+                ready: function() {
+
+                    this.$http.get('api/v1/itls', function(itls) {
+                        this. itls = itls;
+                        console.log(this.itls);
+                    }.bind(this));
+
                 }
 
-            </script>
-            <script>
-                new Vue({
-
-                    el: '#vue-table',
-
-                    data: {
-                        itls: []
-                    },
-
-                    ready: function() {
-
-                        this.$http.get('api/v1/itls', function(itls) {
-                            this. itls = itls;
-                            console.log(this.itls);
-                        }.bind(this));
-
-                    }
-
-                })
-            </script>
+            })
+        </script>
 @endsection
