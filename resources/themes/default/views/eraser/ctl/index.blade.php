@@ -5,7 +5,7 @@
         <!-- Box -->
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('eraser/ctl/general.page.index.table-title') }}</h3>
+                <h3 class="box-tctle">{{ trans('eraser/ctl/general.page.index.table-title') }}</h3>
                 &nbsp;
                 <div class="box-tools pull-right">
                     <div class="col-md-6 text-right">
@@ -18,7 +18,7 @@
             </div>
             <div class="box-body">
 
-                <div class="table-responsive">
+                <div class="table-responsive" id="vue-table">
                     <table class="table table-hover" id="table">
                         <thead>
                         <tr>
@@ -32,30 +32,21 @@
                         </thead>
                         <tfoot>
                         </tfoot>
-                        <tbody>
-                        @foreach ($ctls as $ctl)
-                            @if(!$ctl->fail_reason)
-                                {{$ctl->fail_reason == 'Passed'}}
-                            @endif
+                        <tbody v-for="ctl in ctls">
                         <tr>
                             <td>
-                                <a href="/phone/{{$ctl->device->id}}">
+                                <a href="/phone/@{{ ctl.id }}">
                                     <div>
-                                        {{ $ctl->device->name }}
+                                        @{{ ctl.name }}
                                     </div>
                                 </a>
                             </td>
-                            <td>{{ $ctl->device->description}}</td>
-                            <td>{{ $ctl->ipAddress->ip_address}}</td>
-                            <td >
-                                <i class="{{ $ctl->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
-                            </td>
-                            <td>{{ $ctl->fail_reason}}</td>
-                            <td>
-                                {{ $ctl->updated_at->toDayDateTimeString() }}
-                            </td>
+                            <td>@{{ ctl.description }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.ip_address.ip_address }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.result }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.fail_reason ? ctl.latest_ctl_eraser.fail_reason : 'Passed' }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.updated_at }}</td>
                         </tr>
-                        @endforeach
                         </tbody>
                     </table>
                 </div> <!-- table-responsive -->
@@ -80,7 +71,7 @@
                     <button type="button" class="close" data-dismiss="modal">
                         ×
                     </button>
-                    <h4 class="modal-title">Erase CTL File</h4>
+                    <h4 class="modal-tctle">Erase CTL File</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -117,5 +108,27 @@
         $("#modal-erase-ctl").modal("show");
     }
 
+</script>
+<script>
+    Vue.config.debug = true;
+
+    new Vue({
+
+        el: '#vue-table',
+
+        data: {
+            ctls: []
+        },
+
+        ready: function() {
+
+            this.$http.get('api/v1/ctls', function(ctls) {
+                this. ctls = ctls;
+                console.log(this.ctls);
+            }.bind(this));
+
+        }
+
+    })
 </script>
 @endsection

@@ -239,13 +239,21 @@ Route::group(['middleware' => 'authorize'], function () {
             'as'   => 'phone.show',
             'uses' => 'DeviceController@phoneIndex'
         ]);
+
+        // Vue.js API Routes
+        Route::group(['prefix' => 'api/v1'], function(){
+
+            // Eraser API Routes
+            Route::get('itls', function () {
+                return App\Models\Device::with(['latestItlEraser'])->get()->toArray();
+
+            });
+            Route::get('ctls', function () {
+                return App\Models\Device::with(['latestCtlEraser'])->get()->toArray();
+
+            });
+        });
 }); // end of AUTHORIZE group
 
 
 
-// Test Vue-Resource Route
-Route::get('api/v1/itls', function(){
-
-    return App\Models\Device::with(['latestEraser'])->get()->toArray();
-
-});

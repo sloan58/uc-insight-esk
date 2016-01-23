@@ -26,12 +26,21 @@ class Device extends Model
     }
 
     /**
-     * Return the latest Eraser Job
+     * Return the latest ITL Eraser Job
      * @return mixed
      */
-    public function latestEraser()
+    public function latestItlEraser()
     {
-        return $this->hasOne('App\Models\Eraser')->latest('updated_at');
+        return $this->hasOne('App\Models\Eraser')->where('type','itl')->latest('updated_at');
+    }
+
+    /**
+     * Return the latest CTL Eraser Job
+     * @return mixed
+     */
+    public function latestCtlEraser()
+    {
+        return $this->hasOne('App\Models\Eraser')->where('type','ctl')->latest('updated_at');
     }
 
     /**
