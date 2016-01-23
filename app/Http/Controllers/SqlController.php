@@ -19,7 +19,6 @@ class SqlController extends Controller
      */
     public function __construct(Sql $sql)
     {
-        $this->middleware('auth');
         $this->sql = $sql;
     }
 

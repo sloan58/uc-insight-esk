@@ -20,7 +20,6 @@ class CdrController extends Controller
      */
     public function __construct(Cdr $cdr)
     {
-        $this->middleware('auth');
         $this->cdr = $cdr;
     }
 

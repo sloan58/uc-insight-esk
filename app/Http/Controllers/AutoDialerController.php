@@ -12,14 +12,6 @@ use App\Http\Controllers\Controller;
 class AutoDialerController extends Controller
 {
     /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * @return \Illuminate\View\View
      */
     public function index()

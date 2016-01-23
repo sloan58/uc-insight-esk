@@ -27,7 +27,6 @@ class ClusterController extends Controller
      */
     public function __construct(Cluster $cluster)
     {
-        $this->middleware('auth');
         $this->cluster = $cluster;
     }
 

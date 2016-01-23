@@ -42,7 +42,6 @@ class EraserController extends Controller
      */
     public function __construct(Eraser $eraser, Bulk $bulk,Device $device)
     {
-        $this->middleware('auth');
         $this->eraser = $eraser;
         $this->bulk = $bulk;
         $this->device = $device;
