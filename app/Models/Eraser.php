@@ -15,7 +15,7 @@ class Eraser extends Model
      */
     protected $fillable = ['device_id', 'ip_address_id', 'type', 'result', 'fail_reason'];
 
-    protected $with = ['ipAddress'];
+    protected $with = ['device','ipAddress'];
 
     /**
      * An Eraser belongs to a Device

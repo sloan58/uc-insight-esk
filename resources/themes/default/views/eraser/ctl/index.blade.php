@@ -122,7 +122,7 @@
 
         ready: function() {
 
-            this.$http.get('api/v1/ctls', function(ctls) {
+            this.$http.get('/api/v1/eraser/ctls', function(ctls) {
                 this. ctls = ctls;
                 console.log(this.ctls);
             }.bind(this));

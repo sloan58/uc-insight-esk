@@ -110,22 +110,16 @@
 </script>
 <script>
     new Vue({
-
         el: '#vue-table',
-
         data: {
             itls: []
         },
-
         ready: function() {
-
-            this.$http.get('api/v1/itls', function(itls) {
+            this.$http.get('/api/v1/eraser/itls', function(itls) {
                 this. itls = itls;
                 console.log(this.itls);
             }.bind(this));
-
         }
-
     })
 </script>
 @endsection

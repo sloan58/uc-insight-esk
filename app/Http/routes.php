@@ -244,14 +244,24 @@ Route::group(['middleware' => 'authorize'], function () {
         Route::group(['prefix' => 'api/v1'], function(){
 
             // Eraser API Routes
-            Route::get('itls', function () {
-                return App\Models\Device::with(['latestItlEraser'])->get()->toArray();
+            Route::group(['prefix' => 'eraser'], function() {
 
-            });
-            Route::get('ctls', function () {
-                return App\Models\Device::with(['latestCtlEraser'])->get()->toArray();
+                Route::get('itls', function () {
+                    return App\Models\Device::with(['latestItlEraser'])->get()->toArray();
 
+                });
+                Route::get('ctls', function () {
+                    return App\Models\Device::with(['latestCtlEraser'])->get()->toArray();
+
+                });
+                Route::get('bulk', function () {
+                    return App\Models\Bulk::all()->toArray();
+                });
+                Route::get('bulk/{bulk}', function ($bulk) {
+                    return App\Models\Bulk::find($bulk->id)->toArray();
+                });
             });
+
         });
 }); // end of AUTHORIZE group
 

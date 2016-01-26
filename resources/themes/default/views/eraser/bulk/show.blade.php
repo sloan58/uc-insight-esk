@@ -10,8 +10,8 @@
                 &nbsp;
                 <div class="box-body">
 
-                    <div class="table-responsive">
-                        <table id="bulk-table" class="table table-striped row-border">
+                    <div class="table-responsive" id="vue-table">
+                        <table id="table" class="table table-striped row-border">
                             <thead>
                             <tr>
                                 <th>Phone Name</th>
@@ -22,19 +22,17 @@
                                 <th>Sent On</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            @foreach ($bulk->erasers as $eraser)
+                            <tbody v-for="eraser in bulks.erasers">
                             <tr>
-                                <td>{{ $eraser->device->name }}</td>
-                                <td>{{ $eraser->ipAddress->ip_address }}</td>
-                                <td>{{ $eraser->type }}</td>
+                                <td>@{{ eraser.device.name }}</td>
+                                <td>@{{ eraser.ip_address.ip_address }}</td>
+                                <td>@{{ eraser.type }}</td>
                                 <td >
-                                    <i class="{{ $eraser->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
+                                    <i class="@{{ eraser.result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
                                 </td>
-                                <td>{{ $eraser->fail_reason}}</td>
-                                <td>{{ $eraser->created_at->toDayDateTimeString()}}</td>
+                                <td>@{{ eraser.fail_reason}}</td>
+                                <td>@{{ eraser.created_at}}</td>
                             </tr>
-                            @endforeach
                             </tbody>
                         </table>
                         </table>
@@ -47,23 +45,23 @@
     </div><!-- /.row -->
     @endsection
 
+    <!--    DataTables  -->
+    @include('partials._dataTables',['column' => '4'])
+
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
-    <script language="JavaScript">
-        $(function() {
-            $("#bulks-table").DataTable({
-                order: [[4, "desc"]],
-                "aoColumnDefs": [
-                    {
-                        "aTargets": [ 0 ], // Column to target
-                        "mRender": function ( data, type, full ) {
-                            // 'full' is the row's data object, and 'data' is this column's data
-                            // e.g. 'full is the row object, and 'data' is the phone mac
-                            return '<a href="/bulk/' + full[1] + '">' + data + '</a>';
-                        }
-                    }
-                ]
-            });
-        });
+    <script>
+        new Vue({
+            el: '#vue-table',
+            data: {
+                bulks: []
+            },
+            ready: function() {
+                this.$http.get('/api/v1/eraser/bulk/{{$bulk->id}}', function(bulks) {
+                    this. bulks = bulks;
+                    console.log(this.bulks);
+                }.bind(this));
+            }
+        })
     </script>
     @endsection

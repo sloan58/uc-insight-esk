@@ -16,10 +16,10 @@
                         </a>
                     </div>
                 </div>
-                <div class="box-body">
+                <div class="box-body" id="vue-table">
 
                     <div class="table-responsive">
-                        <table id="bulks-table" class="table table-striped row-border">
+                        <table id="table" class="table table-striped row-border">
                             <thead>
                             <tr>
                                 <th>Filename</th>
@@ -29,16 +29,18 @@
                                 <th>Submitted</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            @foreach ($bulks as $bulk)
+                            <tbody v-for="bulk in bulks">
                             <tr>
-                                <td>{{ $bulk->file_name }}</td>
-                                <td>{{ $bulk->process_id }}</td>
-                                <td>{{ $bulk->erasers()->count() }}</td>
-                                <td>{{ $bulk->result }}</td>
-                                <td>{{ $bulk->created_at->toDayDateTimeString() }}</td>
+                                <td>
+                                    <a href="/bulk/@{{ bulk.id }}">
+                                        <div>@{{ bulk.file_name }}</div>
+                                    </a>
+                                </td>
+                                <td>@{{ bulk.process_id }}</td>
+                                <td>@{{ bulk.erasers.length }}</td>
+                                <td>@{{ bulk.result }}</td>
+                                <td>@{{ bulk.created_at }}</td>
                             </tr>
-                            @endforeach
                             </tbody>
                         </table>
                     </div> <!-- table-responsive -->
@@ -50,23 +52,24 @@
     </div><!-- /.row -->
     @endsection
 
+    <!--    DataTables  -->
+    @include('partials._dataTables',['column' => '4'])
+
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
-    <script language="JavaScript">
-        $(function() {
-            $("#bulks-table").DataTable({
-                order: [[4, "desc"]],
-                "aoColumnDefs": [
-                    {
-                        "aTargets": [ 0 ], // Column to target
-                        "mRender": function ( data, type, full ) {
-                            // 'full' is the row's data object, and 'data' is this column's data
-                            // e.g. 'full is the row object, and 'data' is the phone mac
-                            return '<a href="/bulk/' + full[1] + '">' + data + '</a>';
-                        }
-                    }
-                ]
-            });
-        });
+
+    <script>
+        new Vue({
+            el: '#vue-table',
+            data: {
+                bulks: []
+            },
+            ready: function() {
+                this.$http.get('/api/v1/eraser/bulk', function(bulks) {
+                    this. bulks = bulks;
+                    console.log(this.bulks);
+                }.bind(this));
+            }
+        })
     </script>
     @endsection

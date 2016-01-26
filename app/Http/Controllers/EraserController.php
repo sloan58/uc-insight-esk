@@ -123,12 +123,10 @@ class EraserController extends Controller
      */
     public function bulkIndex()
     {
-        $bulks = $this->bulk->paginate(10);
-
         $page_title = 'Bulk';
         $page_description = 'Eraser';
 
-        return view('eraser.bulk.index', compact('bulks','page_title','page_description'));
+        return view('eraser.bulk.index', compact('page_title','page_description'));
     }
 
     /**
@@ -205,9 +203,9 @@ class EraserController extends Controller
 
         $file->move(storage_path() . '/uploaded_files/',$fileName);
 
-        alert()->success("File loaded successfully!  Check the Bulk Process table for progress on $bulk->process_id.");
+        alert()->success("File loaded successfully!  Check the Bulk Process results below for status.");
 
-        return redirect()->action('EraserController@bulkIndex');
+        return redirect()->action('EraserController@bulkShow', [$bulk->process_id]);
 
     }
 }

@@ -14,6 +14,7 @@ class Bulk extends Model
      * @var array
      */
     protected $fillable = ['file_name'];
+    protected $with = ['erasers'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
