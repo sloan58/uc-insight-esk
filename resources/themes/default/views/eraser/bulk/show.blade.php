@@ -46,7 +46,7 @@
     @endsection
 
     <!--    DataTables  -->
-    @include('partials._dataTables',['column' => '4'])
+    @include('partials._dataTables',['column' => '5'])
 
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
