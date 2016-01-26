@@ -3,7 +3,7 @@
         // DataTable
         $(function() {
             $("#table").DataTable({
-                order: [['{{ $column }}', "dec"]],
+                order: [['{{ $column }}', "asc"]],
                 dom: '<"top">Bfrt<"bottom"lip><"clear">',
                 buttons: [
                     'copy', 'csv', 'excel', 'pdf', 'print'
