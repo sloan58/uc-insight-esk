@@ -61,6 +61,10 @@
     </div><!-- /.row -->
 @endsection
 
+
+    <!--    DataTables  -->
+    @include('partials._dataTables',['column' => '0'])
+
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
     <script>
