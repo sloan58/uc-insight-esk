@@ -205,7 +205,7 @@ class EraserController extends Controller
 
         alert()->success("File loaded successfully!  Check the Bulk Process results below for status.");
 
-        return redirect()->action('EraserController@bulkShow', [$bulk->process_id]);
+        return redirect()->action('EraserController@bulkShow', [$bulk->id]);
 
     }
 }

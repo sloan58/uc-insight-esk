@@ -255,7 +255,7 @@ Route::group(['middleware' => 'authorize'], function () {
 
                 });
                 Route::get('bulk', function () {
-                    return App\Models\Bulk::all()->toArray();
+                    return App\Models\Bulk::orderBy('updated_at','desc')->get()->toArray();
                 });
                 Route::get('bulk/{bulk}', function ($bulk) {
                     return App\Models\Bulk::find($bulk->id)->toArray();
