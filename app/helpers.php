@@ -133,12 +133,14 @@ function setKeys($model,$tleType)
                         'Key:KeyPad5',
                         'Key:KeyPad2',
                         'Key:Soft4',
+                        'Key:Soft2',
                         'Key:Sleep',
                         'Key:KeyPadStar',
                         'Key:KeyPadStar',
                         'Key:KeyPadPound',
                         'Key:Sleep',
                         'Key:Soft4',
+                        'Key:Soft2',
                         'Init:Services'
                     ];
                     break;
@@ -159,6 +161,31 @@ function setKeys($model,$tleType)
                         'Key:Sleep',
                         'Key:Soft5',
                         'Init:Services'
+                    ];
+                    break;
+
+                case "Cisco 8945":
+                    return [
+                        'Key:NavBack',
+                        'Key:Sleep',
+                        'Key:NavBack',
+                        'Key:Sleep',
+                        'Key:NavBack',
+                        'Key:Sleep',
+                        'Key:NavBack',
+                        'Key:Sleep',
+                        'Key:NavBack',
+                        'Key:Sleep',
+                        'Key:Settings',
+                        'Key:Sleep',
+                        'Key:Sleep',
+                        'Key:KeyPad4',
+                        'Key:Sleep',
+                        'Key:KeyPad4',
+                        'Key:Sleep',
+                        'Key:KeyPad3',
+                        'Key:Sleep',
+                        'Key:Soft3',
                     ];
                     break;
 

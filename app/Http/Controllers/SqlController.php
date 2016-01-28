@@ -6,7 +6,6 @@ use App\Models\Sql;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
 
 class SqlController extends Controller
 {
@@ -20,7 +19,6 @@ class SqlController extends Controller
      */
     public function __construct(Sql $sql)
     {
-        $this->middleware('auth');
         $this->sql = $sql;
     }
 
@@ -45,6 +43,7 @@ class SqlController extends Controller
      */
     public function store(Request $request)
     {
+
         $sql = $request->input('sqlStatement');
 
         $data = $this->sql->executeQuery($sql);
@@ -61,9 +60,11 @@ class SqlController extends Controller
         return view('sql.index',compact('data','format','sql','page_title', 'page_description'));
     }
 
-    public function show(Request $request)
+    public function show($sql)
     {
-        $sql = $this->sql->find($request->sql)->lists('sql')->first();
+
+        $sql = $this->sql->find($sql);
+        $sql = $sql->sql;
 
         $data = $this->sql->executeQuery($sql);
         $format = $this->sql->getHeaders($data);

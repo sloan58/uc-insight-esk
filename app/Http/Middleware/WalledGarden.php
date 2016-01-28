@@ -52,6 +52,7 @@ class WalledGarden
             '_debugbar/open',
             '_debugbar/assets/stylesheets',
             '_debugbar/assets/javascript',
+            'api/v1/',
         ];
         $exemptionsRegEx = [
             '/password\/reset\/.*/',

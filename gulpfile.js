@@ -21,6 +21,9 @@ elixir(function(mix) {
     mix.copy(
         bowerLoc + 'CodeMirror/lib/codemirror.css',
         resourceLoc + 'css/codemirror.css'
+    ).copy(
+        bowerLoc + 'sweetalert/dist/sweetalert.css',
+        resourceLoc + 'css/sweetalert.css'
     );
 
     // Copy JS Dependencies
@@ -42,6 +45,9 @@ elixir(function(mix) {
     ).copy(
         bowerLoc + 'CodeMirror/mode/sql/sql.js',
         resourceLoc + 'js/codemirror-sql.js'
+    ).copy(
+        bowerLoc + 'sweetalert/dist/sweetalert.min.js',
+        resourceLoc + 'js/sweetalert.min.js'
     );
 
     // Compile our SASS file to CSS.
@@ -51,6 +57,7 @@ elixir(function(mix) {
     mix.styles([
         //'vendor.css',
         'codemirror.css',
+        'sweetalert.css',
         'app.css',
     ], null, 'public/css');
 
@@ -65,6 +72,7 @@ elixir(function(mix) {
         'codemirror-sql.js',
         'close-modal.js',
         'dataTables.js',
+        'sweetalert.min.js',
         'app.js',
     ], null, 'public/js');
 

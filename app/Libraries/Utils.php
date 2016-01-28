@@ -1,23 +1,33 @@
 <?php namespace App\Libraries;
 
 
+/**
+ * Class Utils
+ * @package App\Libraries
+ */
+/**
+ * Class Utils
+ * @package App\Libraries
+ */
 class Utils {
+
 
     /**
      * @param $deviceList
+     * @param string $ucInsightUser
      * @return mixed
      */
-    public function generateEraserList($deviceList)
+    public function generateEraserList($deviceList, $ucInsightUser = '')
     {
         $macList = array_column($deviceList, 'mac');
 
-        $axl = new AxlSoap();
+        $axl = new AxlSoap($ucInsightUser);
         $user = $axl->getAxlUser();
         $devices = $this->createDeviceArray($user,$macList);
         $res = $axl->updateAxlUser($devices);
 
         // Get Device IP's
-        $sxml = new RisSoap();
+        $sxml = new RisSoap($ucInsightUser);
         $risArray = $sxml->createRisPhoneArray($macList);
         $risResults = $sxml->getDeviceIP($risArray);
         $risPortResults = $sxml->processRisResults($risResults,$risArray);
@@ -105,6 +115,7 @@ class Utils {
          * (Can't remember why I had to do this...)
          */
         $devices = array_values($devices);
+
 
         return $devices;
     }

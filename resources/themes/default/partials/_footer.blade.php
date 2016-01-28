@@ -19,7 +19,12 @@
 <script src="{{ asset ("/js/buttons.html5.js") }}" type="text/javascript"></script>
 <script src="{{ asset ("/js/buttons.jqueryui.js") }}" type="text/javascript"></script>
 <script src="{{ asset ("/js/buttons.print.js") }}" type="text/javascript"></script>
+<script src="{{ asset ("/js/sweetalert.min.js") }}" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.15/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-resource/0.6.1/vue-resource.js"></script>
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
       Both of these plugins are recommended to enhance the
       user experience. Slimscroll is required when using the
       fixed layout. -->
+
+

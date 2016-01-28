@@ -18,7 +18,7 @@ desired effect
 |               | sidebar-mini                            |
 |---------------------------------------------------------|
 -->
-<body class="skin-blue sidebar-mini">
+<body class="skin-blue sidebar-mini {{isActiveRoute('backslash') ? 'sidebar-collapse' : ''}}">
 
     <!-- Main body content -->
     @include('partials._body_content')
@@ -26,6 +26,8 @@ desired effect
 
     <!-- Footer -->
     @include('partials._footer')
+    @include('partials._sweetAlert')
+    @stack('scripts')
 
     <!-- Optional bottom section for modals etc... -->
     @yield('body_bottom')

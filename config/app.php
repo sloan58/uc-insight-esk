@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/New_York',
 
     /*
     |--------------------------------------------------------------------------
@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'log' => 'single',
+    'log' => 'daily',
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +167,9 @@ return [
         YAAP\Theme\ThemeServiceProvider::class,
         Zizaco\Entrust\EntrustServiceProvider::class,
         Yajra\Datatables\DatatablesServiceProvider::class,
+        UxWeb\SweetAlert\SweetAlertServiceProvider::class,
+        Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
+
     ],
 
     /*
@@ -221,6 +224,9 @@ return [
         'Flash'      => Laracasts\Flash\Flash::class,
         'Theme'      => YAAP\Theme\Facades\Theme::class,
         'Entrust'    => Zizaco\Entrust\EntrustFacade::class,
+        'Alert'      => UxWeb\SweetAlert\SweetAlert::class,
+        'Gravatar'   => Thomaswelton\LaravelGravatar\Facades\Gravatar::class,
+
     ],
 
 ];

@@ -2,18 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Bulk;
-use App\Models\Eraser;
 use Carbon\Carbon;
+use App\Models\Bulk;
 use App\Http\Requests;
+use App\Models\Device;
+use App\Models\Eraser;
 use Keboola\Csv\CsvFile;
-use Laracasts\Flash\Flash;
 use App\Jobs\EraseTrustList;
 use Illuminate\Http\Request;
 use App\Http\Requests\SubmitEraserRequest;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Input;
+use App\Http\Requests\ProcessBulkEraserRequest;
 
 /**
  * Class EraserController
@@ -25,17 +23,28 @@ class EraserController extends Controller
      * @var \App\Models\Eraser
      */
     private $eraser;
+    /**
+     * @var \App\Bulk
+     */
+    private $bulk;
+    /**
+     * @var Device
+     */
+    private $device;
 
     /**
      * Create a new controller instance.
      *
      * @param \App\Models\Eraser $eraser
+     * @param \App\Bulk|\App\Models\Bulk $bulk
+     * @param Device $device
      * @return \App\Http\Controllers\EraserController
      */
-    public function __construct(Eraser $eraser)
+    public function __construct(Eraser $eraser, Bulk $bulk,Device $device)
     {
-        $this->middleware('auth');
         $this->eraser = $eraser;
+        $this->bulk = $bulk;
+        $this->device = $device;
     }
 
     /**
@@ -47,9 +56,7 @@ class EraserController extends Controller
     {
         $page_title = 'Eraser';
         $page_description = 'IT\'s';
-
-        $itls = $this->eraser->where('type','itl')->paginate(10);
-        return view('eraser.itl.index', compact('itls','page_title','page_description'));
+        return view('eraser.itl.index', compact('page_title','page_description'));
     }
 
     /**
@@ -64,10 +71,10 @@ class EraserController extends Controller
         $this->dispatch(
             new EraseTrustList([
                 ['mac' => $request->input('name'), 'type' => 'itl']
-            ])
+            ],\Auth::user())
         );
 
-        Flash::success('Processed Request.  Check table below for status.');
+        alert()->success('Processed Request.  Check table below for status.');
         return redirect('itl');
     }
 
@@ -81,7 +88,12 @@ class EraserController extends Controller
         $page_title = 'Eraser';
         $page_description = 'CTL\'s';
 
-        $ctls = $this->eraser->where('type','ctl')->paginate(10);
+        $phones = $this->device->has('erasers')->get();
+        foreach($phones as $phone)
+        {
+            $ctls[] = $phone->erasers()->where('type','CTL')->orderBy('updated_at','desc')->first();
+        }
+
         return view('eraser.ctl.index', compact('ctls','page_title','page_description'));
 
     }
@@ -97,10 +109,10 @@ class EraserController extends Controller
         $this->dispatch(
             new EraseTrustList([
                 ['mac' => $request->input('name'), 'type' => 'ctl']
-            ])
+            ],\Auth::user())
         );
 
-        Flash::success('Processed Request.  Check table below for status.');
+        alert()->success('Processed Request.  Check table below for status.');
         return redirect('ctl');
     }
 
@@ -111,19 +123,23 @@ class EraserController extends Controller
      */
     public function bulkIndex()
     {
-        $bulks = Bulk::all();
+        $page_title = 'Bulk';
+        $page_description = 'Eraser';
 
-        return view('eraser.bulk.index', compact('bulks'));
+        return view('eraser.bulk.index', compact('page_title','page_description'));
     }
 
     /**
-     * @param \App\Bulk $bulk
+     * @param \App\Bulk|\App\Models\Bulk $bulk
      * @internal param $Bulk
      * @return Response
      */
     public function bulkShow(Bulk $bulk)
     {
-        return view('eraser.bulk.show', compact('bulk'));
+        $page_title = 'Bulk';
+        $page_description = 'Details';
+
+        return view('eraser.bulk.show', compact('bulk','page_title','page_description'));
     }
 
     /**
@@ -134,19 +150,19 @@ class EraserController extends Controller
         return view('eraser.bulk.create');
     }
 
+
     /**
-     * @param \Illuminate\Http\Request $request
-     * @internal param $Request
-     * @return Response
+     * @param ProcessBulkEraserRequest $request
+     * @return \BladeView|bool|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function bulkStore(Request $request)
+    public function bulkStore(ProcessBulkEraserRequest $request)
     {
 
         $file = $request->file('file');
         $fileName = $request->input('file_name');
         $fileName = $fileName ?: $file->getClientOriginalName();
 
-        $bulk = Bulk::create([
+        $bulk = $this->bulk->create([
             'file_name' => $fileName
         ]);
 
@@ -157,7 +173,7 @@ class EraserController extends Controller
             $bulk->file_extension = $file->getClientOriginalExtension();
             $bulk->save();
 
-            Flash::error('File type invalid.  Please use a CSV file format.');
+            alert()->error('File type invalid.  Please use a CSV file format.')->persistent('Close');
             return redirect()->back();
         }
 
@@ -176,7 +192,7 @@ class EraserController extends Controller
         }
 
         $this->dispatch(
-            new EraseTrustList($eraserArray)
+            new EraseTrustList($eraserArray,\Auth::user())
         );
 
         $bulk->result = "Processed";
@@ -187,10 +203,9 @@ class EraserController extends Controller
 
         $file->move(storage_path() . '/uploaded_files/',$fileName);
 
-        Flash::success("File loaded successfully!  Check the Bulk Process table for progress on $bulk->process_id.");
+        alert()->success("File loaded successfully!  Check the Bulk Process results below for status.");
 
-        $bulks = Bulk::all();
-        return view('eraser.bulk.index', compact('bulks'));
+        return redirect()->action('EraserController@bulkShow', [$bulk->id]);
 
     }
 }

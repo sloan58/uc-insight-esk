@@ -12,14 +12,6 @@ use App\Http\Controllers\Controller;
 class AutoDialerController extends Controller
 {
     /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * @return \Illuminate\View\View
      */
     public function index()
@@ -40,7 +32,7 @@ class AutoDialerController extends Controller
 
         $this->dispatch(new ProcessTwilioCall([[$number,$say,$type]]));
 
-        Flash::success('Phone Call Submitted!  Check the call logs for status.');
+        alert()->success('Phone Call Submitted!  Check the call logs for status.');
 
         return redirect()->action('AutoDialerController@index');
 
@@ -89,7 +81,7 @@ class AutoDialerController extends Controller
         }
         $this->dispatch(new ProcessTwilioCall($csv));
 
-        Flash::success('Phone Call Submitted!  Check the call logs for status.');
+        alert()->success('Phone Call Submitted!  Check the call logs for status.');
 
         return redirect()->action('AutoDialerController@index');
     }

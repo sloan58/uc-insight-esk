@@ -5,7 +5,7 @@
         <!-- Box -->
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">{{ trans('eraser/ctl/general.page.index.table-title') }}</h3>
+                <h3 class="box-tctle">{{ trans('eraser/ctl/general.page.index.table-title') }}</h3>
                 &nbsp;
                 <div class="box-tools pull-right">
                     <div class="col-md-6 text-right">
@@ -18,8 +18,8 @@
             </div>
             <div class="box-body">
 
-                <div class="table-responsive">
-                    <table class="table table-hover" id="ctls-table">
+                <div class="table-responsive" id="vue-table">
+                    <table class="table table-hover" id="table">
                         <thead>
                         <tr>
                             <th>{{ trans('eraser/ctl/general.columns.name') }}</th>
@@ -32,27 +32,23 @@
                         </thead>
                         <tfoot>
                         </tfoot>
-                        <tbody>
-                        @foreach ($ctls as $ctl)
-                            @if(!$ctl->fail_reason)
-                                {{$ctl->fail_reason == 'Passed'}}
-                            @endif
+                        <tbody v-for="ctl in ctls">
                         <tr>
-                            <td>{{ $ctl->device->name }}</td>
-                            <td>{{ $ctl->device->description}}</td>
-                            <td>{{ $ctl->ipAddress->ip_address}}</td>
-                            <td >
-                                <i class="{{ $ctl->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
-                            </td>
-                            <td>{{ $ctl->fail_reason}}</td>
                             <td>
-                                {{ $ctl->updated_at->toDayDateTimeString() }}
+                                <a href="/phone/@{{ ctl.id }}">
+                                    <div>
+                                        @{{ ctl.name }}
+                                    </div>
+                                </a>
                             </td>
+                            <td>@{{ ctl.description }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.ip_address.ip_address }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.result }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.fail_reason ? ctl.latest_ctl_eraser.fail_reason : 'Passed' }}</td>
+                            <td>@{{ ctl.latest_ctl_eraser.updated_at }}</td>
                         </tr>
-                        @endforeach
                         </tbody>
                     </table>
-                    {!! $ctls->render() !!}
                 </div> <!-- table-responsive -->
 
             </div><!-- /.box-body -->
@@ -75,7 +71,7 @@
                     <button type="button" class="close" data-dismiss="modal">
                         ×
                     </button>
-                    <h4 class="modal-title">Erase CTL File</h4>
+                    <h4 class="modal-tctle">Erase CTL File</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
@@ -100,28 +96,39 @@
     </div>
 </div>
 
+<!--    DataTables  -->
+@include('partials._dataTables',['column' => '5'])
+
 <!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
 <script language="JavaScript">
+
+    // Modal
     function erase_ctl() {
         $("#modal-erase-ctl").modal("show");
     }
 
-    // DataTable
-    $(function() {
-        $("#ctls-table").DataTable({
-            order: [[5, "desc"]],
-            "aoColumnDefs": [
-                {
-                    "aTargets": [ 0 ], // Column to target
-                    "mRender": function ( data, type, full ) {
-                        // 'full' is the row's data object, and 'data' is this column's data
-                        // e.g. 'full is the row object, and 'data' is the phone mac
-                        return '<a href="/phone/' + full[0] + '">' + data + '</a>';
-                    }
-                }
-            ]
-        });
-    });
+</script>
+<script>
+    Vue.config.debug = true;
+
+    new Vue({
+
+        el: '#vue-table',
+
+        data: {
+            ctls: []
+        },
+
+        ready: function() {
+
+            this.$http.get('/api/v1/eraser/ctls', function(ctls) {
+                this. ctls = ctls;
+                console.log(this.ctls);
+            }.bind(this));
+
+        }
+
+    })
 </script>
 @endsection

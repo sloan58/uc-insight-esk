@@ -2,13 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use DB;
 use App\User;
-use Datatables;
-use App\Models\Role;
 use App\Models\Cluster;
 use App\Http\Requests;
-use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\UpdateClusterRequest;
@@ -31,7 +27,6 @@ class ClusterController extends Controller
      */
     public function __construct(Cluster $cluster)
     {
-        $this->middleware('auth');
         $this->cluster = $cluster;
     }
 
@@ -112,7 +107,7 @@ class ClusterController extends Controller
 
         $cluster->save();
 
-        Flash::success('Cluster added!');
+        alert()->success($cluster->name . " cluster added successfully");
 
         return redirect()->action('ClusterController@index');
 
@@ -148,23 +143,21 @@ class ClusterController extends Controller
      */
     public function update(UpdateClusterRequest $request, $id)
     {
+
         $cluster = $this->cluster->find($id);
         $cluster->password = checkPassword($cluster->password,$request->password);
         $cluster->verify_peer = $request->verify_peer ? true : false;
-
         if($request->active)
         {
             \Auth::user()->activateCluster($cluster->id);
-
         } elseif (!isset($request->active) && \Auth::user()->activeClusterId() == $cluster->id)
         {
             \Auth::user()->deactivateCluster();
         }
-
-        $cluster->fill($request->all());
+        $cluster->fill($request->except(['password','verify_peer']));
         $cluster->save();
 
-        Flash::success('Cluster info updated!');
+        alert()->success($cluster->name . " cluster updated successfully");
 
         return redirect()->action('ClusterController@index');
 
@@ -179,7 +172,7 @@ class ClusterController extends Controller
     {
         $this->cluster->destroy($id);
 
-        Flash::success('Cluster Deleted!');
+        alert()->success("Cluster removed successfully");
 
         return redirect()->action('ClusterController@index');
     }

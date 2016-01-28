@@ -1,6 +1,11 @@
 <?php namespace App\Http\Controllers;
 
 //use App\Models\Route;
+use Auth;
+use Alert;
+use App\Http\Requests;
+use Illuminate\Http\Request;
+use App\Repositories\AuditRepository as Audit;
 use App\Repositories\RouteRepository as Route;
 use App\Repositories\PermissionRepository as Permission;
 use App\Repositories\Criteria\Route\RoutesWithPermissions;
@@ -8,13 +13,6 @@ use App\Repositories\Criteria\Route\RoutesByPathAscending;
 use App\Repositories\Criteria\Route\RoutesByMethodAscending;
 use App\Repositories\Criteria\Route\RoutesWhereNameOrPathOrActionNameLike;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
-use Flash;
-use App\Libraries\Utils;
-use DB;
-use App\Repositories\AuditRepository as Audit;
-use Auth;
 
 class RoutesController extends Controller {
 
@@ -55,6 +53,7 @@ class RoutesController extends Controller {
                                 ->pushCriteria(new RoutesByMethodAscending())
                                 ->paginate(20);
         $perms = $this->permission->all()->lists('display_name', 'id');
+
         $perms = $perms->toArray(0);
         array_unshift($perms, '');
 
@@ -103,7 +102,7 @@ class RoutesController extends Controller {
 
         $this->route->create($attributes);
 
-        Flash::success( trans('admin/routes/general.status.created') );
+        alert()->success(trans('admin/routes/general.status.created'));
 
         return redirect('/admin/routes');
     }
@@ -139,7 +138,7 @@ class RoutesController extends Controller {
 
         $route->update($request->all());
 
-        Flash::success( trans('admin/routes/general.status.updated') );
+        alert()->success(trans('admin/routes/general.status.updated'));
 
         return redirect('/admin/routes');
     }
@@ -156,7 +155,7 @@ class RoutesController extends Controller {
 
         $this->route->delete($id);
 
-        Flash::success( trans('admin/routes/general.status.deleted') );
+        alert()->success(trans('admin/routes/general.status.deleted'));
 
         return redirect('/admin/routes');
     }
@@ -199,7 +198,7 @@ class RoutesController extends Controller {
         $route->enabled = true;
         $route->save();
 
-        Flash::success(trans('admin/routes/general.status.enabled'));
+        alert()->success(trans('admin/routes/general.status.enabled'));
 
         return redirect('/admin/routes');
     }
@@ -217,7 +216,7 @@ class RoutesController extends Controller {
         $route->enabled = false;
         $route->save();
 
-        Flash::success(trans('admin/routes/general.status.disabled'));
+        alert()->success(trans('admin/routes/general.status.disabled'));
 
         return redirect('/admin/routes');
     }
@@ -231,7 +230,8 @@ class RoutesController extends Controller {
 
         $nbRoutesLoaded = \App\Models\Route::loadLaravelRoutes();
 
-        Flash::success( trans('admin/routes/general.status.loaded', ['number' => $nbRoutesLoaded]) );
+        alert()->success(trans('admin/routes/general.status.loaded', ['number' => $nbRoutesLoaded]));
+
         return redirect('/admin/routes');
     }
 
@@ -256,7 +256,7 @@ class RoutesController extends Controller {
                 $route->permission_id = $globalPerm_id;
                 $route->save();
             }
-            Flash::success(trans('admin/routes/general.status.global-perms-assigned'));
+            alert()->success(trans('admin/routes/general.status.global-perms-assigned'));
         }
         elseif (isset($perms))
         {
@@ -266,11 +266,12 @@ class RoutesController extends Controller {
                 $route->permission_id = $perm_id;
                 $route->save();
             }
-            Flash::success(trans('admin/routes/general.status.indiv-perms-assigned'));
+            alert()->success(trans('admin/routes/general.status.indiv-perms-assigned'));
         }
         else
         {
-            Flash::warning(trans('admin/routes/general.status.no-permission-changed-detected'));
+            alert()->warning(trans('admin/routes/general.status.no-permission-changed-detected'));
+
         }
         return redirect('/admin/routes');
     }
@@ -292,11 +293,11 @@ class RoutesController extends Controller {
                 $route->enabled = true;
                 $route->save();
             }
-            Flash::success(trans('admin/routes/general.status.global-enabled'));
+            alert()->success(trans('admin/routes/general.status.global-enabled'));
         }
         else
         {
-            Flash::warning(trans('admin/routes/general.status.no-route-selected'));
+            alert()->warning(trans('admin/routes/general.status.no-route-selected'));
         }
         return redirect('/admin/routes');
     }
@@ -318,11 +319,11 @@ class RoutesController extends Controller {
                 $route->enabled = false;
                 $route->save();
             }
-            Flash::success(trans('admin/routes/general.status.global-disabled'));
+            alert()->success(trans('admin/routes/general.status.global-disabled'));
         }
         else
         {
-            Flash::warning(trans('admin/routes/general.status.no-route-selected'));
+            alert()->warning(trans('admin/routes/general.status.no-route-selected'));
         }
         return redirect('/admin/routes');
     }

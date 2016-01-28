@@ -15,7 +15,7 @@
                 </div>
                 <div class="box-body">
                     <div class="table-responsive">
-                        <table id="sql-table" class="table">
+                        <table id="table" class="table">
                             <thead>
                             <th data-field="active" data-sortable="true">SQL Statement: Click to re-run queries</th>
                             <th data-field="ip" data-sortable="true">SQL History</th>
@@ -60,15 +60,6 @@
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
     <script>
-        // DataTable
-        $(function() {
-            $("#sql-table").DataTable({
-                order: [[0, "asc"]],
-                dom: '<"top">Bfrt<"bottom"lip><"clear">',
-                buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
-                ]
-            });
-        });
+
     </script>
     @endsection
