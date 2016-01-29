@@ -68,7 +68,7 @@ class CallManagerSecondaryDialToneChecker extends Command
         $beautymail->send('emails.secondaryDialToneReport', [], function($message) use($outFile)
         {
             $message
-                ->from('UC-Insight-Reporting@laireight.com')
+//                ->from('UC-Insight-Reporting@laireight.com')
                 ->to('martinsloan58@gmail.com', 'Marty Sloan')
                 ->subject('CUCM None Partition Report')
                 ->attach(storage_path("app/$outFile"));
