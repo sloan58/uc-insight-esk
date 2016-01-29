@@ -3,7 +3,7 @@
 use App\User;
 use SoapFault;
 use SoapClient;
-use App\Cluster;
+use App\Models\Cluster;
 use App\Exceptions\SoapException;
 
 /**
@@ -24,19 +24,10 @@ class AxlSoap extends SoapClient {
     /**
      *
      */
-    public function __construct(User $user = null)
+    public function __construct(Cluster $cluster)
     {
 
-        if(is_null($user))
-        {
-            if(!\Auth::user()->activeCluster()) {
-                throw new SoapException("You have no Active Cluster Selected");
-            }
-            $this->cluster = \Auth::user()->activeCluster();
-        } else {
-            $this->user = $user;
-            $this->cluster = $this->user->activeCluster();
-        }
+        $this->cluster = $cluster;
 
         parent::__construct(storage_path() . '/app/axl/' . $this->cluster->version . '/AXLAPI.wsdl',
             [

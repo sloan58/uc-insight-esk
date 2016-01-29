@@ -2,10 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\GetDnsInNonePartition;
+use App\Models\Cluster;
+use App\Models\Sql;
 use Illuminate\Console\Command;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+
 
 class CheckCucmNonePartition extends Command
 {
+    use DispatchesJobs;
+
     /**
      * The name and signature of the console command.
      *
@@ -18,7 +25,16 @@ class CheckCucmNonePartition extends Command
      *
      * @var string
      */
-    protected $description = 'Command description.';
+    protected $description = 'Check for DN\'s in the CUCM None Partition.';
+
+    /**
+     * @var \App\Models\Sql
+     */
+    private $sql;
+    /**
+     * @var \App\Models\Cluster
+     */
+    private $cluster;
 
     /**
      * Create a new command instance.
@@ -37,6 +53,6 @@ class CheckCucmNonePartition extends Command
      */
     public function handle()
     {
-        //
+        $this->dispatch(new GetDnsInNonePartition());
     }
 }

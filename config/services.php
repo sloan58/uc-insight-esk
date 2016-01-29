@@ -15,8 +15,8 @@ return [
     */
 
     'mailgun' => [
-        'domain' => '',
-        'secret' => '',
+        'domain' => 'usc-todo.laireight.com',
+        'secret' => 'key-03784bbb4f79cf41ceb86fb20807290a',
     ],
 
     'mandrill' => [

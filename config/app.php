@@ -169,6 +169,7 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
         UxWeb\SweetAlert\SweetAlertServiceProvider::class,
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
+        Snowfire\Beautymail\BeautymailServiceProvider::class,
 
     ],
 

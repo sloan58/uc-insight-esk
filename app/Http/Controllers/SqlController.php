@@ -46,7 +46,7 @@ class SqlController extends Controller
 
         $sql = $request->input('sqlStatement');
 
-        $data = $this->sql->executeQuery($sql);
+        $data = $this->sql->executeQuery($sql,\Auth::user()->activeCluster());
         $format = $this->sql->getHeaders($data);
 
         $this->sql->firstOrCreate([
@@ -66,7 +66,7 @@ class SqlController extends Controller
         $sql = $this->sql->find($sql);
         $sql = $sql->sql;
 
-        $data = $this->sql->executeQuery($sql);
+        $data = $this->sql->executeQuery($sql,\Auth::user()->activeCluster());
         $format = $this->sql->getHeaders($data);
 
         $page_title = 'SQL';

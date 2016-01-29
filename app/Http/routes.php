@@ -265,5 +265,3 @@ Route::group(['middleware' => 'authorize'], function () {
         });
 }); // end of AUTHORIZE group
 
-
-

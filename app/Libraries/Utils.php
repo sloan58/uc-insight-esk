@@ -5,6 +5,8 @@
  * Class Utils
  * @package App\Libraries
  */
+use App\Models\Cluster;
+
 /**
  * Class Utils
  * @package App\Libraries
@@ -17,11 +19,11 @@ class Utils {
      * @param string $ucInsightUser
      * @return mixed
      */
-    public function generateEraserList($deviceList, $ucInsightUser = '')
+    public function generateEraserList($deviceList, Cluster $cluster)
     {
         $macList = array_column($deviceList, 'mac');
 
-        $axl = new AxlSoap($ucInsightUser);
+        $axl = new AxlSoap($cluster);
         $user = $axl->getAxlUser();
         $devices = $this->createDeviceArray($user,$macList);
         $res = $axl->updateAxlUser($devices);

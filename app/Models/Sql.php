@@ -4,8 +4,13 @@ namespace App\Models;
 
 use App\Libraries\AxlSoap;
 use App\Exceptions\SqlQueryException;
+use App\Models\Cluster as Cluster;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Sql
+ * @package App\Models
+ */
 class Sql extends Model
 {
     /**
@@ -15,19 +20,24 @@ class Sql extends Model
      */
     protected $fillable = ['sqlhash', 'sql'];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users()
     {
         return $this->belongsToMany('App\Users');
     }
 
+
     /**
      * @param $sql
-     * @throws SqlQueryException
+     * @param Cluster $cluster
      * @return array
+     * @throws \App\Exceptions\SqlQueryException
      */
-    public function executeQuery($sql)
+    public function executeQuery($sql, Cluster $cluster)
     {
-        $axl = new AxlSoap();
+        $axl = new AxlSoap($cluster);
 
         $result = $axl->executeQuery($sql);
 
