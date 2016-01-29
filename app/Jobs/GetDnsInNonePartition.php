@@ -4,31 +4,36 @@ namespace App\Jobs;
 
 use App\Jobs\Job;
 use App\Models\Cluster;
-use App\Models\Sql;
-use Carbon\Carbon;
-use Illuminate\Contracts\Bus\SelfHandling;
+use App\Libraries\Utils;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Queue\InteractsWithQueue ;
+use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
+/**
+ * Class GetDnsInNonePartition
+ * @package App\Jobs
+ */
 class GetDnsInNonePartition extends Job implements SelfHandling
 {
-    /**
-     * @var \App\Models\Sql
-     */
-    private $sql;
     /**
      * @var \App\Models\Cluster
      */
     private $cluster;
+    /**
+     * @var
+     */
+    private $outFile;
 
     /**
-     * Create a new job instance.
-     *
-     * @return void
+     * @param Cluster $cluster
+     * @param $outFile
      */
-    public function __construct()
+    public function __construct(Cluster $cluster,$outFile)
     {
-        $this->sql = new Sql();
-        $this->cluster = new Cluster();
+        $this->cluster = $cluster;
+        $this->outFile = $outFile;
     }
 
     /**
@@ -38,41 +43,16 @@ class GetDnsInNonePartition extends Job implements SelfHandling
      */
     public function handle()
     {
-        $clusters = $this->cluster->all();
+        $res = Utils::executeQuery('SELECT dnorpattern, description FROM numplan WHERE fkroutepartition IS NULL AND tkpatternusage = 2',$this->cluster);
 
-        $unassignedDnReport = [];
-        foreach($clusters as $cluster)
+        Storage::append($this->outFile, $this->cluster->name . ',' . $this->cluster->ip);
+
+        if($res)
         {
-            $res = $this->sql->executeQuery('SELECT dnorpattern, description FROM numplan WHERE fkroutepartition IS NULL AND tkpatternusage = 2',$cluster);
-
-            $unassignedDnReport[$cluster->name] = $res;
-        }
-
-
-        $filename = 'reports/nonePt/CucmNonePartition-' . Carbon::now()->timestamp .'.csv';
-
-        Storage::put($filename,'Directory Number,Description');
-
-        foreach($unassignedDnReport as $cluster => $data)
-        {
-            Storage::append($filename, $cluster . ',');
-
-            foreach($data as $dn)
+            foreach($res as $dn)
             {
-                Storage::append($filename,$dn->dnorpattern . ',' . $dn->description);
-
+                Storage::append($this->outFile,implode(",",[$dn->dnorpattern,$dn->description]));
             }
         }
-
-        $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
-        $beautymail->send('emails.welcome', [], function($message) use($filename)
-        {
-            $message
-                ->from('info@laireight.com')
-                ->to('martinsloan58@gmail.com', 'Marty Sloan')
-                ->subject('CUCM None Partition Report')
-                ->attach(storage_path("app/$filename"));
-        });
-
     }
 }

@@ -41,6 +41,23 @@ class AxlSoap extends SoapClient {
         );
     }
 
+    /**
+     * @param $fault
+     * @throws \App\Exceptions\SoapException
+     */
+    private function processAxlFault($fault)
+    {
+        \Log::error('Axl Request', [
+            $this->__getLastRequestHeaders(),
+            $this->__getLastRequest()
+
+        ]);
+        \Log::error('Axl Response', [
+            $this->__getLastResponseHeaders(),
+            $this->__getLastResponse()
+        ]);
+        throw new SoapException($fault->getMessage());
+    }
 
     /**
      * @param $sql
@@ -54,8 +71,7 @@ class AxlSoap extends SoapClient {
                 'sql' => $sql,
             ]);
         } catch(SoapFault $e) {
-            \Log::error('Axl Error', [$this->__getLastRequest()]);
-            throw new SoapException($e);
+            $this->processAxlFault($e);
         }
     }
 
@@ -73,8 +89,7 @@ class AxlSoap extends SoapClient {
                 'userid' => $this->cluster->username
             ]);
         } catch(SoapFault $e) {
-            \Log::error('Axl Error', [$this->__getLastRequest()]);
-            throw new SoapException($e);
+            $this->processAxlFault($e);
         }
     }
 
@@ -83,6 +98,10 @@ class AxlSoap extends SoapClient {
      * @throws \App\Exceptions\SoapException
      * @internal param $appUserId
      * @return \Exception|SoapFault
+     */
+    /**
+     * @param $devices
+     * @return mixed
      */
     public function updateAxlUser($devices)
     {
@@ -96,8 +115,7 @@ class AxlSoap extends SoapClient {
                 ]
             ]);
         } catch(SoapFault $e) {
-            \Log::error('Axl Error', [$this->__getLastRequest()]);
-            throw new SoapException($e->getMessage());
+            $this->processAxlFault($e);
         }
     }
 

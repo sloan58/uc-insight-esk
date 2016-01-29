@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Sql;
+use App\Libraries\Utils;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -46,7 +47,7 @@ class SqlController extends Controller
 
         $sql = $request->input('sqlStatement');
 
-        $data = $this->sql->executeQuery($sql,\Auth::user()->activeCluster());
+        $data = Utils::executeQuery($sql,\Auth::user()->activeCluster());
         $format = $this->sql->getHeaders($data);
 
         $this->sql->firstOrCreate([
@@ -66,7 +67,7 @@ class SqlController extends Controller
         $sql = $this->sql->find($sql);
         $sql = $sql->sql;
 
-        $data = $this->sql->executeQuery($sql,\Auth::user()->activeCluster());
+        $data = Utils::executeQuery($sql,\Auth::user()->activeCluster());
         $format = $this->sql->getHeaders($data);
 
         $page_title = 'SQL';

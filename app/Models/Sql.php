@@ -28,37 +28,6 @@ class Sql extends Model
         return $this->belongsToMany('App\Users');
     }
 
-
-    /**
-     * @param $sql
-     * @param Cluster $cluster
-     * @return array
-     * @throws \App\Exceptions\SqlQueryException
-     */
-    public function executeQuery($sql, Cluster $cluster)
-    {
-        $axl = new AxlSoap($cluster);
-
-        $result = $axl->executeQuery($sql);
-
-        switch($result) {
-
-            case !isset($result->return->row):
-                throw new SqlQueryException('No Results Found');
-                break;
-
-            case is_array($result->return->row):
-                return $result->return->row;
-                break;
-
-            default:
-                $return = [];
-                $return[0] = $result->return->row;
-                return $return;
-
-        }
-    }
-
     /**
      * @param $data
      * @return bool|void

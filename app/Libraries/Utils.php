@@ -5,6 +5,7 @@
  * Class Utils
  * @package App\Libraries
  */
+use App\Exceptions\SqlQueryException;
 use App\Models\Cluster;
 
 /**
@@ -15,8 +16,40 @@ class Utils {
 
 
     /**
+     * @param $sql
+     * @param Cluster $cluster
+     * @return array
+     * @throws SqlQueryException
+     */
+    public static function executeQuery($sql, Cluster $cluster)
+    {
+        $axl = new AxlSoap($cluster);
+
+        $result = $axl->executeQuery($sql);
+
+        switch($result) {
+
+            case !isset($result->return->row):
+                alert()->error('No Results Found')->persistent('Close');
+                redirect()->back();
+                break;
+
+            case is_array($result->return->row):
+                return $result->return->row;
+                break;
+
+            default:
+                $return = [];
+                $return[0] = $result->return->row;
+                return $return;
+
+        }
+    }
+
+
+    /**
      * @param $deviceList
-     * @param string $ucInsightUser
+     * @param Cluster $cluster
      * @return mixed
      */
     public function generateEraserList($deviceList, Cluster $cluster)
@@ -29,7 +62,7 @@ class Utils {
         $res = $axl->updateAxlUser($devices);
 
         // Get Device IP's
-        $sxml = new RisSoap($ucInsightUser);
+        $sxml = new RisSoap($cluster);
         $risArray = $sxml->createRisPhoneArray($macList);
         $risResults = $sxml->getDeviceIP($risArray);
         $risPortResults = $sxml->processRisResults($risResults,$risArray);
