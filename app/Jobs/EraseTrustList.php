@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Models\Cluster;
 use App\Libraries\Utils;
-use App\User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -21,23 +21,19 @@ class EraseTrustList extends Job implements SelfHandling, ShouldQueue
      */
     private $utils;
     /**
-     * @var \App\User
+     * @var Cluster
      */
-    private $user;
+    private $cluster;
 
     /**
-     * Create a new job instance.
-     *
      * @param array $eraserList
-     * @param \App\User $user
-     * @internal param \App\Libraries\Utils $utils
+     * @param Cluster $cluster
      */
-    public function __construct(Array $eraserList, User $user)
+    public function __construct(Array $eraserList, Cluster $cluster)
     {
         $this->eraserList = $eraserList;
         $this->utils = new Utils;
-        $this->user = $user;
-
+        $this->cluster = $cluster;
     }
 
     /**
@@ -47,11 +43,11 @@ class EraseTrustList extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        $formattedEraserList = $this->utils->generateEraserList($this->eraserList,$this->user);
+        $formattedEraserList = $this->utils->generateEraserList($this->eraserList,$this->cluster);
 
         foreach($formattedEraserList as $device)
         {
-            $this->dispatch(new ControlPhone($device,$this->user));
+            $this->dispatch(new ControlPhone($device,$this->cluster));
         }
     }
 }

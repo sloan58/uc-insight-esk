@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use App\User;
 use App\Jobs\Job;
 use App\Models\Eraser;
+use App\Models\Cluster;
 use App\Models\IpAddress;
 use App\Libraries\PhoneDialer;
 use App\Models\Device as Phone;
@@ -25,19 +25,16 @@ class ControlPhone extends Job implements SelfHandling, ShouldQueue
      * @var \App\User
      */
     private $user;
-
     /**
-     * Create a new job instance.
-     *
-     * @param \App\Models\Device $device
-     * @param \App\User $user
-     * @return \App\Jobs\ControlPhone
+     * @var Cluster
      */
-    public function __construct($device,User $user)
+    private $cluster;
+
+
+    public function __construct($device,Cluster $cluster)
     {
         $this->device = $device;
-        $this->user = $user;
-
+        $this->cluster = $cluster;
     }
 
     /**
@@ -94,7 +91,7 @@ class ControlPhone extends Job implements SelfHandling, ShouldQueue
             return;
         }
 
-        $dialer = new PhoneDialer($tleObj,$this->user);
+        $dialer = new PhoneDialer($tleObj,$this->cluster);
         $status = $dialer->dial($keys);
 
         //Successful if returned true

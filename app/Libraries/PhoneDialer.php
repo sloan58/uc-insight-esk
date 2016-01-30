@@ -1,11 +1,10 @@
 <?php namespace App\Libraries;
 
 
-use App\User;
 use Sabre\Xml\Reader;
 use GuzzleHttp\Client;
 use App\Models\Eraser;
-use App\Exceptions\SoapException;
+use App\Models\Cluster;
 use Illuminate\Support\Facades\Log;
 use App\Exceptions\PhoneDialerException;
 use GuzzleHttp\Exception\ConnectException;
@@ -19,18 +18,10 @@ use GuzzleHttp\Exception\ClientException;
 class PhoneDialer {
 
 
-    /**
-     * @param Eraser $tleObj
-     * @param User $user
-     * @throws \App\Exceptions\SoapException
-     */
-    function __construct(Eraser $tleObj,User $user)
-    {
-        if(!$user->activeCluster()) {
-            throw new SoapException("You have no Active Cluster Selected");
-        }
-        $this->cluster = $user->activeCluster();
 
+    function __construct(Eraser $tleObj,Cluster $cluster)
+    {
+        $this->cluster = $cluster;
         $this->tleObj = $tleObj;
 
         $this->client = new Client([
@@ -47,6 +38,7 @@ class PhoneDialer {
         ]);
 
         $this->reader = new Reader;
+        $this->cluster = $cluster;
     }
 
     /**
