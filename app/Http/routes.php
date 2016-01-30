@@ -180,8 +180,11 @@ Route::group(['middleware' => 'authorize'], function () {
     // Reporting Routes
     Route::group(['prefix' => 'reports/'], function() {
 
-        // Services Routes
-        Route::get('services', 'ReportingController@servicesIndex');
+        // Services Route
+        Route::get('services', ['as' => 'service.store', 'uses' => 'ReportingController@servicesIndex']);
+
+        // Device Registration Route
+        Route::get('registration', ['as' => 'registration.store', 'uses' => 'ReportingController@registrationIndex']);
 
     });
 

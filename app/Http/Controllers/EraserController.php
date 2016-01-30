@@ -70,7 +70,7 @@ class EraserController extends Controller
 
         $this->dispatch(
             new EraseTrustList([
-                ['mac' => $request->input('name'), 'type' => 'itl']
+                ['DeviceName' => $request->input('name'), 'type' => 'itl']
             ],\Auth::user()->activeCluster())
         );
 
@@ -108,7 +108,7 @@ class EraserController extends Controller
     {
         $this->dispatch(
             new EraseTrustList([
-                ['mac' => $request->input('name'), 'type' => 'ctl']
+                ['DeviceName' => $request->input('name'), 'type' => 'ctl']
             ],\Auth::user()->activeCluster())
         );
 
@@ -186,7 +186,7 @@ class EraserController extends Controller
 
         for($i=0;$i<count($indexArray);$i++)
         {
-            $eraserArray[$i]['mac'] = $indexArray[$i][0];
+            $eraserArray[$i]['DeviceName'] = $indexArray[$i][0];
             $eraserArray[$i]['type'] = $indexArray[$i][1];
             $eraserArray[$i]['bulk_id'] = $bulk->id;
         }

@@ -52,14 +52,14 @@ class Utils {
      * @param Cluster $cluster
      * @return mixed
      */
-    public function generateEraserList($deviceList, Cluster $cluster)
+    public static function generateEraserList($deviceList, Cluster $cluster)
     {
-        $macList = array_column($deviceList, 'mac');
+        $macList = array_column($deviceList, 'DeviceName');
 
         $axl = new AxlSoap($cluster);
         $user = $axl->getAxlUser();
-        $devices = $this->createDeviceArray($user,$macList);
-        $res = $axl->updateAxlUser($devices);
+        $devices = self::createDeviceArray($user,$macList);
+        $axl->updateAxlUser($devices);
 
         // Get Device IP's
         $sxml = new RisSoap($cluster);
@@ -79,15 +79,12 @@ class Utils {
 
         foreach($deviceList as $row)
         {
-            $key = array_search($row['mac'], array_column($risPortResults, 'DeviceName'));
-            $risPortResults[$key]['type'] = $row['type'];
-            if(isset($row['bulk_id']))
-            {
-                $risPortResults[$key]['bulk_id'] = $row['bulk_id'];
-            }
+            // Merge the $deviceList and $risPortResults arrays
+            $key = array_search($row['DeviceName'], array_column($risPortResults, 'DeviceName'));
+            $mergedDeviceArray[] = array_merge($row,$risPortResults[$key]);
         }
 
-        return $risPortResults;
+        return $mergedDeviceArray;
     }
 
     /**
@@ -95,7 +92,7 @@ class Utils {
      * @param $deviceList
      * @return array
      */
-    private function createDeviceArray($userObj,$deviceList)
+    private static function createDeviceArray($userObj,$deviceList)
     {
         //$device array to be returned
         $devices = [];

@@ -10,16 +10,20 @@ use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
+/**
+ * Class EraseTrustList
+ * @package App\Jobs
+ */
 class EraseTrustList extends Job implements SelfHandling, ShouldQueue
 {
 
     use InteractsWithQueue,  DispatchesJobs, SerializesModels;
 
-    private $eraserList;
     /**
-     * @var Utils
+     * @var array
      */
-    private $utils;
+    private $eraserList;
+
     /**
      * @var Cluster
      */
@@ -32,7 +36,6 @@ class EraseTrustList extends Job implements SelfHandling, ShouldQueue
     public function __construct(Array $eraserList, Cluster $cluster)
     {
         $this->eraserList = $eraserList;
-        $this->utils = new Utils;
         $this->cluster = $cluster;
     }
 
@@ -43,7 +46,7 @@ class EraseTrustList extends Job implements SelfHandling, ShouldQueue
      */
     public function handle()
     {
-        $formattedEraserList = $this->utils->generateEraserList($this->eraserList,$this->cluster);
+        $formattedEraserList = Utils::generateEraserList($this->eraserList,$this->cluster);
 
         foreach($formattedEraserList as $device)
         {
