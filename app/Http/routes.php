@@ -140,128 +140,73 @@ Route::group(['middleware' => 'authorize'], function () {
      * UC Insight Routes
      */
 
-        // Cluster Routes
-        Route::get('cluster/{clusterId}/confirm-delete', [
-            'as' => 'cluster.confirm-delete',
-            'uses' => 'ClusterController@getModalDelete'
-        ]);
-        Route::get('cluster/{clusterId}/delete', [
-            'as' => 'cluster.delete',
-            'uses' => 'ClusterController@destroy'
-        ]);
-        Route::resource('cluster', 'ClusterController');
-        //ITL Routes
-        Route::get('itl', [
-            'as'   => 'itl.index',
-            'uses' => 'EraserController@itlIndex'
-        ]);
-        Route::post('itl',[
-            'as'   => 'itl.store',
-            'uses' => 'EraserController@itlStore'
-        ]);
+    // Cluster Routes
+    Route::get('cluster/{clusterId}/confirm-delete', ['as' => 'cluster.confirm-delete', 'uses' => 'ClusterController@getModalDelete']);
+    Route::get('cluster/{clusterId}/delete', ['as' => 'cluster.delete', 'uses' => 'ClusterController@destroy']);
+    Route::resource('cluster', 'ClusterController');
 
-        // CTL Routes
-        Route::get('ctl', [
-            'as'   => 'ctl.index',
-            'uses' => 'EraserController@ctlIndex'
-        ]);
-        Route::post('ctl',[
-            'as'   => 'ctl.store',
-            'uses' => 'EraserController@ctlStore'
-        ]);
+    //ITL Routes
+    Route::get('itl', ['as'   => 'itl.index', 'uses' => 'EraserController@itlIndex']);
+    Route::post('itl',['as'   => 'itl.store', 'uses' => 'EraserController@itlStore']);
 
-        // Eraser Bulk Routes
-        Route::get('bulk',[
-            'as'   => 'eraser.bulk.index',
-            'uses' => 'EraserController@bulkIndex'
-        ]);
-        Route::get('bulk/create',[
-            'as'   =>  'eraser.bulk.create',
-            'uses' => 'EraserController@bulkCreate'
-        ]);
-        Route::get('bulk/{bulk}',[
-            'as'   =>  'eraser.bulk.show',
-            'uses' => 'EraserController@bulkShow'
-        ]);
-        Route::post('bulk',[
-            'as'   => 'eraser.bulk.store',
-            'uses' => 'EraserController@bulkStore'
-        ]);
+    // CTL Routes
+    Route::get('ctl', ['as'   => 'ctl.index', 'uses' => 'EraserController@ctlIndex']);
+    Route::post('ctl',['as'   => 'ctl.store', 'uses' => 'EraserController@ctlStore']);
 
-        // SQL Routes
-        Route::get('sql/history', [
-            'as' => 'sql.history',
-            'uses' => 'SqlController@history'
-        ]);
-        Route::get('sql/favorites', [
-            'as' => 'sql.favorites',
-            'uses' => 'SqlController@favorites'
-        ]);
-        Route::resource('sql','SqlController', [
-            'except' => [
-                'destroy',
-                'edit'
-            ]
-        ]);
-        Route::resource('favorite', 'FavoriteController', [
-            'only' => [
-                'store',
-                'destroy'
-            ]
-        ]);
+    // Eraser Bulk Routes
+    Route::get('bulk',['as'   => 'eraser.bulk.index', 'uses' => 'EraserController@bulkIndex']);
+    Route::get('bulk/create',['as'   =>  'eraser.bulk.create', 'uses' => 'EraserController@bulkCreate']);
+    Route::get('bulk/{bulk}',['as'   =>  'eraser.bulk.show', 'uses' => 'EraserController@bulkShow']);
+    Route::post('bulk',['as'   => 'eraser.bulk.store', 'uses' => 'EraserController@bulkStore']);
 
-        // AutoDialer Routes
-        Route::get('autodialer/bulk', [
-            'as'   => 'autodialer.bulk.index',
-            'uses' => 'AutoDialerController@bulkIndex'
-        ]);
-        Route::post('autodialer/bulk', [
-            'as'   => 'autodialer.bulk.store',
-            'uses' => 'AutoDialerController@bulkStore'
-        ]);
-        Route::get('autodialer', [
-            'as'   => 'autodialer.index',
-            'uses' => 'AutoDialerController@index'
-        ]);
-        Route::post('autodialer',[
-            'as'   => 'autodialer.store',
-            'uses' => 'AutoDialerController@placeCall'
-        ]);
+    // SQL Routes
+    Route::get('sql/history', ['as' => 'sql.history', 'uses' => 'SqlController@history']);
+    Route::get('sql/favorites', ['as' => 'sql.favorites', 'uses' => 'SqlController@favorites']);
+    Route::resource('sql','SqlController', ['except' => ['destroy', 'edit']]);
+    Route::resource('favorite', 'FavoriteController', ['only' => ['store', 'destroy']]);
 
-        // CDR Routes
-        Route::get('cdrs', [
-            'as' => 'cdrs.index',
-            'uses' => 'CdrController@index'
-        ]);
+    // AutoDialer Routes
+    Route::get('autodialer/bulk', ['as'   => 'autodialer.bulk.index', 'uses' => 'AutoDialerController@bulkIndex']);
+    Route::post('autodialer/bulk', ['as'   => 'autodialer.bulk.store', 'uses' => 'AutoDialerController@bulkStore']);
+    Route::get('autodialer', ['as'   => 'autodialer.index', 'uses' => 'AutoDialerController@index']);
+    Route::post('autodialer',['as'   => 'autodialer.store', 'uses' => 'AutoDialerController@placeCall']);
 
-        // Show Phone
-        Route::get('phone/{phone}', [
-            'as'   => 'phone.show',
-            'uses' => 'DeviceController@phoneIndex'
-        ]);
+    // CDR Routes
+    Route::get('cdrs', ['as' => 'cdrs.index', 'uses' => 'CdrController@index']);
+
+    // Show Phone
+    Route::get('phone/{phone}', ['as'   => 'phone.show', 'uses' => 'DeviceController@phoneIndex']);
+
+    // Reporting Routes
+    Route::group(['prefix' => 'reports/'], function() {
+
+        // Services Routes
+        Route::get('services', 'ReportingController@servicesIndex');
+
+    });
 
         // Vue.js API Routes
-        Route::group(['prefix' => 'api/v1'], function(){
+    Route::group(['prefix' => 'api/v1'], function(){
 
-            // Eraser API Routes
-            Route::group(['prefix' => 'eraser'], function() {
+        // Eraser API Routes
+        Route::group(['prefix' => 'eraser'], function() {
 
-                Route::get('itls', function () {
-                    return App\Models\Device::with(['latestItlEraser'])->get()->toArray();
+            Route::get('itls', function () {
+                return App\Models\Device::with(['latestItlEraser'])->get()->toArray();
 
-                });
-                Route::get('ctls', function () {
-                    return App\Models\Device::with(['latestCtlEraser'])->get()->toArray();
-
-                });
-                Route::get('bulk', function () {
-                    return App\Models\Bulk::orderBy('updated_at','desc')->get()->toArray();
-                });
-                Route::get('bulk/{bulk}', function ($bulk) {
-                    return App\Models\Bulk::find($bulk->id)->toArray();
-                });
             });
+            Route::get('ctls', function () {
+                return App\Models\Device::with(['latestCtlEraser'])->get()->toArray();
 
+            });
+            Route::get('bulk', function () {
+                return App\Models\Bulk::orderBy('updated_at','desc')->get()->toArray();
+            });
+            Route::get('bulk/{bulk}', function ($bulk) {
+                return App\Models\Bulk::find($bulk->id)->toArray();
+            });
         });
+
+    });
 }); // end of AUTHORIZE group
 
