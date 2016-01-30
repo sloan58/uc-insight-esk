@@ -7,7 +7,7 @@
 
 @section('content')
     <div class='row'>
-        <div class='col-md-12'>
+        <div class='col-md-10 col-md-offset-1'>
             <div class="box-body">
 
                 {!! Form::open( ['route' => 'admin.permissions.store', 'id' => 'form_edit_permission'] ) !!}

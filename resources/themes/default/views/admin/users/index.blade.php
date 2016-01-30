@@ -2,7 +2,7 @@
 
 @section('content')
     <div class='row'>
-        <div class='col-md-12'>
+        <div class='col-md-10 col-md-offset-1'>
             <!-- Box -->
             {!! Form::open( array('route' => 'admin.users.enable-selected', 'id' => 'frmUserList') ) !!}
                 <div class="box box-primary">

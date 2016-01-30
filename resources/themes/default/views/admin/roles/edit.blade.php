@@ -7,7 +7,7 @@
 
 @section('content')
     <div class='row'>
-        <div class='col-md-12'>
+        <div class='col-md-10 col-md-offset-1'>
             <div class="box-body">
 
                 {!! Form::model( $role, ['route' => ['admin.roles.update', $role->id], 'method' => 'PATCH', 'id' => 'form_edit_role'] ) !!}

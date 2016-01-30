@@ -2,8 +2,8 @@
 
 @section('content')
 <div class='row'>
-    <div class='col-md-12'>
-            <!-- Box -->
+    <div class='col-md-10 col-md-offset-1'>
+        <!-- Box -->
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">{{ trans('cluster/general.page.create.section-title') }}</h3>
