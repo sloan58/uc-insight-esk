@@ -17,6 +17,7 @@ class SqlController extends Controller
 
     /**
      * Create a new controller instance.
+     * @param Sql $sql
      */
     public function __construct(Sql $sql)
     {
@@ -58,7 +59,7 @@ class SqlController extends Controller
         $page_title = 'SQL';
         $page_description = 'Query';
 
-        return view('sql.index',compact('data','format','sql','page_title', 'page_description'));
+        return view('sql.show',compact('data','format','sql','page_title', 'page_description'));
     }
 
     public function show($sql)
@@ -73,7 +74,7 @@ class SqlController extends Controller
         $page_title = 'SQL';
         $page_description = 'Query';
 
-        return view('sql.index',compact('data','format','sql', 'page_title', 'page_description'));
+        return view('sql.show',compact('data','format','sql', 'page_title', 'page_description'));
     }
 
     public function history()
