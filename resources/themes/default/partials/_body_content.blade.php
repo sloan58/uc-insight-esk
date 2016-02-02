@@ -24,7 +24,7 @@
         <section class="content">
 
             <div class="box-body">
-                @include('flash::message')
+<!--                @include('flash::message')-->
                 @include('partials._errors')
             </div>
 
