@@ -123,14 +123,14 @@
                                 @endif
                             </ul>
                         </li>
-                        @if(\Auth::user()->hasRole(['admins','cluster-managers']))
-                            <li><a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i>Clusters</a></li>
-                        @endif
                     </ul>
                 </li>
-                @if(\Auth::user()->hasRole(['admins','cluster-managers','audit-viewers','audit-replayers','audit-purgers']))
+                <li>
+                    <a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i><span>Clusters</span></a>
+                </li>
+            @if(\Auth::user()->hasRole(['admins','cluster-managers','audit-viewers','audit-replayers','audit-purgers']))
                     <li>
-                        <a href="{{ route('admin.audit.index')}}"><i class="fa fa-binoculars"></i> <span> Audit</span> <i class="fa fa-angle-left pull-right"></i></a>
+                        <a href="{{ route('admin.audit.index')}}"><i class="fa fa-binoculars"></i> <span> Audit</span></a>
                     </li>
                 @endif
             @endif
