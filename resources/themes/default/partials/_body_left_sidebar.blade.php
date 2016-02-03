@@ -128,12 +128,11 @@
                 <li>
                     <a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i><span>Clusters</span></a>
                 </li>
-            @if(\Auth::user()->hasRole(['admins','cluster-managers','audit-viewers','audit-replayers','audit-purgers']))
+            @if(\Auth::user()->hasRole(['admins','audit-viewers','audit-replayers','audit-purgers']))
                     <li>
                         <a href="{{ route('admin.audit.index')}}"><i class="fa fa-binoculars"></i> <span> Audit</span></a>
                     </li>
                 @endif
-            @endif
         </ul><!-- /.sidebar-menu -->
     </section>
     <!-- /.sidebar -->
