@@ -24,6 +24,7 @@
             type();
         } else {
             captionEl.html(caption);
+            captionEl.append(newLine);
         }
     });
 
