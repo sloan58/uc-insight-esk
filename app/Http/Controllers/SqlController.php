@@ -76,6 +76,13 @@ class SqlController extends Controller
         $sql = $sql->sql;
 
         $data = Utils::executeQuery($sql,\Auth::user()->activeCluster());
+
+        if(is_null($data))
+        {
+            alert()->error('No Results Found')->persistent('Close');
+            return redirect()->back();
+        }
+        
         $format = $this->sql->getHeaders($data);
 
         $page_title = 'SQL';
