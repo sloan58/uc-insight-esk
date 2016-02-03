@@ -30,8 +30,7 @@ class Utils {
         switch($result) {
 
             case !isset($result->return->row):
-                alert()->error('No Results Found')->persistent('Close');
-                redirect()->back();
+                return null;
                 break;
 
             case is_array($result->return->row):
