@@ -99,7 +99,6 @@
             'admins',
             'user-managers',
             'role-managers',
-            'cluster-managers'
             ]))
                 <li class="treeview {{ areActiveRoutes([
                 'admin.audit.index',
@@ -125,6 +124,7 @@
                         </li>
                     </ul>
                 </li>
+            @endif
                 <li>
                     <a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i><span>Clusters</span></a>
                 </li>
