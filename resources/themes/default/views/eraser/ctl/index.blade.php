@@ -33,6 +33,7 @@
                             <tfoot>
                             </tfoot>
                             <tbody>
+                            @if(isset($ctls))
                             @foreach ($ctls as $ctl)
                             @if(!$ctl->fail_reason)
                             {{$ctl->fail_reason == 'Passed'}}
@@ -56,6 +57,7 @@
                                 </td>
                             </tr>
                             @endforeach
+                            @endif
                             </tbody>
                         </table>
                     </div> <!-- table-responsive -->
