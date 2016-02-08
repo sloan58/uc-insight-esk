@@ -58,7 +58,7 @@
                 <a href="#"><i class="fa fa-file-pdf-o"></i> <span>UC Reporting</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
                     <li><a href="{{ url('/reports/services') }}">Service Status</a></li>
-                    <li><a href="{{ url('/reports/registration') }}">Device Registration</a></li>
+<!--                    <li><a href="{{ url('/reports/registration') }}">Device Registration</a></li>-->
                 </ul>
             </li>
             @endif
