@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('cucm:none-pt')->everyMinute();
+        $schedule->command('cucm:none-pt')->everyFiveMinutes();
 //                 ->dailyAt('08:00');
     }
 }
