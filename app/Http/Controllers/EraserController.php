@@ -56,7 +56,14 @@ class EraserController extends Controller
     {
         $page_title = 'Eraser';
         $page_description = 'IT\'s';
-        return view('eraser.itl.index', compact('page_title','page_description'));
+
+        $phones = $this->device->has('erasers')->get();
+        foreach($phones as $phone)
+        {
+            $itls[] = $phone->erasers()->where('type','ITL')->orderBy('updated_at','desc')->first();
+        }
+
+        return view('eraser.itl.index', compact('itls','page_title','page_description'));
     }
 
     /**

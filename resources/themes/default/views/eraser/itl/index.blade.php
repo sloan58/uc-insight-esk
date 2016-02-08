@@ -1,61 +1,70 @@
 @extends('layouts.master')
 @section('content')
-    <div class='row'>
-        <div class='col-md-10 col-md-offset-1'>
-            <!-- Box -->
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">{{ trans('eraser/itl/general.page.index.table-title') }}</h3>
-                    &nbsp;
-                    <div class="box-tools pull-right">
-                        <div class="col-md-6 text-right">
-                            <button type="button" class="btn btn-success btn-md"
-                                    onclick="erase_itl()">
-                                <i class="fa fa-plus-circle fa-lg"></i>
-                                Erase ITLs
-                            </button>
-                        </div>
+<div class='row'>
+    <div class='col-md-12'>
+        <!-- Box -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">{{ trans('eraser/itl/general.page.index.table-title') }}</h3>
+                &nbsp;
+                <div class="box-tools pull-right">
+                    <div class="col-md-6 text-right">
+                        <button type="button" class="btn btn-success btn-md"
+                                onclick="erase_itl()">
+                            <i class="fa fa-plus-circle fa-lg"></i>
+                            Erase ITLs
+                        </button>
                     </div>
-                    <div class="box-body">
-                        <div class="table-responsive" id="vue-table">
-                            <table id="table" class="table">
-                                <thead>
-                                <tr>
-                                    <th>{{ trans('eraser/itl/general.columns.name') }}</th>
-                                    <th>{{ trans('eraser/itl/general.columns.description') }}</th>
-                                    <th>{{ trans('eraser/itl/general.columns.ip_address') }}</th>
-                                    <th>{{ trans('eraser/itl/general.columns.result') }}</th>
-                                    <th>{{ trans('eraser/itl/general.columns.fail_reason') }}</th>
-                                    <th>{{ trans('eraser/itl/general.columns.last_updated') }}</th>
-                                </tr>
-                                </thead>
-                                <tfoot>
-                                </tfoot>
-                                <tbody v-for="itl in itls">
-                                <tr>
-                                    <td>
-                                        <a href="/phone/@{{ itl.id }}">
-                                            <div>
-                                                @{{ itl.name }}
-                                            </div>
-                                        </a>
-                                    </td>
-                                    <td>@{{ itl.description }}</td>
-                                    <td>@{{ itl.latest_itl_eraser.ip_address.ip_address }}</td>
-                                    <td>@{{ itl.latest_itl_eraser.result }}</td>
-                                    <td>@{{ itl.latest_itl_eraser.fail_reason ? itl.latest_itl_eraser.fail_reason : 'Passed' }}</td>
-                                    <td>@{{ itl.latest_itl_eraser.updated_at }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div> <!-- table-responsive -->
+                </div>
+                <div class="box-body">
+                    <div class="table-responsive">
+                        <table id="table" class="table">
+                            <thead>
+                            <tr>
+                                <th>{{ trans('eraser/itl/general.columns.name') }}</th>
+                                <th>{{ trans('eraser/itl/general.columns.description') }}</th>
+                                <th>{{ trans('eraser/itl/general.columns.ip_address') }}</th>
+                                <th>{{ trans('eraser/itl/general.columns.result') }}</th>
+                                <th>{{ trans('eraser/itl/general.columns.fail_reason') }}</th>
+                                <th>{{ trans('eraser/itl/general.columns.last_updated') }}</th>
+                            </tr>
+                            </thead>
+                            <tfoot>
+                            </tfoot>
+                            <tbody>
+                            @foreach ($itls as $itl)
+                            @if(!$itl->fail_reason)
+                            {{$itl->fail_reason == 'Passed'}}
+                            @endif
+                            <tr>
+                                <td>
+                                    <a href="/phone/{{$itl->device->id}}">
+                                        <div>
+                                            {{ $itl->device->name }}
+                                        </div>
+                                    </a>
+                                </td>
+                                <td>{{ $itl->device->description}}</td>
+                                <td>{{ $itl->ipAddress->ip_address}}</td>
+                                <td >
+                                    <i class="{{ $itl->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
+                                </td>
+                                <td>{{ $itl->fail_reason}}</td>
+                                <td>
+                                    {{ $itl->updated_at->toDayDateTimeString() }}
+                                </td>
+                            </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive -->
 
-                    </div><!-- /.box-body -->
-                </div><!-- /.box -->
-            </div><!-- /.col -->
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
 
-        </div><!-- /.row -->
-        @endsection
+    </div><!-- /.row -->
+    @endsection
 
 
         {{-- Create Folder Modal --}}
@@ -107,19 +116,5 @@
         $("#modal-erase-itl").modal("show");
     }
 
-</script>
-<script>
-    new Vue({
-        el: '#vue-table',
-        data: {
-            itls: []
-        },
-        ready: function() {
-            this.$http.get('/api/v1/eraser/itls', function(itls) {
-                this. itls = itls;
-                console.log(this.itls);
-            }.bind(this));
-        }
-    })
 </script>
 @endsection

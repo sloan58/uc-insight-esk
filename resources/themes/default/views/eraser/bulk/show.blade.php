@@ -2,7 +2,7 @@
 
 @section('content')
 <div class='row'>
-    <div class='col-md-10 col-md-offset-1'>
+    <div class='col-md-12'>
         <!-- Box -->
         <div class="box box-primary">
             <div class="box-header with-border">
@@ -10,7 +10,7 @@
                 &nbsp;
                 <div class="box-body">
 
-                    <div class="table-responsive" id="vue-table">
+                    <div class="table-responsive">
                         <table id="table" class="table table-striped row-border">
                             <thead>
                             <tr>
@@ -22,17 +22,19 @@
                                 <th>Sent On</th>
                             </tr>
                             </thead>
-                            <tbody v-for="eraser in bulks.erasers">
+                            <tbody>
+                            @foreach ($bulk->erasers as $eraser)
                             <tr>
-                                <td>@{{ eraser.device.name }}</td>
-                                <td>@{{ eraser.ip_address.ip_address }}</td>
-                                <td>@{{ eraser.type }}</td>
+                                <td>{{ $eraser->device->name }}</td>
+                                <td>{{ $eraser->ipAddress->ip_address }}</td>
+                                <td>{{ $eraser->type }}</td>
                                 <td >
-                                    <i class="@{{ eraser.result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
+                                    <i class="{{ $eraser->result == 'Success' ? 'fa fa-check' : 'fa fa-times' }}"></i>
                                 </td>
-                                <td>@{{ eraser.fail_reason}}</td>
-                                <td>@{{ eraser.created_at}}</td>
+                                <td>{{ $eraser->fail_reason}}</td>
+                                <td>{{ $eraser->created_at->toDayDateTimeString()}}</td>
                             </tr>
+                            @endforeach
                             </tbody>
                         </table>
                         </table>
@@ -45,23 +47,11 @@
     </div><!-- /.row -->
     @endsection
 
+
     <!--    DataTables  -->
-    @include('partials._dataTables',['column' => '5'])
+    @include('partials._dataTables',['column' => '0'])
 
     <!-- Optional bottom section for modals etc... -->
     @section('body_bottom')
-    <script>
-        new Vue({
-            el: '#vue-table',
-            data: {
-                bulks: []
-            },
-            ready: function() {
-                this.$http.get('/api/v1/eraser/bulk/{{$bulk->id}}', function(bulks) {
-                    this. bulks = bulks;
-                    console.log(this.bulks);
-                }.bind(this));
-            }
-        })
-    </script>
+
     @endsection
