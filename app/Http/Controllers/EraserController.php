@@ -103,7 +103,7 @@ class EraserController extends Controller
 
         $phones = $this->device->has('erasers')->get();
         $ctls = [];
-        
+
         foreach($phones as $phone)
         {
             $ctl = $phone->erasers()->where('type','CTL')->orderBy('updated_at','desc')->first();
