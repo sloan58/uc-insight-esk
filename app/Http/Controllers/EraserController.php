@@ -55,12 +55,18 @@ class EraserController extends Controller
     public function itlIndex()
     {
         $page_title = 'Eraser';
-        $page_description = 'IT\'s';
+        $page_description = 'ITL\'s';
 
         $phones = $this->device->has('erasers')->get();
+        $itls = [];
+
         foreach($phones as $phone)
         {
-            $itls[] = $phone->erasers()->where('type','ITL')->orderBy('updated_at','desc')->first();
+            $itl = $phone->erasers()->where('type','ITL')->orderBy('updated_at','desc')->first();
+            if(count($itl))
+            {
+                array_push($itls,$itl);
+            }
         }
 
         return view('eraser.itl.index', compact('itls','page_title','page_description'));
@@ -96,9 +102,15 @@ class EraserController extends Controller
         $page_description = 'CTL\'s';
 
         $phones = $this->device->has('erasers')->get();
+        $ctls = [];
+        
         foreach($phones as $phone)
         {
-            $ctls[] = $phone->erasers()->where('type','CTL')->orderBy('updated_at','desc')->first();
+            $ctl = $phone->erasers()->where('type','CTL')->orderBy('updated_at','desc')->first();
+            if(count($ctl))
+            {
+                array_push($ctls,$ctl);
+            }
         }
 
         return view('eraser.ctl.index', compact('ctls','page_title','page_description'));
