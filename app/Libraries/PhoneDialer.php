@@ -56,7 +56,7 @@ class PhoneDialer {
 
         foreach ($keys as $index => $key)
         {
-            if ( $key == "Key:Sleep")
+            if ($key == "Key:Sleep")
             {
                 sleep(2);
                 continue;
@@ -73,41 +73,47 @@ class PhoneDialer {
 
             } catch (RequestException $e) {
 
+                /*
+                 * Handle an exception from the Guzzle client itself
+                 */
                 if($index == 0)
                 {
                     if($e instanceof ClientException)
                     {
                         //Unauthorized
-                        $this->tleObj->fail_reason = "Authentication Exception";
-                        $this->tleObj->save();
-                        throw new PhoneDialerException("$mac @ $ip Authentication Exception");
+                        $failReason = "Authentication Exception";
+                        $exceptionMessage = "$mac @ $ip Authentication Exception";
+
                     }
                     elseif($e instanceof ConnectException)
                     {
                         //Can't Connect
-                        $this->tleObj->fail_reason = "Connection Exception";
-                        $this->tleObj->save();
-                        throw new PhoneDialerException("$mac @ $ip Connection Exception");
+                        $failReason = "Connection Exception";
+                        $exceptionMessage = "$mac @ $ip Connection Exception";
                     }
                     else
                     {
                         //Other exception
-                        $this->tleObj->fail_reason = "Unknown Exception";
-                        $this->tleObj->save();
-                        throw new PhoneDialerException("$mac @ $ip " . $e->getMessage());
+                        $failReason = "Unknown Exception";
+                        $exceptionMessage = "$mac @ $ip " . $e->getMessage();
                     }
 
-                    return false;
+                    $this->tleObj->fail_reason = $failReason;
+                    $this->tleObj->save();
+                    throw new PhoneDialerException($exceptionMessage);
+
+                    break;
+
                 } else {
                     \Log::error('Guzzle error after successful messages have been sent.  We are on message #' . ($index + 1),[$e]);
+
                     break;
                 }
 
             }
 
             /*
-             * Check our response code and flip
-             * $return to false if non zero
+             * Get the content from the Guzzle response
              */
             $this->reader->xml($response->getBody()->getContents());
             $response = $this->reader->parse();
@@ -117,6 +123,11 @@ class PhoneDialer {
                 Log::info('dial(),response', [$response]);
 
             }
+            /*
+             * Handle an error from the IP phone
+             * This indicates the Guzzle messaging was successful
+             * but the phone returned an API error
+             */
             elseif(isset($response['name']) &&  $response['name'] == '{}CiscoIPPhoneError')
             {
                 //Log an Error
@@ -133,10 +144,15 @@ class PhoneDialer {
                         break;
                 }
 
+                /*
+                 * Persist the error and break
+                 */
                 $this->tleObj->fail_reason = $errorType;
                 $this->tleObj->result = "Fail";
                 $this->tleObj->save();
                 throw new PhoneDialerException("$mac @ $ip $errorType");
+
+                break;
             }
 
         }
