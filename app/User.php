@@ -353,6 +353,30 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->forceRole('users');
     }
 
+    public function euUpdate(array $attributes = []) {
+
+        if ( array_key_exists('first_name', $attributes) ) {
+            $this->first_name = $attributes['first_name'];
+        }
+        if ( array_key_exists('last_name', $attributes) ) {
+            $this->last_name = $attributes['last_name'];
+        }
+        if ( array_key_exists('username', $attributes) ) {
+            $this->username = $attributes['username'];
+        }
+        if ( array_key_exists('email', $attributes) ) {
+            $this->email = $attributes['email'];
+        }
+        if( array_key_exists('password', $attributes) ) {
+            $this->password = $attributes['password'];
+        }
+        if( array_key_exists('enabled', $attributes) ) {
+            $this->enabled = $attributes['enabled'];
+        }
+        $this->save();
+
+    }
+
     /**
      * Implements the 'isMemberOf(...)' as required by Eloquent-LDAP by using
      * the hasRole method and ignoring the enable state of the role.

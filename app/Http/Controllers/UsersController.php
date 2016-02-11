@@ -398,7 +398,6 @@ class UsersController extends Controller {
      */
     public function euUpdate(UpdateUserRequest $request, $id)
     {
-
         if(\Auth::user()->id != $id)
         {
             if(!\Auth::user()->hasRole(['admins','user-managers']))
@@ -417,17 +416,12 @@ class UsersController extends Controller {
             unset($attributes['password']);
         }
 
-
         if (!$user->isEditable())
         {
             abort(403);
         }
 
-        if ( array_key_exists('selected_roles', $attributes) ) {
-            $attributes['role'] = explode(",", $attributes['selected_roles']);
-        }
-
-        $user->update($attributes);
+        $user->euUpdate($attributes);
 
         $user->save();
 
