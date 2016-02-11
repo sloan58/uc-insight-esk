@@ -87,6 +87,7 @@ function setKeys($model,$tleType)
                         'Key:KeyPad4',
                         'Key:KeyPad5',
                         'Key:KeyPad2',
+                        'Key:Soft2',
                         'Key:Soft4',
                         'Key:Soft2',
                         'Key:Sleep',
@@ -281,15 +282,17 @@ function setKeys($model,$tleType)
         case 'ctl':
 
             switch ($model) {
-                case "Cisco 7905": // This sequence for a 7905 actually deletes the ITL.  It's here for testing and should be updated....
-                case "Cisco 7911": // This sequence for a 7911 actually deletes the ITL.  It's here for testing and should be updated....
+                case "Cisco 7905":
+                case "Cisco 7906":
+                case "Cisco 7911":
                     return [
                         'Init:Applications',
                         'Key:Applications',
                         'Key:KeyPad3',
                         'Key:KeyPad4',
                         'Key:KeyPad5',
-                        'Key:KeyPad2',
+                        'Key:KeyPad1',
+                        'Key:Soft2',
                         'Key:Soft4',
                         'Key:Soft2',
                         'Key:Sleep',
