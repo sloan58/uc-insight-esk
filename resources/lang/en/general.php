@@ -27,6 +27,7 @@ return [
 
     'tabs'              => [
         'details'           => 'Details',
+        'cluster'           => 'Cluster',
         'options'           => 'Options',
         'perms'             => 'Permissions',
         'users'             => 'Users',

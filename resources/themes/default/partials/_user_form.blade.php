@@ -2,6 +2,7 @@
 <div class="nav-tabs-custom">
     <ul class="nav nav-tabs">
         <li class="active"><a href="#tab_details" data-toggle="tab" aria-expanded="true">{!! trans('general.tabs.details') !!}</a></li>
+        <li class=""><a href="#tab_cluster" data-toggle="tab" aria-expanded="true">{!! trans('general.tabs.cluster') !!}</a></li>
         <li class=""><a href="#tab_options" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.options') !!}</a></li>
         <li class=""><a href="#tab_roles" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.roles') !!}</a></li>
         <li class=""><a href="#tab_perms" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.perms') !!}</a></li>
@@ -45,13 +46,31 @@
             </div>
         </div><!-- /.tab-pane -->
 
+        <div class="tab-pane" id="tab_cluster">
+            <div class="form-group">
+                <div class="checkbox">
+                    @if(isset($user->activeCluster()->id))
+                    <label>
+                        {!! Form::label('cluster', trans('admin/users/general.columns.cluster')) !!}
+                        {!! Form::select('activeCluster', $clusters, $user->activeCluster()->id) !!}
+                    </label>
+                    @else
+                    <label>
+                        {!! Form::label('cluster', trans('admin/users/general.columns.cluster')) !!}
+                        {!! Form::select('activeCluster', $clusters, key($clusters)) !!}
+                    </label>
+                    @endif
+                </div>
+            </div>
+        </div><!-- /.tab-pane -->
+
         <div class="tab-pane" id="tab_options">
             <div class="form-group">
                 <div class="checkbox">
                     <label>
                         <!-- Trick to force cleared checkbox to being posted in form! It will be posted as zero unless checked then posted again as 1 and since only last one count! -->
                         {!! '<input type="hidden" name="enabled" value="0">' !!}
-                        {!! Form::checkbox('enabled', '1', $user->enabled) !!} {!! trans('general.status.enabled') !!}
+                        {!! Form::checkbox('enabled', '1', $user->enabled or true) !!} {!! trans('general.status.enabled') !!}
                     </label>
                 </div>
             </div>

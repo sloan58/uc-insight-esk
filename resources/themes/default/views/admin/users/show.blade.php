@@ -16,6 +16,7 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_details" data-toggle="tab" aria-expanded="true">{!! trans('general.tabs.details') !!}</a></li>
+                        <li class=""><a href="#tab_cluster" data-toggle="tab" aria-expanded="true">{!! trans('general.tabs.cluster') !!}</a></li>
                         <li class=""><a href="#tab_options" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.options') !!}</a></li>
                         <li class=""><a href="#tab_roles" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.roles') !!}</a></li>
                         <li class=""><a href="#tab_perms" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.perms') !!}</a></li>
@@ -56,6 +57,24 @@
                             <div class="form-group">
                                 {!! Form::label('auth_type', trans('admin/users/general.columns.type')) !!}
                                 {!! Form::text('auth_type', null, ['class' => 'form-control', 'readonly']) !!}
+                            </div>
+                        </div><!-- /.tab-pane -->
+
+                        <div class="tab-pane" id="tab_cluster">
+                            <div class="form-group">
+                                <div class="checkbox">
+                                    @if(isset($user->activeCluster()->id))
+                                    <label>
+                                        {!! Form::label('cluster', trans('admin/users/general.columns.cluster')) !!}
+                                        {!! Form::select('activeCluster', $clusters, $user->activeCluster()->id) !!}
+                                    </label>
+                                    @else
+                                    <label>
+                                        {!! Form::label('cluster', trans('admin/users/general.columns.cluster')) !!}
+                                        {!! Form::select('activeCluster', $clusters, key($clusters)) !!}
+                                    </label>
+                                    @endif
+                                </div>
                             </div>
                         </div><!-- /.tab-pane -->
 

@@ -2,6 +2,7 @@
 
 use Auth;
 use Alert;
+use App\Models\Cluster;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -69,6 +70,8 @@ class UsersController extends Controller {
     public function show($id)
     {
         $user = $this->user->find($id);
+        $clusters = Cluster::lists('name','id');
+
 
         Audit::log(Auth::user()->id, trans('admin/users/general.audit-log.category'), trans('admin/users/general.audit-log.msg-show', ['username' => $user->username]));
 
@@ -79,7 +82,7 @@ class UsersController extends Controller {
 //        $roleList = [''=>''] + $roleCollection->all();
         $perms = $this->perm->pushCriteria(new PermissionsByNamesAscending())->all();
 
-        return view('admin.users.show', compact('user', 'perms', 'page_title', 'page_description'));
+        return view('admin.users.show', compact('user', 'clusters', 'perms', 'page_title', 'page_description'));
     }
 
     /**
@@ -92,11 +95,13 @@ class UsersController extends Controller {
 
         $perms = $this->perm->pushCriteria(new PermissionsByNamesAscending())->all();
         $user = new \App\User();
+        $clusters = Cluster::lists('name','id');
+
 //        $userRoles = $user->roles;
 //        $roleCollection = \App\Models\Role::take(10)->get(['id', 'display_name'])->lists('display_name', 'id');
 //        $roleList = [''=>''] + $roleCollection->all();
 
-        return view('admin.users.create', compact('user', 'perms', 'page_title', 'page_description'));
+        return view('admin.users.create', compact('user', 'clusters', 'perms', 'page_title', 'page_description'));
     }
 
     /**
@@ -125,12 +130,18 @@ class UsersController extends Controller {
 //       TODO: Create front end system to manage users and clsuters
 //       TODO: In the meantime, give all users access to every cluster.
 
-        $clusters = \App\Models\Cluster::all();
+        $clusters = Cluster::all();
 
         foreach($clusters as $cluster)
         {
             $user->clusters()->attach($cluster);
         }
+
+        /*
+         * Assign the new user's active cluster
+         */
+        $user->activateCluster($attributes['activeCluster']);
+        $user->save();
 
         alert()->success( trans('admin/users/general.status.created') ); // 'User successfully created');
 
@@ -145,6 +156,8 @@ class UsersController extends Controller {
     public function edit($id)
     {
         $user = $this->user->find($id);
+        $clusters = Cluster::lists('name','id');
+
 
         Audit::log(Auth::user()->id, trans('admin/users/general.audit-log.category'), trans('admin/users/general.audit-log.msg-edit', ['username' => $user->username]));
 
@@ -161,7 +174,7 @@ class UsersController extends Controller {
 //        $roleCollection = \App\Models\Role::take(10)->get(['id', 'display_name'])->lists('display_name', 'id');
 //        $roleList = [''=>''] + $roleCollection->all();
 
-        return view('admin.users.edit', compact('user', 'roles', 'perms', 'page_title', 'page_description'));
+        return view('admin.users.edit', compact('user', 'clusters', 'roles', 'perms', 'page_title', 'page_description'));
     }
 
     static public function ParseUpdateAuditLog($id)
@@ -304,6 +317,12 @@ class UsersController extends Controller {
         }
 
         $user->update($attributes);
+
+        /*
+         * Assign the new user's active cluster
+         */
+        $user->activateCluster($attributes['activeCluster']);
+        $user->save();
 
         alert()->success( trans('admin/users/general.status.updated') );
 
