@@ -10,13 +10,13 @@
         <div class='col-md-10 col-md-offset-1'>
             <div class="box-body">
 
-                {!! Form::model( $user, ['route' => ['admin.users.update', $user->id], 'method' => 'PATCH', 'id' => 'form_edit_user'] ) !!}
+                {!! Form::model( $user, ['route' => ['users.update', $user->id], 'method' => 'PATCH', 'id' => 'form_edit_user'] ) !!}
 
-                @include('partials._user_form')
+                @include('partials._end_user_form')
 
                 <div class="form-group">
                     {!! Form::button( trans('general.button.update'), ['class' => 'btn btn-primary', 'id' => 'btn-submit-edit'] ) !!}
-                    <a href="{!! route('admin.users.index') !!}" title="{{ trans('general.button.cancel') }}" class='btn btn-default'>{{ trans('general.button.cancel') }}</a>
+                    <a href="{!! route('home') !!}" title="{{ trans('general.button.cancel') }}" class='btn btn-default'>{{ trans('general.button.cancel') }}</a>
                 </div>
 
                 {!! Form::close() !!}

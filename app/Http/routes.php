@@ -137,6 +137,14 @@ Route::group(['middleware' => 'authorize'], function () {
     }); // End of ACL-TEST group
 
     /*
+     * End User Profile Routes
+     */
+    Route::get(   'users/{userId}',                ['as' => 'users.show',             'uses' => 'UsersController@euShow']);
+    Route::get(   'users/{userId}/edit',           ['as' => 'users.edit',             'uses' => 'UsersController@euEdit']);
+    Route::patch( 'users/{userId}',                ['as' => 'users.update',            'uses' => 'UsersController@euUpdate']);
+
+
+    /*
      * UC Insight Routes
      */
 

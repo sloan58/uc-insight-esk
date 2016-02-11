@@ -88,6 +88,31 @@ class UsersController extends Controller {
     /**
      * @return \Illuminate\View\View
      */
+    public function euShow($id)
+    {
+        if(\Auth::user()->id != $id)
+        {
+            if(!\Auth::user()->hasRole(['admins','user-managers']))
+            {
+                abort(403);
+            }
+        }
+
+        $user = $this->user->find($id);
+        $clusters = Cluster::lists('name','id');
+
+
+        $page_title = "User | Show";
+        $page_description = trans('admin/users/general.page.show.description', ['full_name' => $user->full_name]); // "Displaying user";
+
+        $perms = $this->perm->pushCriteria(new PermissionsByNamesAscending())->all();
+
+        return view('user.show', compact('user', 'clusters', 'perms', 'page_title', 'page_description'));
+    }
+
+    /**
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         $page_title = trans('admin/users/general.page.create.title'); // "Admin | User | Create";
@@ -177,6 +202,43 @@ class UsersController extends Controller {
         return view('admin.users.edit', compact('user', 'clusters', 'roles', 'perms', 'page_title', 'page_description'));
     }
 
+    /**
+     * @param $id
+     * @return \BladeView|bool|\Illuminate\View\View
+     */
+    public function euEdit($id)
+    {
+
+        if(\Auth::user()->id != $id)
+        {
+            if(!\Auth::user()->hasRole(['admins','user-managers']))
+            {
+                abort(403);
+            }
+        }
+
+        $user = $this->user->find($id);
+        $clusters = Cluster::lists('name','id');
+
+
+        $page_title = "User | Edit";
+        $page_description = trans('admin/users/general.page.edit.description', ['full_name' => $user->full_name]); // "Editing user";
+
+        if (!$user->isEditable())
+        {
+            abort(403);
+        }
+
+        $roles = $this->role->pushCriteria(new RolesByNamesAscending())->all();
+        $perms = $this->perm->pushCriteria(new PermissionsByNamesAscending())->all();
+
+        return view('user.edit', compact('user', 'clusters', 'roles', 'perms', 'page_title', 'page_description'));
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     static public function ParseUpdateAuditLog($id)
     {
         $permsObj = [];
@@ -327,6 +389,51 @@ class UsersController extends Controller {
         alert()->success( trans('admin/users/general.status.updated') );
 
         return redirect('/admin/users');
+    }
+
+    /**
+     * @param UpdateUserRequest $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function euUpdate(UpdateUserRequest $request, $id)
+    {
+
+        if(\Auth::user()->id != $id)
+        {
+            if(!\Auth::user()->hasRole(['admins','user-managers']))
+            {
+                abort(403);
+            }
+        }
+
+        $user = $this->user->find($id);
+
+        // Get all attribute from the request.
+        $attributes = $request->all();
+
+        if($attributes['password'] == '')
+        {
+            unset($attributes['password']);
+        }
+
+
+        if (!$user->isEditable())
+        {
+            abort(403);
+        }
+
+        if ( array_key_exists('selected_roles', $attributes) ) {
+            $attributes['role'] = explode(",", $attributes['selected_roles']);
+        }
+
+        $user->update($attributes);
+
+        $user->save();
+
+        alert()->success( trans('admin/users/general.status.updated') );
+
+        return redirect()->back();
     }
 
     /**
@@ -488,6 +595,10 @@ class UsersController extends Controller {
         return redirect('/admin/users');
     }
 
+    /**
+     * @param Request $request
+     * @return array|null
+     */
     public function searchByName(Request $request)
     {
         $return_arr = null;
@@ -509,6 +620,10 @@ class UsersController extends Controller {
         return $return_arr;
     }
 
+    /**
+     * @param Request $request
+     * @return mixed
+     */
     public function listByPage(Request $request)
     {
         $skipNumb = $request->input('s');
