@@ -125,9 +125,14 @@
                     </ul>
                 </li>
             @endif
+            @if(\Auth::user()->hasRole([
+            'admins',
+            'cluster-managers',
+            ]))
                 <li>
                     <a href="{{ route('cluster.index') }}"><i class="fa fa-fax"></i><span>Clusters</span></a>
                 </li>
+            @endif
             @if(\Auth::user()->hasRole(['admins','audit-viewers','audit-replayers','audit-purgers']))
                     <li>
                         <a href="{{ route('admin.audit.index')}}"><i class="fa fa-binoculars"></i> <span> Audit</span></a>
