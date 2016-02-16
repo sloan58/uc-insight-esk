@@ -4,8 +4,8 @@
 
 @include('emails.templates.widgets.articleStart')
 
-<h4 class="secondary"><strong>CUCM None Partition Report</strong></h4>
-<p>Please see the attached report of DN's found in the CUCM 'None' Partition</p>
+<h4 class="secondary"><strong>UC-Insight Daily Report</strong></h4>
+<p>Please see the Cisco Call Manager daily attached reports</p>
 
 @include('emails.templates.widgets.articleEnd')
 

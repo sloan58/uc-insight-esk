@@ -43,12 +43,16 @@ class GetDnsInNonePartition extends Job implements SelfHandling
      */
     public function handle()
     {
+        // Query the CUCM to get numbers in the None partition
         $res = Utils::executeQuery('SELECT dnorpattern, description FROM numplan WHERE fkroutepartition IS NULL AND tkpatternusage = 2',$this->cluster);
 
+        // Create a line in the CSV for the Cluster heading
         Storage::append($this->outFile, $this->cluster->name . ',' . $this->cluster->ip);
 
+        //If we got results.....
         if($res)
         {
+            //Add the results to our CSV file
             foreach($res as $dn)
             {
                 Storage::append($this->outFile,implode(",",[$dn->dnorpattern,$dn->description]));

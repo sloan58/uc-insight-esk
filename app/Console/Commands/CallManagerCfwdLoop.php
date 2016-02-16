@@ -5,63 +5,64 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Models\Cluster;
 use Illuminate\Console\Command;
-use App\Jobs\GetDnsInNonePartition;
+use App\Jobs\CheckForCallForwardLoop;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 
-
-/**
- * Class CallManagerSecondaryDialToneChecker
- * @package App\Console\Commands
- */
-class CallManagerSecondaryDialToneChecker extends Command
+class CallManagerCfwdLoop extends Command
 {
+
     use DispatchesJobs;
+
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'cucm:none-pt';
+    protected $signature = 'cucm:cfwd-loop';
+
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Check for DN\'s in the CUCM None Partition.';
+    protected $description = 'Check to see if someone forwarded their NIPT line to itself.';
 
     /**
      * @var \App\Models\Cluster
      */
     private $cluster;
 
-
     /**
-     * @param Cluster $cluster
+     * Create a new command instance.
+     *
+     * @return void
      */
     public function __construct(Cluster $cluster)
     {
         parent::__construct();
         $this->cluster = $cluster;
+
+
     }
 
     /**
-     * Execute the console command.
+     * Execute the command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
-        $outFile = 'reports/nonePt/CucmNonePartition-' . Carbon::now()->timestamp .'.csv';
-        Storage::put($outFile,'Directory Number,Description');
+        $outFile = 'reports/cfwdLoop/CallForwardLoop-' . Carbon::now()->timestamp .'.csv';
+        Storage::put($outFile,'Directory Number,Description,Call Forward Number');
 
         $clusters = $this->cluster->all();
 
         foreach($clusters as $cluster)
         {
-            $this->dispatch(new GetDnsInNonePartition($cluster,$outFile));
+            $this->dispatch(new CheckForCallForwardLoop($cluster,$outFile));
         }
 
         $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
