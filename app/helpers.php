@@ -344,6 +344,23 @@ function setKeys($model,$tleType)
                         'Init:Services'
                     ];
                     break;
+                case "Cisco IP Communicator":
+                    return [
+                        'Init:Settings',
+                        'Key:Settings',
+                        'Key:KeyPad5',
+                        'Key:KeyPad4',
+                        'Key:KeyPad1',
+                        'Key:Soft5',
+                        'Key:Sleep',
+                        'Key:KeyPadStar',
+                        'Key:KeyPadStar',
+                        'Key:KeyPadPound',
+                        'Key:Sleep',
+                        'Key:Soft5',
+                        'Init:Services'
+                    ];
+                    break;
                 case "Cisco 8961":
                 case "Cisco 9951":
                 case "Cisco 7937":

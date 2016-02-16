@@ -123,7 +123,7 @@ class EraserController extends Controller
      * @param \App\Http\Requests\SubmitEraserRequest|\Illuminate\Http\Request $request
      * @return Response
      */
-    public function ctlStore(SubmitEraserRequest $request)
+    public function ctlStore(Request $request)
     {
         $this->dispatch(
             new EraseTrustList([
