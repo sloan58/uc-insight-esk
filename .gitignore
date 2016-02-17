@@ -2,9 +2,6 @@
 #############
 /vendor/
 .env
-storage/debugbar
-storage/framework
-storage/logs
 
 # Configuration testing #
 #########################
