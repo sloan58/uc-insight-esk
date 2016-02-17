@@ -87,7 +87,7 @@ class CallManagerReportingCommand extends Command
         {
             $message
                 ->to(['martin_sloan@ao.uscourts.gov', 'kwang_chong@ao.uscourts.gov','aaron_dhiman@ao.uscourts.gov'])
-                ->subject('CUCM None Partition Report')
+                ->subject('CUCM Daily Report')
                 ->attach(storage_path("app/$secondaryDialToneReport"))
                 ->attach(storage_path("app/$callForwardLoopOutFile"));
         });
