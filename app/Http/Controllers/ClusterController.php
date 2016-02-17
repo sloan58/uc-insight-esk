@@ -126,11 +126,11 @@ class ClusterController extends Controller
         $cluster = $this->cluster->find($id);
         $activeClusterId = \Auth::user()->activeClusterId();
 
-        $directories = Storage::directories('axl/');
+        $directories = Storage::directories('app/axl/');
         $versions= [];
         foreach($directories as $directory)
         {
-            preg_match('/\/(.*)/',$directory,$matches);
+            preg_match('/\/axl\/(.*)/',$directory,$matches);
             $versions[$matches[1]] = $matches[1];
         }
         return view('cluster.edit', compact('cluster','activeClusterId','versions'));
