@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
      * @var array
      */
     protected $tables = [
-        'audits', 'cluster_user', 'clusters', 'devices', 'erasers','ip_addresses', 'permission_role', 'permission_user', 'permissions', 'role_user', 'roles', 'routes', 'users'
+        'audits', 'cluster_user', 'clusters', 'devices', 'erasers','ip_addresses', 'permission_role', 'permission_user', 'permissions', 'role_user', 'roles', 'routes', 'users', 'reports', 'report_user'
     ];
 
     /**
@@ -50,7 +50,6 @@ class DatabaseSeeder extends Seeder
         }
 
         DB::statement('SET FOREIGN_KEY_CHECKS=1');
-
 
     }
 }
