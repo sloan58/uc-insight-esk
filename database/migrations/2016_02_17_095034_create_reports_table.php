@@ -14,9 +14,11 @@ class CreateReportsTable extends Migration
     {
         Schema::create('reports', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
+            $table->string('name')->unique();
+            $table->string('path');
             $table->string('type');
             $table->string('job')->nullable();
+            $table->string('csv_headers')->nullable();
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ use App\User;
 use App\Models\Role;
 use App\Models\Permission;
 use App\Models\Route;
+use App\Models\Report;
 
 class ProductionSeeder extends Seeder
 {
@@ -337,6 +338,23 @@ class ProductionSeeder extends Seeder
         $userRoot->roles()->attach($roleAdmins->id);
 
 
+        /*
+         * Seed CUCM Daily Reports Table
+         */
+        Report::create([
+            'name' => 'NonePartitionReport',
+            'path' => 'reports/cucm/none-pt/',
+            'type' => 'cucm_daily',
+            'job'  => 'App\Jobs\GetDnsInNonePartition',
+            'csv_headers' => 'Directory Number,Description'
+        ]);
+        Report::create([
+            'name' => 'CallForwardLoopReport',
+            'path' => 'reports/cucm/cfwd-loop/',
+            'type' => 'cucm_daily',
+            'job'  => 'App\Jobs\CheckForCallForwardLoop',
+            'csv_headers' => 'Directory Number,Description,Forward Number'
+        ]);
 
     }
 }

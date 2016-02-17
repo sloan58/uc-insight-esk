@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Models\Report;
 use App\Models\Cluster;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -54,42 +55,49 @@ class CallManagerReportingCommand extends Command
      */
     public function handle()
     {
-        //Create our report outfile names
-        $reports['secondaryDialToneOutFile']['fileName'] = 'reports/nonePt/CucmNonePartition-' . Carbon::now()->timestamp .'.csv';
-        $reports['secondaryDialToneOutFile']['Job'] = 'App\Jobs\GetDnsInNonePartition';
 
-        $reports['callForwardLoopOutFile']['fileName'] = 'reports/cfwdLoop/CallForwardLoop-' . Carbon::now()->timestamp .'.csv';
-        $reports['callForwardLoopOutFile']['Job'] = 'App\Jobs\CheckForCallForwardLoop';
+        //Get all reports where type = cucm_daily
+        $reports = Report::where('type','cucm_daily')->get();
 
+        //Get all configured CUCM clusters
+        $clusters = $this->cluster->all();
 
-        //Write the reports to disk
-        Storage::put($reports['secondaryDialToneOutFile']['fileName'],'Directory Number,Description');
-        Storage::put($reports['callForwardLoopOutFile']['fileName'],'Directory Number,Description');
+        //Set timestamp for file names
+        $timeStamp = Carbon::now()->timestamp;
 
-        foreach($reports as $report)
+        //Create array to track attachments
+        $attachments = [];
+
+        //Loop reports
+        foreach($reports as $index => $report)
         {
-            //Get all configured CUCM clusters
-            $clusters = $this->cluster->all();
+            $attachments[$index] = $report->path . $report->name . '-' . $timeStamp .'.csv';
+
+            //Persist report to disk
+            Storage::put($attachments[$index],$report->csv_headers);
 
             //Loop each cluster and run the reports
             foreach($clusters as $cluster)
             {
-                $this->dispatch(new $report['Job']($cluster,$report['fileName']));
+                $this->dispatch(new $report->job($cluster,$attachments[$index]));
             }
         }
 
-        //TODO: Fix this
-        $secondaryDialToneReport = $reports['secondaryDialToneOutFile']['fileName'];
-        $callForwardLoopOutFile = $reports['callForwardLoopOutFile']['fileName'];
-
+        //Reports are done running, let's email to results
         $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
-        $beautymail->send('emails.cucmDailyReporting', [], function($message) use($secondaryDialToneReport,$callForwardLoopOutFile)
+        $beautymail->send('emails.cucmDailyReporting', [], function($message) use($attachments)
         {
+            //TODO: Create system for users to manage report subscriptions.
             $message
                 ->to(['martin_sloan@ao.uscourts.gov', 'kwang_chong@ao.uscourts.gov','aaron_dhiman@ao.uscourts.gov','minh_leung@ao.uscourts.gov'])
-                ->subject('CUCM Daily Report')
-                ->attach(storage_path("app/$secondaryDialToneReport"))
-                ->attach(storage_path("app/$callForwardLoopOutFile"));
+                ->subject('CUCM Daily Report');
+
+                //Add all reports to email
+                foreach($attachments as $report)
+                {
+                    $message->attach(storage_path($report));
+                }
         });
+
     }
 }

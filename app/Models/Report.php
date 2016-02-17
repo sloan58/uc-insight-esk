@@ -13,7 +13,7 @@ class Report extends Model
     /**
      * @var array
      */
-    protected $fillable = ['name','type','job'];
+    protected $fillable = ['name','path','type','job','csv_headers'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
