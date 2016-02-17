@@ -129,6 +129,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsToMany('App\Models\Sql');
     }
 
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports()
+    {
+        return $this->hasMany('App\Models\Report');
+    }
+
     /**
      * Alias to eloquent many-to-many relation's sync() method.
      *
@@ -353,6 +362,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $this->forceRole('users');
     }
 
+    /**
+     * @param array $attributes
+     */
     public function euUpdate(array $attributes = []) {
 
         if ( array_key_exists('first_name', $attributes) ) {
