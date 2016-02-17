@@ -86,8 +86,7 @@ class CallManagerReportingCommand extends Command
         $beautymail->send('emails.cucmDailyReporting', [], function($message) use($secondaryDialToneReport,$callForwardLoopOutFile)
         {
             $message
-//                ->to(['martin_sloan@ao.uscourts.gov', 'kwang_chong@ao.uscourts.gov','aaron_dhiman@ao.uscourts.gov'])
-                ->to(['martin_sloan@ao.uscourts.gov'])
+                ->to(['martin_sloan@ao.uscourts.gov', 'kwang_chong@ao.uscourts.gov','aaron_dhiman@ao.uscourts.gov'])
                 ->subject('CUCM None Partition Report')
                 ->attach(storage_path("app/$secondaryDialToneReport"))
                 ->attach(storage_path("app/$callForwardLoopOutFile"));
