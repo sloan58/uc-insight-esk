@@ -59,11 +59,12 @@ class ClusterController extends Controller
      */
     public function create()
     {
-        $directories = Storage::directories('axl/');
+        $directories = Storage::directories('app/axl/');
+
         $versions= [];
         foreach($directories as $directory)
         {
-            preg_match('/\/(.*)/',$directory,$matches);
+            preg_match('/\/axl\/(.*)/',$directory,$matches);
             $versions[$matches[1]] = $matches[1];
         }
 
