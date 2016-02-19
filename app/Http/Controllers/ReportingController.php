@@ -13,16 +13,27 @@ class ReportingController extends Controller
 {
     public function servicesIndex()
     {
+        //Get the active cluster for the logged in user
         $cluster = \Auth::user()->activeCluster();
-        $data = Utils::executeQuery('SELECT name FROM processnode WHERE tkprocessnoderole = 1 AND name != "EnterpriseWideData"',$cluster);
 
+        //Set the SQL query based on the CUCM DB version
+        switch($cluster->version)
+        {
+            case (preg_match('/10/', $cluster->version) ? true : false):
+                $data = Utils::executeQuery('SELECT name FROM processnode WHERE tkprocessnoderole = 1 AND name != "EnterpriseWideData"',$cluster);
+                break;
+            case (preg_match('/9/', $cluster->version) ? true : false):
+                $data = Utils::executeQuery('SELECT name FROM processnode WHERE name != "EnterpriseWideData"',$cluster);
+                break;
+        }
+
+        //Loop each node in the cluster to get all services status
         $clusterStatus = [];
         foreach($data as $node)
         {
             $ris = new ControlCenterSoap($cluster,$node->name);
             $clusterStatus[$node->name] = $ris->getServiceStatus();
         }
-
 
         return view('reports.services.show', compact('clusterStatus'));
     }
