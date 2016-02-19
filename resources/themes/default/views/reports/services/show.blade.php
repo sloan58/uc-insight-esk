@@ -16,7 +16,6 @@
                                     <th>Service</th>
                                     <th>Status</th>
                                     <th>StartTime</th>
-                                    <th>UpTime</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -27,7 +26,6 @@
                                             <td>{{$service->ServiceName}}</td>
                                             <td>{{$service->ServiceStatus}}</td>
                                             <td>{{$service->StartTime}}</td>
-                                            <td>{{gmdate("H:i:s", $service->UpTime)}}</td>
                                         </tr>
                                     @endforeach
                                 @endforeach
