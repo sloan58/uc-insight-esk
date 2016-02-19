@@ -19,9 +19,10 @@ class ReportingController extends Controller
         $clusterStatus = [];
         foreach($data as $node)
         {
-            $ris = new ControlCenterSoap($cluster);
+            $ris = new ControlCenterSoap($cluster,$node->name);
             $clusterStatus[$node->name] = $ris->getServiceStatus();
         }
+
 
         return view('reports.services.show', compact('clusterStatus'));
     }
