@@ -2,7 +2,9 @@
 #############
 /vendor/
 .env
-/storage
+!storage
+/storage/*
+!storage/app
 # Configuration testing #
 #########################
 .env.mysql
