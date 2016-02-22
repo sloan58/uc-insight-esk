@@ -119,4 +119,21 @@ class AxlSoap extends SoapClient {
         }
     }
 
+
+    /**
+     * @param $phone
+     * @return mixed
+     */
+    public function phoneReset($phone)
+    {
+        try {
+            return $this->doDeviceReset([
+                'deviceName' => $phone,
+                'isHardReset' => 'false'
+            ]);
+        } catch(SoapFault $e) {
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 }

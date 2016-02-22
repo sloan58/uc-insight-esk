@@ -52,10 +52,10 @@ class WalledGarden
             '_debugbar/open',
             '_debugbar/assets/stylesheets',
             '_debugbar/assets/javascript',
-            'api/v1/',
         ];
         $exemptionsRegEx = [
             '/password\/reset\/.*/',
+            '/api\/.*/',
                             ];
 
         // Redirect to the login page if the user is not authenticated and the site

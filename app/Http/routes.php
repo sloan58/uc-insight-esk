@@ -221,3 +221,11 @@ Route::group(['middleware' => 'authorize'], function () {
     });
 }); // end of AUTHORIZE group
 
+
+//Dingo API
+$api = app('Dingo\Api\Routing\Router');
+
+$api->version('v1', ['middleware' => 'api.auth'], function ($api) {
+    $api->post('phone-reset/', 'App\Api\Controllers\PhoneController@resetPhone');
+});
+

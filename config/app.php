@@ -170,6 +170,7 @@ return [
         UxWeb\SweetAlert\SweetAlertServiceProvider::class,
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
         Snowfire\Beautymail\BeautymailServiceProvider::class,
+        Dingo\Api\Provider\LaravelServiceProvider::class,
 
     ],
 
