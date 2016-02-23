@@ -219,6 +219,23 @@ Route::group(['middleware' => 'authorize'], function () {
         });
 
     });
+
+    /*
+     * IOS Config Generator Routes
+     */
+    Route::get('/ios-config-generator', [
+        'as' => 'ios-config-generator.create',
+        'uses' => 'IosConfigGeneratorController@index'
+    ]);
+    Route::get('/ios-config-generator/{fileName}', [
+        'as' => 'ios-config-generator.create',
+        'uses' => 'IosConfigGeneratorController@create'
+    ]);
+    Route::post('/ios-config-generator/', [
+        'as' => 'ios-config-generator.store',
+        'uses' => 'IosConfigGeneratorController@store'
+    ]);
+
 }); // end of AUTHORIZE group
 
 

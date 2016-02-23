@@ -132,6 +132,20 @@ class ProductionSeeder extends Seeder
             'description'   => 'Allows a user to place calls using AutoDialer.',
             'enabled'       => true,
         ]);
+        // Create permission for generating IOS configs
+        $permGenerateIosConfigs    = Permission::create([
+            'name'          => 'ios-config-user',
+            'display_name'  => 'Generate IOS Configs',
+            'description'   => 'Allows a user to generate dynamic IOS configs from a template.',
+            'enabled'       => true,
+        ]);
+        // Create permission for generating IOS configs
+        $permManageIosConfigTemplates    = Permission::create([
+            'name'          => 'ios-config-admin',
+            'display_name'  => 'Manage IOS Config Tempalates',
+            'description'   => 'Allows a user to manage the IOS config templates.',
+            'enabled'       => true,
+        ]);
 
         ////////////////////////////////////
         // Associate open-to-all permission to some routes
@@ -278,49 +292,70 @@ class ProductionSeeder extends Seeder
 
         // Create role: sql-runner
         // Assign permission: permRunSqlQuery
-        $roleCertErasers = Role::create([
+        $roleSqlRunner = Role::create([
             "name"          => "sql-runner",
             "display_name"  => "SQL Runner",
             "description"   => "SQL Runners can run existing queries against the active CUCM cluster.",
             "enabled"       => true
         ]);
-        $roleCertErasers->perms()->attach($permRunSqlQuery->id);
+        $roleSqlRunner->perms()->attach($permRunSqlQuery->id);
 
         // Create role: sql-creator
         // Assign permission: permRunSqlQuery
         // Assign permission: permAddSqlQuery
-        $roleCertErasers = Role::create([
+        $roleSqlCreator = Role::create([
             "name"          => "sql-creator",
             "display_name"  => "SQL Creator",
             "description"   => "SQL Creators can run new and existing queries against the active CUCM cluster.",
             "enabled"       => true
         ]);
-        $roleCertErasers->perms()->attach($permRunSqlQuery->id);
-        $roleCertErasers->perms()->attach($permAddSqlQuery->id);
+        $roleSqlCreator->perms()->attach($permRunSqlQuery->id);
+        $roleSqlCreator->perms()->attach($permAddSqlQuery->id);
 
         // Create role: sql-admin
         // Assign permission: permRunSqlQuery
         // Assign permission: permAddSqlQuery
         // Assign permission: permDeleteSqlQuery
-        $roleCertErasers = Role::create([
+        $roleSqlAdmin = Role::create([
             "name"          => "sql-admin",
             "display_name"  => "SQL Admin",
             "description"   => "SQL Admins can run new and existing queries against the active CUCM cluster and delete queries.",
             "enabled"       => true
         ]);
-        $roleCertErasers->perms()->attach($permRunSqlQuery->id);
-        $roleCertErasers->perms()->attach($permAddSqlQuery->id);
-        $roleCertErasers->perms()->attach($permDeleteSqlQuery->id);
+        $roleSqlAdmin->perms()->attach($permRunSqlQuery->id);
+        $roleSqlAdmin->perms()->attach($permAddSqlQuery->id);
+        $roleSqlAdmin->perms()->attach($permDeleteSqlQuery->id);
 
         // Create role: autodialer
         // Assign permission: permAutoDialer
-        $roleCertErasers = Role::create([
+        $roleAutoDialer = Role::create([
             "name"          => "autodialer",
             "display_name"  => "AutoDialer",
             "description"   => "AutoDialer can use the AutoDialer system.",
             "enabled"       => true
         ]);
-        $roleCertErasers->perms()->attach($permAutoDialer->id);
+        $roleAutoDialer->perms()->attach($permAutoDialer->id);
+
+        // Create role: ios-config-user
+        // Assign permission: permAutoDialer
+        $roleIosConfigUser = Role::create([
+            "name"          => "ios-config-user",
+            "display_name"  => "IOS Config User",
+            "description"   => "IOS Config Users can generate dynamic configs from existing templates.",
+            "enabled"       => true
+        ]);
+        $roleIosConfigUser->perms()->attach($permGenerateIosConfigs->id);
+
+        // Create role: ios-config-admin
+        // Assign permission: permAutoDialer
+        $roleIosConfigAdmin = Role::create([
+            "name"          => "ios-config-admin",
+            "display_name"  => "IOS Config Admin",
+            "description"   => "IOS Config Admins manage the existing IOS config templates.",
+            "enabled"       => true
+        ]);
+        $roleIosConfigAdmin->perms()->attach($permManageIosConfigTemplates->id);
+
 
         ////////////////////////////////////
         // Create user: root
