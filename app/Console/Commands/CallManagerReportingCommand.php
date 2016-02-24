@@ -63,7 +63,7 @@ class CallManagerReportingCommand extends Command
         $clusters = $this->cluster->all();
 
         //Set timestamp for file names
-        $timeStamp = Carbon::now()->timestamp;
+        $timeStamp = Carbon::now('America/New_York')->toDateTimeString();
 
         //Create array to track attachments
         $attachments = [];
