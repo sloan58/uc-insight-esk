@@ -17,10 +17,17 @@
 
                 @include('partials._ios-config-generator_form')
 
+                <!-- If the file has no variables, don't show the submit button-->
+                @if(!count($viewVariables) == 0)
                 <!--  Form Submit -->
                 <div class="form-group">
                     {!! Form::submit('Submit', ['class' => 'btn btn-primary form-control']) !!}
                 </div>
+                @else
+                <div class="form-group">
+                    <h6>No variables available in this file.</h6>
+                </div>
+                @endif
 
                 {!! Form::close() !!}
 

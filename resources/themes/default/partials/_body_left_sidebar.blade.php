@@ -100,14 +100,9 @@
                 'ios-config-generator.index',
                 'ios-config-generator.create',
                 ]) }}">
-                <a href="#"><i class="fa fa-exchange"></i> <span>IOS Config Generator</span> <i class="fa fa-angle-left pull-right"></i></a>
-                <ul class="treeview-menu">
-                    <li><a href="{{ url('/ios-config-generator') }}">Generate Configs</a></li>
-                    @if(\Auth::user()->hasRole(['admins','ios-config-admin']))
-<!--                    <li><a href="{{ url('/ios-config-generator/manage') }}">Load Files</a></li>-->
-                    <li><a href="#">Load Files</a></li>
-                    @endif
-                </ul>
+                <li>
+                    <a href="{{ url('/ios-config-generator') }}"><i class="fa fa-exchange"></i><span>IOS Config Generator</span></a>
+                </li>
             </li>
             @endif
             @if(\Auth::user()->hasRole([

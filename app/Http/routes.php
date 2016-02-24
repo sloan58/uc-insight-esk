@@ -223,18 +223,13 @@ Route::group(['middleware' => 'authorize'], function () {
     /*
      * IOS Config Generator Routes
      */
-    Route::get('/ios-config-generator', [
-        'as' => 'ios-config-generator.create',
-        'uses' => 'IosConfigGeneratorController@index'
-    ]);
-    Route::get('/ios-config-generator/{fileName}', [
-        'as' => 'ios-config-generator.create',
-        'uses' => 'IosConfigGeneratorController@create'
-    ]);
-    Route::post('/ios-config-generator/', [
-        'as' => 'ios-config-generator.store',
-        'uses' => 'IosConfigGeneratorController@store'
-    ]);
+    Route::get('ios-config-generator', ['as' => 'ios-config-generator.create','uses' => 'IosConfigGeneratorController@index']);
+    Route::get('ios-config-generator/{fileName}', ['as' => 'ios-config-generator.create','uses' => 'IosConfigGeneratorController@create']);
+    Route::post('ios-config-generator/', ['as' => 'ios-config-generator.store','uses' => 'IosConfigGeneratorController@store']);
+    Route::post('ios-config-generator/load-file',['as' => 'ios-config-generator.loadfile','uses' => 'IosConfigGeneratorController@loadFile']);
+    Route::get('ios-config-generator/{fileName}/confirm-delete', ['as' => 'ios-config-generator.confirm-delete', 'uses' => 'IosConfigGeneratorController@getModalDelete']);
+    Route::get('ios-config-generator/{fileName}/delete', ['as' => 'ios-config-generator.delete', 'uses' => 'IosConfigGeneratorController@destroy']);
+    Route::get('ios-config-generator/{fileName}/download', ['as' => 'ios-config-generator.download', 'uses' => 'IosConfigGeneratorController@download']);
 
 }); // end of AUTHORIZE group
 

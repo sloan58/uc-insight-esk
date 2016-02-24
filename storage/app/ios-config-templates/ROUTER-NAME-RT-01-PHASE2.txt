@@ -1,4 +1,4 @@
-    router ospf <<BGP-ASNUMBER>>
+router ospf <<BGP-ASNUMBER>>
  router-id <<LOOPBACK-IP-ADDRESS>>
  network <<SITE-ASSIGNED-MGMT-BLOCK>> 0.0.0.255 area 0
  default-information originate 

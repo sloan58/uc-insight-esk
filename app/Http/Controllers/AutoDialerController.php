@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Exceptions\AutoDialerException;
 use App\Http\Requests;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
