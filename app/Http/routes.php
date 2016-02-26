@@ -194,6 +194,10 @@ Route::group(['middleware' => 'authorize'], function () {
         // Device Registration Route
         Route::get('registration', ['as' => 'registration.store', 'uses' => 'ReportingController@registrationIndex']);
 
+        // Firmware Report Route
+        Route::get('firmware', ['as' => 'firmware.index', 'uses' => 'ReportingController@firmwareIndex']);
+        Route::post('firmware', ['as' => 'firmware.store', 'uses' => 'ReportingController@firmwareStore']);
+
     });
 
         // Vue.js API Routes

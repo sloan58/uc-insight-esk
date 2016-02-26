@@ -49,16 +49,22 @@ class Utils {
     /**
      * @param $deviceList
      * @param Cluster $cluster
+     * @param bool $associateDevices
      * @return mixed
+     * @throws \App\Exceptions\SoapException
      */
-    public static function generateEraserList($deviceList, Cluster $cluster)
+    public static function generateEraserList($deviceList, Cluster $cluster, $associateDevices = true)
     {
         $macList = array_column($deviceList, 'DeviceName');
 
         $axl = new AxlSoap($cluster);
-        $user = $axl->getAxlUser();
-        $devices = self::createDeviceArray($user,$macList);
-        $axl->updateAxlUser($devices);
+
+        if($associateDevices)
+        {
+            $user = $axl->getAxlUser();
+            $devices = self::createDeviceArray($user,$macList);
+            $axl->updateAxlUser($devices);
+        }
 
         // Get Device IP's
         $sxml = new RisSoap($cluster);

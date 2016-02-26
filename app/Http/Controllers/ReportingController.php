@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Report;
+use Carbon\Carbon;
 use App\Http\Requests;
+use Keboola\Csv\CsvFile;
 use App\Libraries\Utils;
 use Illuminate\Http\Request;
+use App\Jobs\GetPhoneFirmware;
 use App\Libraries\ControlCenterSoap;
 use App\Http\Controllers\Controller;
 
@@ -61,5 +65,67 @@ class ReportingController extends Controller
 
         return view('reports.registration.show', compact('registrationReport'));
 
+    }
+
+    public function firmwareIndex()
+    {
+        return view('reports.firmware.index');
+    }
+
+
+    public function firmwareStore(Request $request)
+    {
+        // Avoid PHP timeouts when querying large clusters
+        set_time_limit(0);
+
+        //Get the authenticated users active cluster
+        $cluster = \Auth::user()->activeCluster();
+
+        //Get the file submitted from the form
+        $file = $request->file('file');
+
+        //Make sure the file is a csv and redirect back if it's not
+        if ($file->getClientMimeType() != "text/csv" && $file->getClientOriginalExtension() != "csv")
+        {
+            alert()->error('File type invalid.  Please use a CSV file format.');
+            return redirect()->back();
+        }
+
+        //Create new Keboola\Csv Object with the submitted file
+        $csvFile = new CsvFile($file);
+        $csv = '';
+
+        //Loop the csv file and store the device names in an array
+        foreach($csvFile as $key => $row)
+        {
+            $csv[] = $row[0];
+        }
+
+        // $deviceList will hold our array for RisPort
+        $deviceList = [];
+
+        // Loop device name array and assign devicename to $deviceList
+        foreach($csv as $phone)
+        {
+            $deviceList[]['DeviceName'] = $phone;
+        }
+
+        //Query the RisPort API to get IP/Registration status
+        $devices = Utils::generateEraserList($deviceList,$cluster,false);
+
+        //Get details for the phone_firmware report type
+        $report = Report::where('type','phone_firmware')->first();
+
+        //Create file name for report
+        $fileName = storage_path() . '/' . $report->path . 'firmware-report-' . Carbon::now('America/New_York')->toDateTimeString() . '.csv';
+
+        //Generate new output csv file
+        new CsvFile($fileName);
+
+        //Call the App\Jobs\GetPhoneFirmware Job
+        $this->dispatch(new $report->job($devices,$fileName,$report->csv_headers));
+
+        //Return a response with the firmware report
+        return response()->download($fileName);
     }
 }

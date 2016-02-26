@@ -386,3 +386,13 @@ function setKeys($model,$tleType)
 
     }
 }
+
+function searchMultiDimArray($array, $field, $value)
+{
+    foreach($array as $key => $product)
+    {
+        if ( $product[$field] === $value )
+            return $key;
+    }
+    return false;
+}

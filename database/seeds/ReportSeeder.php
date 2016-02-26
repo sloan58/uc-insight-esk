@@ -3,7 +3,7 @@
 use App\Models\Report;
 use Illuminate\Database\Seeder;
 
-class CucmReportSeeder extends Seeder
+class ReportSeeder extends Seeder
 {
     /**
      * @var array
@@ -38,6 +38,13 @@ class CucmReportSeeder extends Seeder
             'type' => 'cucm_daily',
             'job'  => 'App\Jobs\CheckForCallForwardLoop',
             'csv_headers' => 'Directory Number,Description,Forward Number'
+        ]);
+        Report::create([
+            'name' => 'PhoneFirmwareReport',
+            'path' => 'reports/cucm/phone-firmware/',
+            'type' => 'phone_firmware',
+            'job'  => 'App\Jobs\GetPhoneFirmware',
+            'csv_headers' => 'DeviceName,Product,Description,IsRegistered,IpAddress,Model,Firmware',
         ]);
 
     }
