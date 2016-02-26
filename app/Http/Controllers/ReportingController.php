@@ -117,7 +117,7 @@ class ReportingController extends Controller
         $report = Report::where('type','phone_firmware')->first();
 
         //Create file name for report
-        $fileName = storage_path() . '/app/' . $report->path . 'firmware-report-' . Carbon::now('America/New_York')->toDateTimeString() . '.csv';
+        $fileName = storage_path() . '/' . $report->path . 'firmware-report-' . Carbon::now('America/New_York')->toDateTimeString() . '.csv';
 
         //Generate new output csv file
         new CsvFile($fileName);
