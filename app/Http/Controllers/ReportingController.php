@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Jobs\GetPhoneFirmware;
 use App\Libraries\ControlCenterSoap;
 use App\Http\Controllers\Controller;
+use Storage;
 
 class ReportingController extends Controller
 {

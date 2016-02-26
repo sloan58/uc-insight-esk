@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class GetPhoneFirmware extends Job implements SelfHandling, ShouldQueue
+class GetPhoneFirmware extends Job implements SelfHandling
 {
     use InteractsWithQueue, SerializesModels;
     /**
