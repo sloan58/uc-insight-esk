@@ -9,11 +9,15 @@ use App\Models\Cluster;
 use Keboola\Csv\CsvFile;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class GetPhoneFirmware extends Job implements SelfHandling
 {
+
     use InteractsWithQueue, SerializesModels;
     /**
      * @var array
@@ -50,11 +54,15 @@ class GetPhoneFirmware extends Job implements SelfHandling
      */
     public function handle()
     {
+        // Avoid PHP timeouts when querying large clusters
+        set_time_limit(0);
+
         //Create Sabre XML Reader Object
         $reader = new Reader();
 
         //Create Guzzle REST client Object
         $client = new Client([
+            'connect_timeout' => 2,
             'headers' => [
                 'Accept' => 'application/xml',
                 'Content-Type' => 'application/xml'
@@ -72,11 +80,19 @@ class GetPhoneFirmware extends Job implements SelfHandling
         //Loop the devices in $this->deviceList to get firmware info
         foreach($this->deviceList as $device)
         {
+            \Log::debug('Still running with', [$device]);
+
             //Only get firmware if the device is registered
             if($device['IsRegistered'])
             {
-                //Query the phones web interface for the XML device info
-                $response = $client->get('http://' . $device['IpAddress'] . '/DeviceInformationX');
+                try {
+                    //Query the phones web interface for the XML device info
+                    $response = $client->get('http://' . $device['IpAddress'] . '/DeviceInformationX');
+                } catch (RequestException $e) {
+                    \Log::debug('Phone request exception', [$e]);
+                    continue;
+                }
+
                 //Consume the XML with Sabre XML Reader
                 $reader->xml($response->getBody()->getContents());
                 //Parse the XML
