@@ -14,6 +14,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Psr\Http\Message\UriInterface;
 
 class GetPhoneFirmware extends Job implements SelfHandling
 {
@@ -62,7 +63,7 @@ class GetPhoneFirmware extends Job implements SelfHandling
 
         //Create Guzzle REST client Object
         $client = new Client([
-            'connect_timeout' => 2,
+//            'connect_timeout' => 2,
             'headers' => [
                 'Accept' => 'application/xml',
                 'Content-Type' => 'application/xml'
@@ -80,23 +81,34 @@ class GetPhoneFirmware extends Job implements SelfHandling
         //Loop the devices in $this->deviceList to get firmware info
         foreach($this->deviceList as $device)
         {
-            \Log::debug('Still running with', [$device]);
 
             //Only get firmware if the device is registered
             if($device['IsRegistered'])
             {
+                \Log::debug('Running with', [$device]);
+
                 try {
                     //Query the phones web interface for the XML device info
-                    $response = $client->get('http://' . $device['IpAddress'] . '/DeviceInformationX');
+                    $response = $client->get('http://' . $device['IpAddress'] . '/DeviceInformationX',['connect_timeout' => 2]);
                 } catch (RequestException $e) {
                     \Log::debug('Phone request exception', [$e]);
                     continue;
                 }
 
+                $body = $response->getBody()->getContents();
+
+                \Log::debug('XML:', [$body]);
+
                 //Consume the XML with Sabre XML Reader
-                $reader->xml($response->getBody()->getContents());
-                //Parse the XML
-                $deviceInfoX = $response = $reader->parse();
+                if($reader->xml($body))
+                {
+                    //Parse the XML
+                    $deviceInfoX = $response = $reader->parse();
+                } else {
+                    \Log::debug('Error, there was no XML', []);
+
+                }
+
 
                 //Find the index for XML key holding the Firmware information
                 $index = searchMultiDimArray($deviceInfoX['value'],'name','{}versionID');

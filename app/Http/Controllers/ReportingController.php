@@ -82,6 +82,7 @@ class ReportingController extends Controller
         //Get the authenticated users active cluster
         $cluster = \Auth::user()->activeCluster();
 
+
         //Get the file submitted from the form
         $file = $request->file('file');
 

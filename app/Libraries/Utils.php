@@ -23,6 +23,7 @@ class Utils {
      */
     public static function executeQuery($sql, Cluster $cluster)
     {
+        dd($cluster);
         $axl = new AxlSoap($cluster);
 
         $result = $axl->executeQuery($sql);
