@@ -9,15 +9,20 @@ use App\Http\Controllers\Controller;
 
 class DuoController extends Controller
 {
-    public function getLogs()
+
+    function __construct()
     {
-        $duoAdmin = new \DuoAPI\Admin(
+        $this->duo = new \DuoAPI\Admin(
             'DI862RPCBG75K3SPHNMM',
             '83tknn36V4XjDuCw11kbkji5tFakyOfpEhizuNen',
             'api-d206e387.duosecurity.com'
         );
+    }
 
-        $response = $duoAdmin->authLogs();
+    public function getLogs()
+    {
+
+        $response = $this->duo->authLogs();
 
         $logs = $response['response']['response'];
 
@@ -29,5 +34,10 @@ class DuoController extends Controller
             }
         }
 
+    }
+
+    public function getUsers()
+    {
+        dd($this->duo->users());
     }
 }

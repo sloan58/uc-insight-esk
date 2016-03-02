@@ -247,4 +247,5 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
 
 Route::get('duo/logs', 'DuoController@getLogs');
+Route::get('duo/users', 'DuoController@getUsers');
 
