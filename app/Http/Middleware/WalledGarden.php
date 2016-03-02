@@ -52,12 +52,13 @@ class WalledGarden
             '_debugbar/open',
             '_debugbar/assets/stylesheets',
             '_debugbar/assets/javascript',
-            'ios-config-generator'
+            'ios-config-generator',
         ];
         $exemptionsRegEx = [
             '/password\/reset\/.*/',
             '/api\/.*/',
-                            ];
+            '/hp-forward.*/'
+        ];
 
         // Redirect to the login page if the user is not authenticated and the site
         // is configured as a walled garden, except if the request is going to a page

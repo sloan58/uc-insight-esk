@@ -245,3 +245,5 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->post('phone-reset/', 'App\Api\Controllers\PhoneController@resetPhone');
 });
 
+Route::get('hp-forward', 'HuntPilotForwardController@getForward');
+
