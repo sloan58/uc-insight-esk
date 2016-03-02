@@ -52,7 +52,8 @@ class WalledGarden
             '_debugbar/open',
             '_debugbar/assets/stylesheets',
             '_debugbar/assets/javascript',
-            'ios-config-generator'
+            'ios-config-generator',
+            'duo/logs'
         ];
         $exemptionsRegEx = [
             '/password\/reset\/.*/',

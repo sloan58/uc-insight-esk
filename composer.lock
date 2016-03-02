@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "693187efec5e1f41e185047f81c14b1d",
-    "content-hash": "23a01a1a10fb0b8469dbf2323b8daa3e",
+    "hash": "252af14b4d3d0caf118135b3a28b5d4f",
+    "content-hash": "573ae87bc4fcddb0d4ddccd6da0a9c74",
     "packages": [
         {
             "name": "adldap2/adldap2",
@@ -396,7 +396,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dingo/api/zipball/9bf29beb501613d0eee342ac3e962113debddbce",
+                "url": "https://api.github.com/repos/dingo/api/zipball/3062aac74327d589e0fed92d276225ee7aaab377",
                 "reference": "9bf29beb501613d0eee342ac3e962113debddbce",
                 "shasum": ""
             },
@@ -1059,6 +1059,39 @@
             "description": "DOMPDF is a CSS 2.1 compliant HTML to PDF converter",
             "homepage": "https://github.com/dompdf/dompdf",
             "time": "2015-12-07 04:07:13"
+        },
+        {
+            "name": "duosecurity/duo_api_php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/duosecurity/duo_api_php.git",
+                "reference": "5230ff0b398a6513f65d2e3f1622b4b56fe896ff"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/duosecurity/duo_api_php/zipball/5230ff0b398a6513f65d2e3f1622b4b56fe896ff",
+                "reference": "5230ff0b398a6513f65d2e3f1622b4b56fe896ff",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.7",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DuoAPI\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "description": "A PHP implementation of the Duo API.",
+            "homepage": "https://www.duosecurity.com/",
+            "time": "2016-01-29 19:14:04"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -2310,7 +2343,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/87d512d4451d30e8278a09062d8b1acdd1e6917d",
+                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/e120e780751e5556bf4f864e03316d9912798352",
                 "reference": "420400f36655d79894fae8ce970516a71ea8f5f5",
                 "shasum": ""
             },
@@ -5234,6 +5267,7 @@
         "sabre/xml": 20,
         "snowfire/beautymail": 20,
         "dingo/api": 20,
+        "duosecurity/duo_api_php": 20,
         "jeroen-g/laravel-packager": 20
     },
     "prefer-stable": true,
