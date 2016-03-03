@@ -53,12 +53,11 @@ class WalledGarden
             '_debugbar/assets/stylesheets',
             '_debugbar/assets/javascript',
             'ios-config-generator',
-            'duo/logs',
-            'duo/users'
         ];
         $exemptionsRegEx = [
             '/password\/reset\/.*/',
             '/api\/.*/',
+            '/duo\/.*/'
                             ];
 
         // Redirect to the login page if the user is not authenticated and the site

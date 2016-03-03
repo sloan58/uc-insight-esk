@@ -19,6 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('password', 60);
+            $table->integer('clusters_id')->unsigned()->index()->nullable();
+            $table->foreign('clusters_id')->references('id')->on('clusters');
             $table->rememberToken();
             $table->timestamps();
         });

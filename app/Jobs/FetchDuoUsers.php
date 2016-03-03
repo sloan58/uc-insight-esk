@@ -1,83 +1,50 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Jobs;
 
-use App\Jobs\FetchDuoGroups;
-use App\Jobs\FetchDuoUsers;
-use Illuminate\Http\Request;
+use App\Jobs\Job;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Contracts\Bus\SelfHandling;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-class DuoController extends Controller
+/**
+ * Class FetchDuoUsers
+ * @package App\Jobs
+ */
+class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 {
+    use InteractsWithQueue, SerializesModels;
 
-    function __construct()
+    /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct()
     {
-        //PROD
-        $ikey = 'DI3J8XTOYNB2QJCJWN7X';
-        $skey = 'toPflChBRV2ds4rtFGUHWwYr6ufG5Czzun6HENTm';
-        $host = 'api-eba973a2.duosecurity.com';
-
-        //Dev
-//        $ikey = 'DI862RPCBG75K3SPHNMM';
-//        $skey = '83tknn36V4XjDuCw11kbkji5tFakyOfpEhizuNen';
-//        $host = 'api-d206e387.duosecurity.com';
-
-        $this->duoAdmin = new \DuoAPI\Admin($ikey,$skey,$host);
-
-        $this->duoAuth = new \DuoAPI\Auth($ikey,$skey,$host);
-    }
-
-    public function getPing()
-    {
-        return($this->duoAuth->ping());
-    }
-
-    public function getLogs()
-    {
-
-        $response = $this->duoAdmin->authLogs();
-
-        $logs = $response['response']['response'];
-
-        foreach($logs as $log)
-        {
-            if($log['result'] == 'FAILURE')
-            {
-                print $log['username'] . " failed login from device " . $log['device'] . " at " . date('c',$log['timestamp']) . " for reason " . $log['reason'] . "\n";
-            }
-        }
 
     }
 
-    public function getUsers()
-    {
-
-        $this->dispatch(new FetchDuoUsers());
-
-        return response('Job dispatched');
-
-    }
-
-    public function getUser()
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function handle()
     {
         set_time_limit(0);
 
+        //Create Duo Admin Client
+        $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
 
-        //PROD
-        $ikey = 'DI3J8XTOYNB2QJCJWN7X';
-        $skey = 'toPflChBRV2ds4rtFGUHWwYr6ufG5Czzun6HENTm';
-        $host = 'api-eba973a2.duosecurity.com';
+        //Query Duo REST API for Users (all)
+        $response = $duoAdmin->users();
 
-        $duoAdmin = new \DuoAPI\Admin($ikey,$skey,$host);
-
-        $response = $duoAdmin->users('Aaron Dhiman');
-
+        //Duo SDK puts results in nested array response[response]
         $users = $response['response']['response'];
 
-//        dd($users);
-
+        //Loop the users
         foreach($users as $user)
         {
             //Get an existing Duo User or create a new one
@@ -148,7 +115,7 @@ class DuoController extends Controller
 
                     //Populate the array of capabilities
                     $phoneCapabilityList[] = $cap->id;
-                    }
+                }
 
                 //Sync the phones capabilities
                 $localPhone->duoCapabilities()->sync($phoneCapabilityList);
@@ -160,13 +127,8 @@ class DuoController extends Controller
             $duoUser->duoPhones()->sync($userPhoneList);
 
         }
+
+        dd('done');
+//        \Log::debug('All Users:', [$user]);
     }
-
-    public function getGroups()
-    {
-        $this->dispatch(new FetchDuoGroups());
-
-        return response('Job dispatched');
-    }
-
 }
