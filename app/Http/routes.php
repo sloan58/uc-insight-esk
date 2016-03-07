@@ -251,4 +251,3 @@ Route::get('duo/users', 'DuoController@getUsers');
 Route::get('duo/user', 'DuoController@getUser');
 Route::get('duo/ping', 'DuoController@getPing');
 Route::get('duo/groups', 'DuoController@getGroups');
-

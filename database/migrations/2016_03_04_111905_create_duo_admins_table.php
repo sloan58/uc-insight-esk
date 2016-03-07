@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDuoUsersTable extends Migration
+class CreateDuoAdminsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,16 +12,9 @@ class CreateDuoUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('duo_users', function (Blueprint $table) {
+        Schema::create('duo_admins', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('user_id')->unique();
-            $table->string('username');
-            $table->string('realname');
             $table->string('email');
-            $table->string('status');
-            $table->string('notes');
-            $table->string('desktoptokens');
-            $table->timestamp('last_login');
             $table->timestamps();
         });
     }
@@ -33,6 +26,6 @@ class CreateDuoUsersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('duo_users');
+        Schema::drop('duo_admins');
     }
 }

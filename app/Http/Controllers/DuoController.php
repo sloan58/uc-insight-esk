@@ -76,7 +76,7 @@ class DuoController extends Controller
 
         $users = $response['response']['response'];
 
-//        dd($users);
+        dd($users);
 
         foreach($users as $user)
         {
