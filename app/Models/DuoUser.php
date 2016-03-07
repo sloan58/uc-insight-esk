@@ -36,4 +36,12 @@ class DuoUser extends Model
         return $this->belongsToMany('App\Models\DuoPhone');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function duoTokens()
+    {
+        return $this->belongsToMany('App\Models\DuoToken');
+    }
+
 }

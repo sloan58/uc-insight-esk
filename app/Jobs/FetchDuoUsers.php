@@ -8,6 +8,8 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+
 
 /**
  * Class FetchDuoUsers
@@ -15,7 +17,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
  */
 class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
     /**
      * Create a new job instance.
@@ -38,6 +40,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
         //Create Duo Admin Client
         $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
+//        $duoAdmin = new \DuoAPI\Admin(env('DUO_DEV_IKEY'),env('DUO_DEV_SKEY'),env('DUO_DEV_HOST'));
 
         //Query Duo REST API for Users (all)
         $response = $duoAdmin->users();
@@ -48,10 +51,8 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         //Loop the users
         foreach($users as $user)
         {
-
             //Begin main process for looping Duo User Data
             $this->extractUserData($user);
-
         }
 
         dd('done');
@@ -72,14 +73,34 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         $duoUser->realname = $user['realname'];
         $duoUser->notes = $user['notes'];
         $duoUser->last_login = $user['last_login'];
-        $duoUser->desktoptokens = $user['desktoptokens'];
 
         //Save Duo User
         $duoUser->save();
 
-        $userGroupList = [];
+        if(count($user['tokens']) > 0)
+        {
+            //Loop Duo User Desktop Tokens
+            $tokenList = [];
+            foreach($user['tokens'] as $token)
+            {
+
+                $localToken = \App\Models\DuoToken::firstOrCreate([
+                    'serial' => $token['serial'],
+                    'token_id' => $token['token_id'],
+                    'totp_step' => $token['totp_step'],
+                    'type' => $token['type'],
+                ]);
+
+                $tokenList[] = $localToken->id;
+
+            }
+            $duoUser->duoTokens()->sync($tokenList);
+
+            unset($tokenList);
+        }
 
         //Loop Duo User Groups
+        $userGroupList = [];
         foreach($user['groups'] as $group)
         {
             $localGroup = \App\Models\DuoGroup::where('group_id',$group['group_id'])->first();

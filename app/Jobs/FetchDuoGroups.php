@@ -33,6 +33,7 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
 
         //Create Duo Admin Client
         $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
+//        $duoAdmin = new \DuoAPI\Admin(env('DUO_DEV_IKEY'),env('DUO_DEV_SKEY'),env('DUO_DEV_HOST'));
 
         $response = $duoAdmin->groups();
 

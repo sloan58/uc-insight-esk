@@ -20,7 +20,6 @@ class CreateDuoUsersTable extends Migration
             $table->string('email');
             $table->string('status');
             $table->string('notes');
-            $table->string('desktoptokens');
             $table->timestamp('last_login');
             $table->timestamps();
         });

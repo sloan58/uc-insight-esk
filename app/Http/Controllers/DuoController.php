@@ -72,7 +72,7 @@ class DuoController extends Controller
 
         $duoAdmin = new \DuoAPI\Admin($ikey,$skey,$host);
 
-        $response = $duoAdmin->users('Aaron Dhiman');
+        $response = $duoAdmin->users('robert pons');
 
         $users = $response['response']['response'];
 
