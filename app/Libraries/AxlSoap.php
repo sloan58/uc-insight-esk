@@ -136,4 +136,52 @@ class AxlSoap extends SoapClient {
         }
     }
 
+    public function getHuntPilotInfo($huntPilot)
+    {
+        try {
+            return $this->getHuntPilot([
+                'uuid' => $huntPilot
+            ]);
+        } catch(SoapFault $e) {
+            $this->processAxlFault($e);
+        }
+    }
+
+    public function getdirn($dirn)
+    {
+        try {
+            return $this->getLine([
+                'uuid' => $dirn
+            ]);
+        } catch(SoapFault $e) {
+            $this->processAxlFault($e);
+        }
+    }
+
+    public function updateDirn($uuid,$routePartitionName)
+    {
+        try {
+            return $this->updateLine([
+                'uuid' => $uuid,
+                'newRoutePartitionName' => $routePartitionName
+            ]);
+        } catch(SoapFault $e) {
+            $this->processAxlFault($e);
+        }
+    }
+
+    public function updateHuntPilotInfo($uuid,$newRoutePartitionName)
+    {
+        try {
+            return $this->updateHuntPilot([
+                'uuid' => $uuid,
+                'newRoutePartitionName' => $newRoutePartitionName
+            ]);
+        } catch(SoapFault $e) {
+            $this->processAxlFault($e);
+        }
+    }
+
+
+
 }
