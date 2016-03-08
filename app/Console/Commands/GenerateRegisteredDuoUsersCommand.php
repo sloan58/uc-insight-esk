@@ -28,6 +28,13 @@ class GenerateRegisteredDuoUsersCommand extends Command implements SelfHandling
      */
     public function handle()
     {
-        //
+        //Get all reports where type = cucm_daily
+        $reports = Report::where('type','duo_registered_users')->get();
+
+        //Set timestamp for file names
+        $timeStamp = Carbon::now('America/New_York')->toDateTimeString();
+
+        //Create array to track attachments
+        $attachments = [];
     }
 }

@@ -3,7 +3,11 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
-use App\Models\DuoUser;
+use App\Models\Duo\Group;
+use App\Models\Duo\Phone;
+use App\Models\Duo\Token;
+use App\Models\Duo\Capability;
+use App\Models\Duo\User as User;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -22,7 +26,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @return \App\Jobs\FetchDuoUsers
      */
     public function __construct()
     {
@@ -62,7 +66,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     private function extractUserData($user)
     {
         //Get an existing Duo User or create a new one
-        $duoUser = \App\Models\DuoUser::firstOrCreate([
+        $duoUser = User::firstOrCreate([
             'user_id' => $user['user_id']
         ]);
 
@@ -84,7 +88,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             foreach($user['tokens'] as $token)
             {
 
-                $localToken = \App\Models\DuoToken::firstOrCreate([
+                $localToken = Token::firstOrCreate([
                     'serial' => $token['serial'],
                     'token_id' => $token['token_id'],
                     'totp_step' => $token['totp_step'],
@@ -103,7 +107,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         $userGroupList = [];
         foreach($user['groups'] as $group)
         {
-            $localGroup = \App\Models\DuoGroup::where('group_id',$group['group_id'])->first();
+            $localGroup = Group::where('group_id',$group['group_id'])->first();
             $userGroupList[] = $localGroup->id;
 
         }
@@ -117,7 +121,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
     }
 
-    private function extractUserPhoneData(DuoUser $duoUser, $user)
+    private function extractUserPhoneData(User $duoUser, $user)
     {
         //Create array to hold list of users phones
         $userPhoneList = [];
@@ -125,7 +129,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         foreach($user['phones'] as $phone)
         {
             //Get an existing Duo Phone or create a new one
-            $localPhone = \App\Models\DuoPhone::firstOrCreate([
+            $localPhone = Phone::firstOrCreate([
                 'phone_id' => $phone['phone_id'],
 
             ]);
@@ -153,7 +157,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             //Loop through the phones assigned capabilities
             foreach($phone['capabilities'] as $capability)
             {
-                $cap = \App\Models\DuoCapability::where('name',$capability)->first();
+                $cap = Capability::where('name',$capability)->first();
 
                 //Populate the array of capabilities
                 $phoneCapabilityList[] = $cap->id;

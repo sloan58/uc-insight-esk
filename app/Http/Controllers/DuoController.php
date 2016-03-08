@@ -81,7 +81,7 @@ class DuoController extends Controller
         foreach($users as $user)
         {
             //Get an existing Duo User or create a new one
-            $duoUser = \App\Models\DuoUser::firstOrCreate([
+            $duoUser = \App\Models\Duo\User::firstOrCreate([
                 'user_id' => $user['user_id']
             ]);
 
@@ -101,7 +101,7 @@ class DuoController extends Controller
             //Loop Duo User Groups
             foreach($user['groups'] as $group)
             {
-                $localGroup = \App\Models\DuoGroup::where('group_id',$group['group_id'])->first();
+                $localGroup = \App\Models\Duo\Group::where('group_id',$group['group_id'])->first();
                 $userGroupList[] = $localGroup->id;
 
             }
@@ -116,7 +116,7 @@ class DuoController extends Controller
             foreach($user['phones'] as $phone)
             {
                 //Get an existing Duo Phone or create a new one
-                $localPhone = \App\Models\DuoPhone::firstOrCreate([
+                $localPhone = \App\Models\Duo\Phone::firstOrCreate([
                     'phone_id' => $phone['phone_id'],
 
                 ]);
@@ -144,7 +144,7 @@ class DuoController extends Controller
                 //Loop through the phones assigned capabilities
                 foreach($phone['capabilities'] as $capability)
                 {
-                    $cap = \App\Models\DuoCapability::where('name',$capability)->first();
+                    $cap = \App\Models\Duo\Capability::where('name',$capability)->first();
 
                     //Populate the array of capabilities
                     $phoneCapabilityList[] = $cap->id;

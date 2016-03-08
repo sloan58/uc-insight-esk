@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Duo;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
  * Class DuoGroup
  * @package App\Models
  */
-class DuoGroup extends Model
+class Group extends Model
 {
     /**
      * @var array
@@ -16,11 +16,16 @@ class DuoGroup extends Model
     protected $fillable = ['group_id'];
 
     /**
+     * @var string
+     */
+    protected $table = 'duo_groups';
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function duoUsers()
     {
-        return $this->belongsToMany('App\Models\DuoUser');
+        return $this->belongsToMany('App\Models\Duo\User', 'duo_group_duo_user','duo_group_id','duo_user_id');
     }
 
 }

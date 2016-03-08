@@ -9,19 +9,19 @@ class DuoCapabilitySeeder extends Seeder
 {
     public function run()
     {
-        \App\Models\DuoCapability::create([
+        \App\Models\Duo\Capability::create([
             'name' => 'push'
         ]);
 
-        \App\Models\DuoCapability::create([
+        \App\Models\Duo\Capability::create([
             'name' => 'phone'
         ]);
 
-        \App\Models\DuoCapability::create([
+        \App\Models\Duo\Capability::create([
             'name' => 'sms'
         ]);
 
-        \App\Models\DuoCapability::create([
+        \App\Models\Duo\Capability::create([
             'name' => 'mobile_otp'
         ]);
     }

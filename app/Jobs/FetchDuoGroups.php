@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Jobs\Job;
+use App\Models\Duo\Group;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -43,7 +44,7 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
         foreach($groups as $group)
         {
             //Get an existing Duo Group or create a new one
-            $duoGroup = \App\Models\DuoGroup::firstOrCreate([
+            $duoGroup = Group::firstOrCreate([
                 'group_id' => $group['group_id']
             ]);
 

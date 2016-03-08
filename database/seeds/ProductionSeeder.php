@@ -372,5 +372,6 @@ class ProductionSeeder extends Seeder
             ]);
         $userRoot->roles()->attach($roleAdmins->id);
 
+
     }
 }
