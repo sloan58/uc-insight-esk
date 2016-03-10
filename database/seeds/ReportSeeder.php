@@ -46,6 +46,13 @@ class ReportSeeder extends Seeder
             'job'  => 'App\Jobs\GetPhoneFirmware',
             'csv_headers' => 'DeviceName,Product,Description,IsRegistered,IpAddress,Model,Firmware',
         ]);
+        Report::create([
+            'name' => 'DuoRegisteredUsersReport',
+            'path' => 'reports/duo/registered-users/',
+            'type' => 'duo_registered_users',
+            'job'  => 'App\Jobs\GenerateRegisteredDuoUsersReport',
+            'csv_headers' => 'username,email,status,last_login',
+        ]);
 
     }
 

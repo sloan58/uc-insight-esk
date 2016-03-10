@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 
-use App\Exceptions\AutoDialerException;
 use App\Http\Requests;
 use Laracasts\Flash\Flash;
 use Illuminate\Http\Request;
 use App\Jobs\ProcessTwilioCall;
 use App\Http\Controllers\Controller;
+use App\Exceptions\AutoDialerException;
 
 class AutoDialerController extends Controller
 {

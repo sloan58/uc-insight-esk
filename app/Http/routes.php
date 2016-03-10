@@ -198,6 +198,11 @@ Route::group(['middleware' => 'authorize'], function () {
         Route::get('firmware', ['as' => 'firmware.index', 'uses' => 'ReportingController@firmwareIndex']);
         Route::post('firmware', ['as' => 'firmware.store', 'uses' => 'ReportingController@firmwareStore']);
 
+        //Duo Reports
+        Route::get('duo', ['as' => 'duo.index', 'uses' => 'ReportingController@duoIndex']);
+        Route::post('duo', ['as' => 'duo.store', 'uses' => 'ReportingController@duoStore']);
+
+
     });
 
         // Vue.js API Routes
@@ -247,3 +252,9 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
 Route::get('hp-forward/{cluster}/{huntpilot}', 'HuntPilotForwardController@getForward');
 
+Route::get('duo/logs', 'DuoController@getLogs');
+Route::get('duo/users', 'DuoController@getUsers');
+Route::get('duo/user', 'DuoController@getUser');
+Route::get('duo/ping', 'DuoController@getPing');
+Route::get('duo/groups', 'DuoController@getGroups');
+Route::get('duo/reports', 'DuoController@reportBuilder');

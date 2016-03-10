@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
 use Storage;
+use App\Http\Requests;
+use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 
 /**
  * Class IosConfigGeneratorController
