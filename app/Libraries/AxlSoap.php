@@ -136,6 +136,10 @@ class AxlSoap extends SoapClient {
         }
     }
 
+    /**
+     * @param $huntPilot
+     * @return mixed
+     */
     public function getHuntPilotInfo($huntPilot)
     {
         try {
@@ -147,6 +151,10 @@ class AxlSoap extends SoapClient {
         }
     }
 
+    /**
+     * @param $dirn
+     * @return mixed
+     */
     public function getdirn($dirn)
     {
         try {
@@ -158,6 +166,11 @@ class AxlSoap extends SoapClient {
         }
     }
 
+    /**
+     * @param $uuid
+     * @param $routePartitionName
+     * @return mixed
+     */
     public function updateDirn($uuid,$routePartitionName)
     {
         try {
@@ -170,6 +183,11 @@ class AxlSoap extends SoapClient {
         }
     }
 
+    /**
+     * @param $uuid
+     * @param $newRoutePartitionName
+     * @return mixed
+     */
     public function updateHuntPilotInfo($uuid,$newRoutePartitionName)
     {
         try {

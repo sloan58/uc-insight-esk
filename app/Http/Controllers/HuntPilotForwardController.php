@@ -32,7 +32,7 @@ class HuntPilotForwardController extends Controller
         {
             $text = 'The hunt pilot has been unforwarded';
 
-            //Move Dirn to stagin PT
+            //Move Dirn to staging PT
             $axl->updateDirn($dirnUuid,$swapArray[$dnObj->return->line->routePartitionName->_]);
 
             //Move Hunt Pilot to All-DN_pt
