@@ -250,7 +250,8 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->post('phone-reset/', 'App\Api\Controllers\PhoneController@resetPhone');
 });
 
-Route::get('hp-forward/{cluster}/{huntpilot}', 'HuntPilotForwardController@getForward');
+//Hunt-Pilot Forwarding App
+Route::get('hp-forward/', 'HuntPilotForwardController@getForward');
 
 Route::get('duo/logs', 'DuoController@getLogs');
 Route::get('duo/users', 'DuoController@getUsers');
