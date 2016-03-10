@@ -14,8 +14,8 @@ class CreateHuntPilotForwardsTable extends Migration
     {
         Schema::create('hunt_pilot_forwards', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('hunt_pilot_uuid');
-            $table->string('dn_uuid');
+            $table->string('hunt_pilot_pkid');
+            $table->string('dn_pkid');
             $table->timestamps();
         });
     }
