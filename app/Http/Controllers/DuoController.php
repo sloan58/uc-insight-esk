@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Worksheet;
+use PHPExcel_Writer_Excel2007;
 
 class DuoController extends Controller
 {
@@ -167,6 +171,73 @@ class DuoController extends Controller
         $this->dispatch(new FetchDuoGroups());
 
         return response('Job dispatched');
+    }
+
+    public function reportBuilder()
+    {
+        \Debugbar::disable();
+
+
+        //Create the reporting Excel Object
+        $objPHPExcel = new PHPExcel();
+
+        //Get all groups that the report subscriber belongs to
+        $groups = \App\Models\Duo\User::where('username','LIKE','%Pavol%')->first()->duoGroups()->get();
+
+        //Loop each Duo Group
+        foreach($groups as $group)
+        {
+            //Get our Report object
+            $duoReport = \App\Models\Report::where('name', 'DuoRegisteredUsersReport')->first();
+
+            //Explode csv_headers to array
+            $duoReportHeaders = explode(',',$duoReport->csv_headers);
+
+            // Create a new worksheet using the Duo Group namer
+            $myWorkSheet = new PHPExcel_Worksheet($objPHPExcel, $group->name);
+
+            // Attach the worksheet to the workbook
+            $objPHPExcel->addSheet($myWorkSheet);
+
+            //Set the active sheet
+            $objPHPExcel->setActiveSheetIndexByName($group->name);
+
+            //Get all users that belong to this group
+            $users = $group->duoUsers()->get();
+
+            //Write the CSV header information
+            for ($i=0; $i<count($duoReportHeaders);$i++)
+            {
+                $column = PHPExcel_Cell::stringFromColumnIndex($i);
+
+                // Set cell A1 with a string value
+                $objPHPExcel->getActiveSheet()->setCellValue($column . '1', $duoReportHeaders[$i]);
+            }
+
+            //Write user data
+            $row = 2;
+            foreach($users as $user)
+            {
+                foreach($duoReportHeaders as $index => $header)
+                {
+                    $column = PHPExcel_Cell::stringFromColumnIndex($index);
+
+                    // Set cell A1 with a string value
+                    $objPHPExcel->getActiveSheet()->setCellValue($column . $row, $user[$header]);
+                }
+                $row++;
+            }
+        }
+
+        //Remove the default sheet (there's gotta be a better way to do this....)
+        $objPHPExcel->removeSheetByIndex(0);
+
+        //Write the document
+        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+        $objWriter->save(storage_path() . "/ExcelTest.xlsx");
+
+        return response('done');
+
     }
 
 }

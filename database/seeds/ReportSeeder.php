@@ -51,7 +51,7 @@ class ReportSeeder extends Seeder
             'path' => 'reports/duo/registered-users/',
             'type' => 'duo_registered_users',
             'job'  => 'App\Jobs\GenerateRegisteredDuoUsersReport',
-            'csv_headers' => '',
+            'csv_headers' => 'username,email,status,last_login',
         ]);
 
     }

@@ -20,7 +20,7 @@ class CreateDuoUsersTable extends Migration
             $table->string('email');
             $table->string('status');
             $table->string('notes');
-            $table->timestamp('last_login');
+            $table->timestamp('last_login')->nullable();
             $table->timestamps();
         });
     }

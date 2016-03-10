@@ -22,4 +22,12 @@ class Report extends Model
     {
         return $this->hasMany('App\Users');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function duoUsers()
+    {
+        return $this->belongsToMany('App\Models\Duo\User','duo_report_user','duo_user_id','report_id');
+    }
 }

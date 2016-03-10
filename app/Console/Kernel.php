@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\CallManagerReportingCommand::class,
+        Commands\FetchDuoApiDataCommand::class,
+        Commands\GenerateRegisteredDuoUsersReportCommand::class,
     ];
 
     /**
@@ -26,5 +28,15 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('cucm:reports')
                  ->dailyAt('08:00');
+
+        $schedule->command('duo:fetch-data')
+                 ->dailyAt('07:00');
+
+        $schedule->command('duo:fetch-data')
+                 ->dailyAt('12:00');
+
+        $schedule->command('duo:user-report')
+                 ->dailyAt('08:00');
+
     }
 }

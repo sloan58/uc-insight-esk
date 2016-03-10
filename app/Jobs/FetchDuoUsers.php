@@ -44,7 +44,6 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
         //Create Duo Admin Client
         $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
-//        $duoAdmin = new \DuoAPI\Admin(env('DUO_DEV_IKEY'),env('DUO_DEV_SKEY'),env('DUO_DEV_HOST'));
 
         //Query Duo REST API for Users (all)
         $response = $duoAdmin->users();
@@ -59,8 +58,6 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             $this->extractUserData($user);
         }
 
-        dd('done');
-//        \Log::debug('All Users:', [$user]);
     }
 
     private function extractUserData($user)

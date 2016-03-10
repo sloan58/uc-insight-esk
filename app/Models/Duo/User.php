@@ -49,4 +49,12 @@ class User extends Model
         return $this->belongsToMany('App\Models\Duo\Token','duo_token_duo_user','duo_user_id','duo_token_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function reports()
+    {
+        return $this->belongsToMany('App\Models\Report','duo_user_report','duo_user_id','report_id');
+    }
+
 }
