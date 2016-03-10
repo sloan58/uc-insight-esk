@@ -252,10 +252,3 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
 //Hunt-Pilot Forwarding App
 Route::get('hp-forward/', 'HuntPilotForwardController@getForward');
-
-Route::get('duo/logs', 'DuoController@getLogs');
-Route::get('duo/users', 'DuoController@getUsers');
-Route::get('duo/user', 'DuoController@getUser');
-Route::get('duo/ping', 'DuoController@getPing');
-Route::get('duo/groups', 'DuoController@getGroups');
-Route::get('duo/reports', 'DuoController@reportBuilder');
