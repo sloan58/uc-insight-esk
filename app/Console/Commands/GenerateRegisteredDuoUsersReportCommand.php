@@ -48,64 +48,96 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
     {
         \Debugbar::disable();
 
+        //Temp hard coding of report recipients
+        $users = [
+            'Fadi Tahan',
+            'Martin Sloan',
+        ];
 
-        //Create the reporting Excel Object
-        $objPHPExcel = new PHPExcel();
-
-        //Get all groups that the report subscriber belongs to
-        $groups = \App\Models\Duo\User::where('username','LIKE','%Pavol%')->first()->duoGroups()->get();
-
-        //Loop each Duo Group
-        foreach($groups as $group)
+        //Loop each user to generate report
+        foreach($users as $user)
         {
+            //Create the reporting Excel Object
+            $objPHPExcel = new PHPExcel();
+
+            //Get the report recipient
+            $recipient = \App\Models\Duo\User::where('username',$user)->first();
+
+            $groups = $recipient->duoGroups()->get();
+
+            //Set timestamp for file names
+            $timeStamp = Carbon::now('America/New_York')->toDateTimeString();
+
             //Get our Report object
             $duoReport = \App\Models\Report::where('name', 'DuoRegisteredUsersReport')->first();
 
-            //Explode csv_headers to array
-            $duoReportHeaders = explode(',',$duoReport->csv_headers);
+            $fileName = storage_path() . '/' . $duoReport->path . $timeStamp . '-' . $duoReport->name . '-' . $recipient->username .'.xlsx';
 
-            // Create a new worksheet using the Duo Group namer
-            $myWorkSheet = new PHPExcel_Worksheet($objPHPExcel, $group->name);
-
-            // Attach the worksheet to the workbook
-            $objPHPExcel->addSheet($myWorkSheet);
-
-            //Set the active sheet
-            $objPHPExcel->setActiveSheetIndexByName($group->name);
-
-            //Get all users that belong to this group
-            $users = $group->duoUsers()->get();
-
-            //Write the CSV header information
-            for ($i=0; $i<count($duoReportHeaders);$i++)
-            {
-                $column = PHPExcel_Cell::stringFromColumnIndex($i);
-
-                // Set cell A1 with a string value
-                $objPHPExcel->getActiveSheet()->setCellValue($column . '1', $duoReportHeaders[$i]);
-            }
-
-            //Write user data
-            $row = 2;
-            foreach($users as $user)
+            //Loop each Duo Group
+            foreach($groups as $group)
             {
 
-                $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $user->username);
-                $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $user->email);
-                $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $user->status);
-                $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $user->last_login);
-                $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $user->duoGroups()->first()->name);
+                //Explode csv_headers to array
+                $duoReportHeaders = explode(',',$duoReport->csv_headers);
 
-                $row++;
+                // Create a new worksheet using the Duo Group namer
+                $myWorkSheet = new PHPExcel_Worksheet($objPHPExcel, $group->name);
+
+                // Attach the worksheet to the workbook
+                $objPHPExcel->addSheet($myWorkSheet);
+
+                //Set the active sheet
+                $objPHPExcel->setActiveSheetIndexByName($group->name);
+
+                //Get all users that belong to this group
+                $duoGroupMembers = $group->duoUsers()->get();
+
+                //Write the CSV header information
+                for ($i=0; $i<count($duoReportHeaders);$i++)
+                {
+                    $column = PHPExcel_Cell::stringFromColumnIndex($i);
+
+                    // Set cell A1 with a string value
+                    $objPHPExcel->getActiveSheet()->setCellValue($column . '1', $duoReportHeaders[$i]);
+                }
+
+                //Write user data
+                $row = 2;
+                foreach($duoGroupMembers as $member)
+                {
+
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $member->username);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $member->email);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $member->status);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $member->last_login);
+                    $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $member->duoGroups()->first()->name);
+
+                    $row++;
+                }
             }
+
+            //Remove the default sheet (there's gotta be a better way to do this....)
+            $objPHPExcel->removeSheetByIndex(0);
+
+            //Write the document
+            $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
+            $objWriter->save($fileName);
+
+            //Reports are done running, let's email to results
+            $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
+            $beautymail->send('emails.duo-registered-users', [], function($message) use($fileName,$recipient)
+            {
+                //TODO: Create system for users to manage report subscriptions.
+                $message
+                    ->to($recipient->email)
+                    ->cc('martin_sloan@ao.uscourts.gov')
+                    ->subject('Duo Registered Users Report')
+                    ->attach($fileName);
+
+            });
+
+            \Log::debug('Message Sent to:',[$recipient->email]);
+
         }
-
-        //Remove the default sheet (there's gotta be a better way to do this....)
-        $objPHPExcel->removeSheetByIndex(0);
-
-        //Write the document
-        $objWriter = new PHPExcel_Writer_Excel2007($objPHPExcel);
-        $objWriter->save(storage_path() . "/ExcelTest.xlsx");
-
     }
 }
