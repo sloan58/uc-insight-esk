@@ -50,7 +50,7 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
 
         //Temp hard coding of report recipients
         $users = [
-            'Fadi Tahan',
+//            'Fadi Tahan',
             'Martin Sloan',
         ];
 
@@ -63,7 +63,21 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             //Get the report recipient
             $recipient = \App\Models\Duo\User::where('username',$user)->first();
 
-            $groups = $recipient->duoGroups()->get();
+            //Check if the recipeint exists and exit if not
+            if(!$recipient)
+            {
+                \Log::debug('Report recipient ' . $user . ' not found:',[$user]);
+                continue;
+            }
+
+            //Check if the recipient is assigned to a group.  Exit if not.
+            if($recipient->duoGroups()->count())
+            {
+                $groups = $recipient->duoGroups()->get();
+            } else {
+                \Log::debug($recipient->username . ' has no groups:',[$recipient]);
+                continue;
+            }
 
             //Set timestamp for file names
             $timeStamp = Carbon::now('America/New_York')->toDateTimeString();
@@ -105,14 +119,17 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                 $row = 2;
                 foreach($duoGroupMembers as $member)
                 {
+                    //Check if the user has a registered phone or token
+                    if($member->duoPhones()->count() || $member->duoTokens()->count())
+                    {
+                        $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $member->username);
+                        $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $member->email);
+                        $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $member->status);
+                        $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $member->last_login);
+                        $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $member->duoGroups()->first()->name);
 
-                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $member->username);
-                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $member->email);
-                    $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $member->status);
-                    $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $member->last_login);
-                    $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $member->duoGroups()->first()->name);
-
-                    $row++;
+                        $row++;
+                    }
                 }
             }
 
@@ -124,17 +141,17 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             $objWriter->save($fileName);
 
             //Reports are done running, let's email to results
-            $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
-            $beautymail->send('emails.duo-registered-users', [], function($message) use($fileName,$recipient)
-            {
-                //TODO: Create system for users to manage report subscriptions.
-                $message
-                    ->to($recipient->email)
-                    ->cc('martin_sloan@ao.uscourts.gov')
-                    ->subject('Duo Registered Users Report')
-                    ->attach($fileName);
-
-            });
+//            $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
+//            $beautymail->send('emails.duo-registered-users', [], function($message) use($fileName,$recipient)
+//            {
+//                //TODO: Create system for users to manage report subscriptions.
+//                $message
+//                    ->to($recipient->email)
+//                    ->cc('martin_sloan@ao.uscourts.gov')
+//                    ->subject('Duo Registered Users Report')
+//                    ->attach($fileName);
+//
+//            });
 
             \Log::debug('Message Sent to:',[$recipient->email]);
 
