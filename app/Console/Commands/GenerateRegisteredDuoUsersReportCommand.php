@@ -50,8 +50,8 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
 
         //Temp hard coding of report recipients
         $users = [
-//            'Fadi Tahan',
-            'Martin Sloan',
+            'Fadi Tahan',
+//            'Martin Sloan',
         ];
 
         //Loop each user to generate report
@@ -117,8 +117,11 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
 
                 //Write user data
                 $row = 2;
+//                $count = 0;
                 foreach($duoGroupMembers as $member)
                 {
+//                    if($member->duoTokens()->count()) $count++;
+
                     //Check if the user has a registered phone or token
                     if($member->duoPhones()->count() || $member->duoTokens()->count())
                     {
@@ -131,6 +134,9 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                         $row++;
                     }
                 }
+
+//                print "Token Count = $count\n";
+
             }
 
             //Remove the default sheet (there's gotta be a better way to do this....)
