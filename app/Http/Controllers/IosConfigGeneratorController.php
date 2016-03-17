@@ -20,7 +20,7 @@ class IosConfigGeneratorController extends Controller
      */
     public function index()
     {
-        $files = Storage::files('app/ios-config-templates/');
+        $files = Storage::files('ios-config-templates/');
 
         $shortNames= [];
         foreach($files as $file)
@@ -38,7 +38,7 @@ class IosConfigGeneratorController extends Controller
      */
     public function create($fileName)
     {
-        $contents = Storage::get('app/ios-config-templates/' .  $fileName);
+        $contents = Storage::get('ios-config-templates/' .  $fileName);
 
         preg_match_all('/<<.+?>>/',$contents,$matches);
 
@@ -62,7 +62,7 @@ class IosConfigGeneratorController extends Controller
     public function store(Request $request)
     {
         $input = $request->input();
-        $contents = Storage::get('app/ios-config-templates/' .  $input['fileName']);
+        $contents = Storage::get('ios-config-templates/' .  $input['fileName']);
 
         preg_match_all('/<<.+?>>/',$contents,$matches);
 
@@ -73,7 +73,7 @@ class IosConfigGeneratorController extends Controller
             $contents = str_replace($match,$input[$match],$contents);
         }
 
-        $tempFileName = 'app/ios-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . \Carbon\Carbon::now()->timestamp . '.txt';
+        $tempFileName = 'ios-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . \Carbon\Carbon::now()->timestamp . '.txt';
 
         Storage::put($tempFileName,$contents);
 
@@ -91,7 +91,7 @@ class IosConfigGeneratorController extends Controller
             return redirect()->back();
         }
 
-        $file->move(storage_path() . '/app/ios-config-templates/', $file->getClientOriginalName());
+        $file->move(storage_path() . '/ios-config-templates/', $file->getClientOriginalName());
 
         alert()->success('New IOS Config Submitted!');
         return redirect()->back();
@@ -100,7 +100,7 @@ class IosConfigGeneratorController extends Controller
 
     public function destroy($fileName)
     {
-        Storage::delete('app/ios-config-templates/' . $fileName);
+        Storage::delete('ios-config-templates/' . $fileName);
 
         alert()->success("IOS configs removed successfully");
 
@@ -126,6 +126,6 @@ class IosConfigGeneratorController extends Controller
 
     public function download($fileName)
     {
-        return response()->download(storage_path() . '/app/ios-config-templates/' .  $fileName);
+        return response()->download(storage_path() . '/ios-config-templates/' .  $fileName);
     }
 }
