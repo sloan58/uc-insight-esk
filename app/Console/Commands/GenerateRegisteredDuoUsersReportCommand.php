@@ -51,7 +51,10 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
         //Temp hard coding of report recipients
         $users = [
             'Fadi Tahan',
-//            'Martin Sloan',
+//            'pavol popovic',
+//            'Jeanne Guilhas',
+//            'Brian Shields',
+//            'Ryan Means'
         ];
 
         //Loop each user to generate report
@@ -63,14 +66,14 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             //Get the report recipient
             $recipient = \App\Models\Duo\User::where('username',$user)->first();
 
-            //Check if the recipeint exists and exit if not
+            //Check if the recipient exists.  If not, log and continue.
             if(!$recipient)
             {
                 \Log::debug('Report recipient ' . $user . ' not found:',[$user]);
                 continue;
             }
 
-            //Check if the recipient is assigned to a group.  Exit if not.
+            //Check if the recipient is assigned to a group.  If not, log and continue.
             if($recipient->duoGroups()->count())
             {
                 $groups = $recipient->duoGroups()->get();
@@ -117,11 +120,8 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
 
                 //Write user data
                 $row = 2;
-//                $count = 0;
                 foreach($duoGroupMembers as $member)
                 {
-//                    if($member->duoTokens()->count()) $count++;
-
                     //Check if the user has a registered phone or token
                     if($member->duoPhones()->count() || $member->duoTokens()->count())
                     {
@@ -134,9 +134,6 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                         $row++;
                     }
                 }
-
-//                print "Token Count = $count\n";
-
             }
 
             //Remove the default sheet (there's gotta be a better way to do this....)
@@ -147,19 +144,21 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             $objWriter->save($fileName);
 
             //Reports are done running, let's email to results
-//            $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
-//            $beautymail->send('emails.duo-registered-users', [], function($message) use($fileName,$recipient)
-//            {
-//                //TODO: Create system for users to manage report subscriptions.
-//                $message
+            $beautymail = app()->make(\Snowfire\Beautymail\Beautymail::class);
+            $beautymail->send('emails.duo-registered-users', [], function($message) use($fileName,$recipient)
+            {
+                //TODO: Create system for users to manage report subscriptions.
+                $message
+                    ->from('duo_reports@ao.uscourts.gov','Duo Reporting')
+                    ->to(['martin_sloan@ao.uscourts.gov','fadi_tahan@ao.uscourts.gov'])
 //                    ->to($recipient->email)
 //                    ->cc('martin_sloan@ao.uscourts.gov')
-//                    ->subject('Duo Registered Users Report')
-//                    ->attach($fileName);
-//
-//            });
+                    ->subject('Duo Registered Users Report')
+                    ->attach($fileName);
 
-            \Log::debug('Message Sent to:',[$recipient->email]);
+            });
+
+            \Log::debug('Message will be sent to:',[$recipient->email]);
 
         }
     }
