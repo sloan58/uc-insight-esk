@@ -26,15 +26,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        //Run the CUCM Report Command
         $schedule->command('cucm:reports')
                  ->dailyAt('08:00');
 
+        //Fetch Duo User data
         $schedule->command('duo:fetch-data')
-                 ->dailyAt('07:00');
+                ->hourly();
 
-        $schedule->command('duo:fetch-data')
-                 ->dailyAt('12:00');
-
+        //Generate Duo User report
         $schedule->command('duo:user-report')
                  ->dailyAt('08:00');
 
