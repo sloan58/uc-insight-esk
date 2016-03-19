@@ -51,10 +51,10 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
         //Temp hard coding of report recipients
         $users = [
             'Fadi Tahan',
-//            'pavol popovic',
-//            'Jeanne Guilhas',
-//            'Brian Shields',
-//            'Ryan Means'
+            'pavol popovic',
+            'Jeanne Guilhas',
+            'Brian Shields',
+            'Ryan Means'
         ];
 
         //Loop each user to generate report
