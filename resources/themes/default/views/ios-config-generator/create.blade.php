@@ -2,7 +2,7 @@
 
 @section('content')
 <div class='row'>
-    <div class='col-md-8 col-md-offset-2'>
+    <div class='col-md-10 col-md-offset-1'>
         <!-- Box -->
         <div class="box box-primary">
             <div class="box-header with-border">
@@ -18,7 +18,7 @@
                 @include('partials._ios-config-generator_form')
 
                 <!-- If the file has no variables, don't show the submit button-->
-                @if(!count($sections) == 0)
+                @if(!count($viewVariables) == 0)
                 <!--  Form Submit -->
                 <div class="form-group">
                     {!! Form::submit('Submit', ['class' => 'btn btn-primary form-control']) !!}
