@@ -150,12 +150,10 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                 //TODO: Create system for users to manage report subscriptions.
                 $message
                     ->from('duo_reports@ao.uscourts.gov','Duo Reporting')
-                    ->to(['martin_sloan@ao.uscourts.gov','fadi_tahan@ao.uscourts.gov'])
-//                    ->to($recipient->email)
-//                    ->cc('martin_sloan@ao.uscourts.gov')
+                    ->to($recipient->email)
+                    ->cc(['martin_sloan@ao.uscourts.gov','fadi_tahan@ao.uscourts.gov'])
                     ->subject('Duo Registered Users Report')
                     ->attach($fileName);
-
             });
 
             \Log::debug('Message will be sent to:',[$recipient->email]);
