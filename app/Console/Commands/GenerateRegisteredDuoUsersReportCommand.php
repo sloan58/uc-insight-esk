@@ -51,7 +51,10 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
         //Temp hard coding of report recipients
         $users = [
             'Fadi Tahan',
-            'Martin Sloan',
+            'pavol popovic',
+            'Jeanne Guilhas',
+            'Brian Shields',
+            'Ryan Means'
         ];
 
         //Loop each user to generate report
@@ -63,7 +66,21 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             //Get the report recipient
             $recipient = \App\Models\Duo\User::where('username',$user)->first();
 
-            $groups = $recipient->duoGroups()->get();
+            //Check if the recipient exists.  If not, log and continue.
+            if(!$recipient)
+            {
+                \Log::debug('Report recipient ' . $user . ' not found:',[$user]);
+                continue;
+            }
+
+            //Check if the recipient is assigned to a group.  If not, log and continue.
+            if($recipient->duoGroups()->count())
+            {
+                $groups = $recipient->duoGroups()->get();
+            } else {
+                \Log::debug($recipient->username . ' has no groups:',[$recipient]);
+                continue;
+            }
 
             //Set timestamp for file names
             $timeStamp = Carbon::now('America/New_York')->toDateTimeString();
@@ -105,14 +122,17 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                 $row = 2;
                 foreach($duoGroupMembers as $member)
                 {
+                    //Check if the user has a registered phone or token
+                    if($member->duoPhones()->count() || $member->duoTokens()->count())
+                    {
+                        $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $member->username);
+                        $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $member->email);
+                        $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $member->status);
+                        $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $member->last_login);
+                        $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $member->duoGroups()->first()->name);
 
-                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $member->username);
-                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $member->email);
-                    $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $member->status);
-                    $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, $member->last_login);
-                    $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $member->duoGroups()->first()->name);
-
-                    $row++;
+                        $row++;
+                    }
                 }
             }
 
@@ -129,14 +149,16 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             {
                 //TODO: Create system for users to manage report subscriptions.
                 $message
-                    ->to($recipient->email)
-                    ->cc('martin_sloan@ao.uscourts.gov')
+                    ->from('duo_reports@ao.uscourts.gov','Duo Reporting')
+                    ->to(['martin_sloan@ao.uscourts.gov','fadi_tahan@ao.uscourts.gov'])
+//                    ->to($recipient->email)
+//                    ->cc('martin_sloan@ao.uscourts.gov')
                     ->subject('Duo Registered Users Report')
                     ->attach($fileName);
 
             });
 
-            \Log::debug('Message Sent to:',[$recipient->email]);
+            \Log::debug('Message will be sent to:',[$recipient->email]);
 
         }
     }
