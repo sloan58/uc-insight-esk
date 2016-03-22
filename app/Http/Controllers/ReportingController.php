@@ -130,4 +130,9 @@ class ReportingController extends Controller
         //Return a response with the firmware report
         return response()->download($fileName);
     }
+
+    public function duoIndex()
+    {
+        return view('reports.duo.index');
+    }
 }

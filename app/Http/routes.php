@@ -205,7 +205,7 @@ Route::group(['middleware' => 'authorize'], function () {
 
     });
 
-        // Vue.js API Routes
+    // Vue.js API Routes
     Route::group(['prefix' => 'api/v1'], function(){
 
         // Eraser API Routes
