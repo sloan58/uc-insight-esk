@@ -4,18 +4,42 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Report;
+use App\Repositories\Criteria\Duo\UserWhereUsernameOrRealnameLike;
 use Carbon\Carbon;
 use App\Http\Requests;
+use DB;
 use Keboola\Csv\CsvFile;
 use App\Libraries\Utils;
 use Illuminate\Http\Request;
 use App\Jobs\GetPhoneFirmware;
 use App\Libraries\ControlCenterSoap;
 use App\Http\Controllers\Controller;
+use App\Models\Duo\User as DuoUser;
 use Storage;
 
+/**
+ * Class ReportingController
+ * @package App\Http\Controllers
+ */
 class ReportingController extends Controller
 {
+
+    /**
+     * @var \App\Models\Duo\User
+     */
+    private $duoUser;
+
+    /**
+     * @param DuoUser $duoUser
+     */
+    function __construct(DuoUser $duoUser)
+    {
+        $this->duoUser = $duoUser;
+    }
+
+    /**
+     * @return \BladeView|bool|\Illuminate\View\View
+     */
     public function servicesIndex()
     {
         //Get the active cluster for the logged in user
@@ -43,6 +67,9 @@ class ReportingController extends Controller
         return view('reports.services.show', compact('clusterStatus'));
     }
 
+    /**
+     * @return \BladeView|bool|\Illuminate\View\View
+     */
     public function registrationIndex()
     {
         // Avoid PHP timeouts when querying large clusters
@@ -68,12 +95,19 @@ class ReportingController extends Controller
 
     }
 
+    /**
+     * @return \BladeView|bool|\Illuminate\View\View
+     */
     public function firmwareIndex()
     {
         return view('reports.firmware.index');
     }
 
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse|\Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
     public function firmwareStore(Request $request)
     {
         // Avoid PHP timeouts when querying large clusters
@@ -131,8 +165,4 @@ class ReportingController extends Controller
         return response()->download($fileName);
     }
 
-    public function duoIndex()
-    {
-        return view('reports.duo.index');
-    }
 }

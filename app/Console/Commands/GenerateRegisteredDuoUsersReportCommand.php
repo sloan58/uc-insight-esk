@@ -2,16 +2,17 @@
 
 namespace App\Console\Commands;
 
+use PHPExcel;
+use PHPExcel_Cell;
 use Carbon\Carbon;
 use App\Models\Report;
+use PHPExcel_Worksheet;
 use App\Models\Cluster;
+use App\Models\Duo\User;
+use PHPExcel_Writer_Excel2007;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use PHPExcel;
-use PHPExcel_Cell;
-use PHPExcel_Worksheet;
-use PHPExcel_Writer_Excel2007;
 
 class GenerateRegisteredDuoUsersReportCommand extends Command
 {
@@ -49,29 +50,24 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
         \Debugbar::disable();
 
         //Temp hard coding of report recipients
-        $users = [
-            'Fadi Tahan',
-            'pavol popovic',
-            'Jeanne Guilhas',
-            'Brian Shields',
-            'Ryan Means'
-        ];
+//        $users = [
+//            'Fadi Tahan',
+//            'pavol popovic',
+//            'Jeanne Guilhas',
+//            'Brian Shields',
+//            'Ryan Means'
+//        ];
+
+        //Get a list of allDuo Users subscribed to the DuoRegisteredUsersReport
+        $users = User::whereHas('reports', function ($query) {
+            $query->where('name', 'DuoRegisteredUsersReport');
+        })->get();
 
         //Loop each user to generate report
-        foreach($users as $user)
+        foreach($users as $recipient)
         {
             //Create the reporting Excel Object
             $objPHPExcel = new PHPExcel();
-
-            //Get the report recipient
-            $recipient = \App\Models\Duo\User::where('username',$user)->first();
-
-            //Check if the recipient exists.  If not, log and continue.
-            if(!$recipient)
-            {
-                \Log::debug('Report recipient ' . $user . ' not found:',[$user]);
-                continue;
-            }
 
             //Check if the recipient is assigned to a group.  If not, log and continue.
             if($recipient->duoGroups()->count())

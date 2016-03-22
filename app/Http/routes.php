@@ -198,11 +198,6 @@ Route::group(['middleware' => 'authorize'], function () {
         Route::get('firmware', ['as' => 'firmware.index', 'uses' => 'ReportingController@firmwareIndex']);
         Route::post('firmware', ['as' => 'firmware.store', 'uses' => 'ReportingController@firmwareStore']);
 
-        //Duo Reports
-        Route::get('duo', ['as' => 'duo.index', 'uses' => 'ReportingController@duoIndex']);
-        Route::post('duo', ['as' => 'duo.store', 'uses' => 'ReportingController@duoStore']);
-
-
     });
 
     // Vue.js API Routes
@@ -239,6 +234,11 @@ Route::group(['middleware' => 'authorize'], function () {
     Route::get('ios-config-generator/{fileName}/confirm-delete', ['as' => 'ios-config-generator.confirm-delete', 'uses' => 'IosConfigGeneratorController@getModalDelete']);
     Route::get('ios-config-generator/{fileName}/delete', ['as' => 'ios-config-generator.delete', 'uses' => 'IosConfigGeneratorController@destroy']);
     Route::get('ios-config-generator/{fileName}/download', ['as' => 'ios-config-generator.download', 'uses' => 'IosConfigGeneratorController@download']);
+
+    //Duo Routes
+    Route::get('duo', ['as' => 'duo.index', 'uses' => 'DuoController@index']);
+    Route::get('duo/user/{id}', ['as' => 'duo.show', 'uses' => 'DuoController@showUser']);
+    Route::put('duo/user/{id}', ['as' => 'duo.store', 'uses' => 'DuoController@updateUser']);
 
 }); // end of AUTHORIZE group
 

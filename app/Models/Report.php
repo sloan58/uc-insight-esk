@@ -28,6 +28,6 @@ class Report extends Model
      */
     public function duoUsers()
     {
-        return $this->belongsToMany('App\Models\Duo\User','duo_report_user','duo_user_id','report_id');
+        return $this->belongsToMany('App\Models\Duo\User','duo_user_report','report_id','duo_user_id');
     }
 }
