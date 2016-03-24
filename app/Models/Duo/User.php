@@ -38,7 +38,7 @@ class User extends Model
      */
     public function duoPhones()
     {
-        return $this->belongsToMany('App\Models\Duo\Phone','duo_phone_duo_user','duo_user_id','duo_phone_id')->get();
+        return $this->belongsToMany('App\Models\Duo\Phone','duo_phone_duo_user','duo_user_id','duo_phone_id');
     }
 
     /**
@@ -46,7 +46,7 @@ class User extends Model
      */
     public function duoTokens()
     {
-        return $this->belongsToMany('App\Models\Duo\Token','duo_token_duo_user','duo_user_id','duo_token_id')->get();
+        return $this->belongsToMany('App\Models\Duo\Token','duo_token_duo_user','duo_user_id','duo_token_id');
     }
 
     /**

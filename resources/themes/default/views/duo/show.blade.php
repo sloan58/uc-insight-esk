@@ -57,7 +57,7 @@
                     <div class="box-body">
                         <table class="table">
                             <tbody>
-                            @if(count($user->duoPhones()))
+                            @if(count($user->duoPhones()->get()))
                             <tr>
                                 <th>Phone ID</th>
                                 <th>Name</th>
@@ -65,7 +65,7 @@
                                 <th>Type</th>
                                 <th>Platform</th>
                             </tr>
-                                @foreach($user->duoPhones() as $phone)
+                                @foreach($user->duoPhones()->get() as $phone)
                                 <tr>
                                     <td>{{$phone->phone_id}}</td>
                                     <td>{{$phone->name}}</td>
@@ -98,13 +98,13 @@
                     <div class="box-body">
                         <table class="table table-bordered">
                             <tbody>
-                            @if(count($user->duoTokens()))
+                            @if(count($user->duoTokens()->get()))
                             <tr>
                                 <th>Serial Number</th>
                                 <th>Token ID</th>
                                 <th>Type</th>
                             </tr>
-                                @foreach($user->duoTokens() as $token)
+                                @foreach($user->duoTokens()->get() as $token)
                                 <tr>
                                     <td>{{$token->serial}}</td>
                                     <td>{{$token->token_id}}</td>
