@@ -152,7 +152,7 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                     ->attach($fileName);
             });
 
-            \Log::debug('Message will be sent to:',[$recipient->email]);
+//            \Log::debug('Message will be sent to:',[$recipient->email]);
 
         }
     }
