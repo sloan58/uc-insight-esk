@@ -33,7 +33,6 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
     /**
      * Create a new command instance.
      *
-     * @return \App\Console\Commands\FetchDuoApiDataCommand
      */
     public function __construct()
     {
@@ -48,15 +47,6 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
     public function handle()
     {
         \Debugbar::disable();
-
-        //Temp hard coding of report recipients
-//        $users = [
-//            'Fadi Tahan',
-//            'pavol popovic',
-//            'Jeanne Guilhas',
-//            'Brian Shields',
-//            'Ryan Means'
-//        ];
 
         //Get a list of allDuo Users subscribed to the DuoRegisteredUsersReport
         $users = User::whereHas('reports', function ($query) {
@@ -93,34 +83,32 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                 //Explode csv_headers to array
                 $duoReportHeaders = explode(',',$duoReport->csv_headers);
 
-                // Create a new worksheet using the Duo Group namer
-                $myWorkSheet = new PHPExcel_Worksheet($objPHPExcel, $group->name);
+                //Create the group main worksheet
+                $this->createWorksheet($objPHPExcel,$group->name,$duoReportHeaders);
 
-                // Attach the worksheet to the workbook
-                $objPHPExcel->addSheet($myWorkSheet);
+                //Create the 'not enrolled' worksheet
+                $notEnrolledWorksheetName =  $group->name . ' - Not Enrolled';
+                $this->createWorksheet($objPHPExcel,$notEnrolledWorksheetName,$duoReportHeaders);
 
-                //Set the active sheet
+                //Create an array to track users that haven't enrolled.
+                $usersNotEnrolled = [];
+
+                //Set the active sheet to the main group sheet
                 $objPHPExcel->setActiveSheetIndexByName($group->name);
 
                 //Get all users that belong to this group
                 $duoGroupMembers = $group->duoUsers()->get();
 
-                //Write the CSV header information
-                for ($i=0; $i<count($duoReportHeaders);$i++)
-                {
-                    $column = PHPExcel_Cell::stringFromColumnIndex($i);
-
-                    // Set cell A1 with a string value
-                    $objPHPExcel->getActiveSheet()->setCellValue($column . '1', $duoReportHeaders[$i]);
-                }
-
-                //Write user data
+                /*
+                 * Write User data
+                */
                 $row = 2;
                 foreach($duoGroupMembers as $member)
                 {
                     //Check if the user has a registered phone or token
                     if($member->duoPhones()->count() || $member->duoTokens()->count())
                     {
+                        //Record the user details in the main worksheet
                         $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $member->username);
                         $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $member->email);
                         $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $member->status);
@@ -128,8 +116,33 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
                         $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $member->duoGroups()->first()->name);
 
                         $row++;
+                    } else {
+                        //This user hasn't enrolled.
+                        //We'll write their info to another worksheet.
+                        array_push($usersNotEnrolled,$member);
                     }
                 }
+
+                //Set the active sheet to the 'not enrolled' group sheet
+                $objPHPExcel->setActiveSheetIndexByName($notEnrolledWorksheetName);
+
+                /*
+                 * Write 'not enrolled' data
+                 */
+                $row = 2;
+                foreach($usersNotEnrolled as $user)
+                {
+                    //Record the user details in the 'not enrolled' worksheet
+                    $objPHPExcel->getActiveSheet()->setCellValue('A' . $row, $user->username);
+                    $objPHPExcel->getActiveSheet()->setCellValue('B' . $row, $user->email);
+                    $objPHPExcel->getActiveSheet()->setCellValue('C' . $row, $user->status);
+                    $objPHPExcel->getActiveSheet()->setCellValue('D' . $row, 'Not Enrolled');
+                    $objPHPExcel->getActiveSheet()->setCellValue('E' . $row, $user->duoGroups()->first()->name);
+
+                    $row++;
+                }
+
+                unset($usersNotEnrolled);
             }
 
             //Remove the default sheet (there's gotta be a better way to do this....)
@@ -153,7 +166,33 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
             });
 
 //            \Log::debug('Message will be sent to:',[$recipient->email]);
+        }
+    }
 
+    /**
+     * @param PHPExcel $objPHPExcel
+     * @param $groupName
+     * @param $duoReportHeaders
+     * @throws \PHPExcel_Exception
+     */
+    private function createWorksheet(PHPExcel $objPHPExcel,$groupName,$duoReportHeaders)
+    {
+        // Create a new worksheet using the Duo Group name
+        $myWorkSheet = new PHPExcel_Worksheet($objPHPExcel, $groupName);
+
+        // Attach the worksheet to the workbook
+        $objPHPExcel->addSheet($myWorkSheet);
+
+        //Set the active sheet
+        $objPHPExcel->setActiveSheetIndexByName($groupName);
+
+        //Write the CSV header information
+        for ($i=0; $i<count($duoReportHeaders);$i++)
+        {
+            $column = PHPExcel_Cell::stringFromColumnIndex($i);
+
+            // Set cell A1 with a string value
+            $objPHPExcel->getActiveSheet()->setCellValue($column . '1', $duoReportHeaders[$i]);
         }
     }
 }
