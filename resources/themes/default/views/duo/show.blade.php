@@ -13,6 +13,14 @@
                 <div class="box box-primary">
                     <div class="box-header with-border">
                         <h2 class="box-title">Viewing Duo User - {{$user->realname}}</h2>
+                        <div class="box-tools pull-right">
+                            <div class="col-md-6 text-right">
+                                <a role="button" href="{{route('duo.user.group.report',[$user->id])}}" class="btn btn-success btn-md">
+                                    <i class="fa fa-check-circle fa-lg"></i>
+                                    On-Demand Report
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">

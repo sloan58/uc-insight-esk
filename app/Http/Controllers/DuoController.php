@@ -8,6 +8,8 @@ use App\Http\Requests;
 use App\Models\Duo\Group;
 use Illuminate\Http\Request;
 use App\Models\Duo\User as DuoUser;
+use App\Jobs\GenerateRegisteredDuoUsersReport;
+use App\Console\Commands\GenerateRegisteredDuoUsersReportCommand;
 
 /**
  * Class DuoController
@@ -37,6 +39,10 @@ class DuoController extends Controller
         return view('duo.index', compact('users'));
     }
 
+    /**
+     * @param $id
+     * @return \BladeView|bool|\Illuminate\View\View
+     */
     public function showUser($id)
     {
         $user = DuoUser::find($id);
@@ -47,6 +53,11 @@ class DuoController extends Controller
         return view('duo.show',compact('user','reports','groups'));
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updateUser(Request $request, $id)
     {
         //Get the report ID's from the form
@@ -68,6 +79,11 @@ class DuoController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * @param Request $request
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updateUserGroups(Request $request, $id)
     {
         //Get the Duo User from the URL $id
@@ -103,6 +119,16 @@ class DuoController extends Controller
         $user->duoGroups()->sync($groups);
 
         alert()->success("Duo User " . $user->realname . " updated successfully!");
+        return redirect()->back();
+    }
+
+    public function onDemandGroupReport($id)
+    {
+        $user = DuoUser::find($id);
+
+        $this->dispatch(new GenerateRegisteredDuoUsersReport($user));
+
+        alert()->success("Duo User Report for " . $user->realname . " submitted successfully!");
         return redirect()->back();
     }
 }
