@@ -6,6 +6,7 @@ use DB;
 use App\Models\Report;
 use App\Http\Requests;
 use App\Models\Duo\Group;
+use App\Jobs\FetchDuoUsers;
 use Illuminate\Http\Request;
 use App\Models\Duo\User as DuoUser;
 use App\Jobs\GenerateRegisteredDuoUsersReport;
@@ -122,6 +123,10 @@ class DuoController extends Controller
         return redirect()->back();
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function onDemandGroupReport($id)
     {
         $user = DuoUser::find($id);
@@ -129,6 +134,20 @@ class DuoController extends Controller
         $this->dispatch(new GenerateRegisteredDuoUsersReport($user));
 
         alert()->success("Duo User Report for " . $user->realname . " submitted successfully!");
+        return redirect()->back();
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function onDemandUserSync($id)
+    {
+        $user = DuoUser::find($id);
+
+        $this->dispatch(new FetchDuoUsers($user));
+
+        alert()->success("Duo User Sync for " . $user->realname . " submitted successfully!");
         return redirect()->back();
     }
 }

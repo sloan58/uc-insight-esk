@@ -19,6 +19,10 @@
                                     <i class="fa fa-check-circle fa-lg"></i>
                                     On-Demand Report
                                 </a>
+                                <a role="button" href="{{route('duo.user.sync',[$user->id])}}" class="btn btn-warning btn-md">
+                                    <i class="fa fa-check-circle fa-lg"></i>
+                                    Sync User with Duo API
+                                </a>
                             </div>
                         </div>
                     </div>
