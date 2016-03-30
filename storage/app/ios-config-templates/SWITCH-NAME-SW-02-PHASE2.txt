@@ -1,0 +1,45 @@
+<<SWITCH-NAME-SW-02*****************************************
+copy running-config startup-config
+copy running-config flash:<<date>>
+ vlan 100
+ name data-vlan
+!
+ interface vlan100
+  description to <<FIREWALL-NAME-FW-02>>
+  ip address  <<EXTERNAL_ZONE_IP>> <<EXTERNAL_ZONE_NETMASK>>
+  no ip redirects
+  no ip proxy-arp
+  ip pim sparse-mode
+  ip multicast boundary MULTICAST filter-autorp
+  standby 10 ip <<EXTERNAL_ZONE_VIP>>
+  standby 10 preempt
+
+default interface <<PACERNET_INTERFACE>>
+default interface <<EXTERNAL_ZONE_INTERFACE>>
+
+ interface GigabitEthernet0/1
+ description to <<FIREWALL-NAME-FW-02>> (STANDBY)
+ spanning-tree portfast
+ switchport mode access
+ switchport access vlan 100
+
+!
+router ospf <<BGP-AS-NUMBER>>
+ router-id <<LOOPBACK-IP>>
+ network <<SITE-ASSIGNED-MGMT-BLOCK>> 0.0.0.255 area 0
+  
+
+interface Vlan100
+  ip ospf cost 10
+!
+interface <<LAYER3_INTERFACE_TO_ROUTER2>>
+  ip ospf cost 10
+
+!
+
+
+no ip route <<network>> <<mask>> <<next-hop>>
+
+!!! AFTER SUCESSFUL OSPF IMPLEMENTATION!!
+router eigrp 64847
+passive-interface default

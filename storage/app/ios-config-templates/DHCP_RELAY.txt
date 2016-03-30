@@ -1,0 +1,3 @@
+set network dhcp interface <<DHCP-RELAY-INTERFACE>> relay ip server <<DHCP-SERVER-IP-ADDRESS>>
+set network dhcp interface <<DHCP-RELAY-INTERFACE>> relay ip enabled yes
+set network dhcp interface <<DHCP-RELAY-INTERFACE>> relay ipv6 enabled no

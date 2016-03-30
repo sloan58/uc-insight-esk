@@ -1,0 +1,23 @@
+		{ OSPF ROUTER }
+
+router ospf <<BGP-AS-NUMBER>>
+ router-id <<BGP-AS-NUMBER-FROM-ROUTER1>>
+ network <<SITE-ASSIGNED-MGMT-BLOCK>> 0.0.0.255 area 0
+ default-information originate 
+
+		{ **OSPF ROUTER** }
+!
+
+		{ DCN ZONE INTERFACE } 
+ interface vlan100
+  description to <<RAIL-A-HOSTNAME>>
+  ip address  <<RAIL-A-DCN-ZONE-IP-ADDRESS>> <<DCN-ZONE-IP-SUBNET-MASK>>
+  no ip redirects
+  no ip proxy-arp
+  ip pim sparse-mode
+  ip multicast boundary MULTICAST filter-autorp
+  standby 10 ip <<RAIL-A-DCN-ZONE-VIP-IP-ADDRESS>>
+  standby 10 priority 105
+  standby 10 preempt
+
+		{ **DCN ZONE INTERFACE** } 
