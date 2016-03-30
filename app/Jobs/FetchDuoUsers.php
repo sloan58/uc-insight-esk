@@ -67,6 +67,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             'user_id' => $user['user_id']
         ]);
 
+
         //Update Duo User specific fields
         $duoUser->username = $user['username'];
         $duoUser->email = $user['email'];
@@ -100,8 +101,11 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             unset($tokenList);
         }
 
-        //Loop Duo User Groups
-        $userGroupList = [];
+        //Get the Duo groups that the user is assigned to
+        //in UC Insight for reporting purposes
+        $userGroupList = $duoUser->duoGroups()->wherePivot('duo_assigned',false)->lists('id')->toArray();
+
+        //Loop Duo-assigned User Groups
         foreach($user['groups'] as $group)
         {
             //Get the ID of the group that was created
