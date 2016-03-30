@@ -5,6 +5,8 @@
 !storage
 /storage/*
 !storage/app
+storage/app/ios-config-templates
+
 # Configuration testing #
 #########################
 .env.mysql
