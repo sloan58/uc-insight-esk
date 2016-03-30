@@ -1,8 +1,0 @@
-!!! THIS WILL USUALLY BE PORT GigabitEthernet0/15!!
-
-default interface <<MGMT-INTERFACE>>
- interface <<MGMT-INTERFACE>>
- description to <<FIREWALL_NAME>>-FW-01-MGMT
- switchport mode access
- switchport access vlan 200
- no shutdown

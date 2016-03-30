@@ -1,8 +1,0 @@
-router ospf <<BGP-ASNUMBER>>
- router-id <<LOOPBACK-IP-ADDRESS>>
- network <<SITE-ASSIGNED-MGMT-BLOCK>> 0.0.0.255 area 0
- default-information originate 
-!
-!!! AFTER OSPF HAS SUCESSFULLY BEEN TESTED>>
-router eigrp 64847
-passive-interface default
