@@ -91,6 +91,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         $duoUser->last_login = $user['last_login'];
 
         //Save Duo User
+        $duoUser->touch();
         $duoUser->save();
 
         if(count($user['tokens']) > 0)

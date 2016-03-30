@@ -57,6 +57,7 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
             $duoGroup->voice_enabled = $group['voice_enabled'];
 
             //Save Duo Group
+            $duoGroup->touch();
             $duoGroup->save();
 
         }

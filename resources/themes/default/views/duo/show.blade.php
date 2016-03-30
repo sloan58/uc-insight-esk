@@ -34,6 +34,7 @@
                                 <th>Email Address</th>
                                 <th>Status</th>
                                 <th>Last Login</th>
+                                <th>Last Sync from Duo API</th>
                             </tr>
                             </thead>
                             <tfoot>
@@ -45,6 +46,7 @@
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->status}}</td>
                                 <td>{{$user->last_login}}</td>
+                                <td>{{$user->updated_at}}</td>
                             </tr>
                             </tbody>
                         </table>
