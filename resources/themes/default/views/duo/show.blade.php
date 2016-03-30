@@ -134,22 +134,6 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table class="table table-bordered">
-                            <tbody>
-                            @if(count($user->reports()))
-                            <tr>
-                                <th>Report Name</th>
-                            </tr>
-                            @foreach($user->reports() as $report)
-                                <tr>
-                                    <td>{{$report->name}}</td>
-                                </tr>
-                            @endforeach
-                            @else
-                                <h6>No Report Subscriptions</h6>
-                            @endif
-                            </tbody>
-                        </table>
                         <form class="form-horizontal" role="form" method="POST" action="/duo/user/{{$user->id}}">
                             <input type="hidden" name="_method" value="PUT"/>
                             {!! csrf_field() !!}
@@ -179,10 +163,51 @@
         </div>
     </div>
 </div>
+
+<div class='row'>
+    <div class='col-md-8 col-md-offset-2'>
+        <div class="row">
+            <div class="col-md-10">
+                <div class="box box-warning">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Assigned Groups <h6>(Duo Assigned Groups Cannot Be Removed)</h6></h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form class="form-horizontal" role="form" method="POST" action="/duo/user/groups/{{$user->id}}">
+                            <input type="hidden" name="_method" value="PUT"/>
+                            {!! csrf_field() !!}
+                            <fieldset>
+                                <div class="input-group col-md-8">
+                                    <select multiple="" class="form-control" id="select-group" name="groups[]">
+                                        @if(count($groups))
+                                            @foreach($groups as $group)
+                                                @if(in_array($group->id,$user->duoGroups()->lists('id')->toArray()))
+                                                    <option value="{{$group->id}}" selected>{{$group->name}}</option>
+                                                @else
+                                                    <option value="{{$group->id}}">{{$group->name}}</option>
+                                                @endif
+                                            @endforeach
+                                        @endif
+                                    </select>
+                                       <span class="input-group-btn">
+                                            <button class="btn btn-primary" type="submit">Save</button>
+                                       </span>
+                                </div>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+                <!-- /.box -->
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('body_bottom')
 <!-- Select2 js -->
 @include('partials._body_bottom_select2_js_report_search')
+@include('partials._body_bottom_select2_js_group_search')
 @endsection
 

@@ -239,6 +239,7 @@ Route::group(['middleware' => 'authorize'], function () {
     Route::get('duo', ['as' => 'duo.index', 'uses' => 'DuoController@index']);
     Route::get('duo/user/{id}', ['as' => 'duo.show', 'uses' => 'DuoController@showUser']);
     Route::put('duo/user/{id}', ['as' => 'duo.store', 'uses' => 'DuoController@updateUser']);
+    Route::put('duo/user/groups/{id}', ['as' => 'duo.user.groups.update', 'uses' => 'DuoController@updateUserGroups']);
 
 }); // end of AUTHORIZE group
 

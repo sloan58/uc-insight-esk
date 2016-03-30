@@ -30,7 +30,7 @@ class User extends Model
      */
     public function duoGroups()
     {
-        return $this->belongsToMany('App\Models\Duo\Group','duo_group_duo_user','duo_user_id','duo_group_id');
+        return $this->belongsToMany('App\Models\Duo\Group','duo_group_duo_user','duo_user_id','duo_group_id')->withPivot('duo_assigned');
     }
 
     /**

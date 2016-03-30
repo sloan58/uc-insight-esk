@@ -104,9 +104,12 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         $userGroupList = [];
         foreach($user['groups'] as $group)
         {
+            //Get the ID of the group that was created
+            //locally during the Duo Group sync
             $localGroup = Group::where('group_id',$group['group_id'])->first();
-            $userGroupList[] = $localGroup->id;
-
+            //Set the duo_assigned attribute to true
+            //since we got this pairing from the Duo API
+            $userGroupList[$localGroup->id] = ['duo_assigned' => true];
         }
         $duoUser->duoGroups()->sync($userGroupList);
 
