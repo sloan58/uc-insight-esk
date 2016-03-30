@@ -2,6 +2,7 @@
 
 <script type="text/javascript">
     $('#select-report').select2({
-        placeholder: "Add a report subscription...."
+        placeholder: "Add a report subscription....",
+        theme: "bootstrap"
     });
 </script>

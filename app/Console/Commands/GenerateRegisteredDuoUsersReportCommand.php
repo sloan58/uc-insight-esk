@@ -23,7 +23,7 @@ class GenerateRegisteredDuoUsersReportCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Fetch the Duo API User and Group Data';
+    protected $description = 'Generate a Duo Registered Users report for all report subscribers';
 
     /**
      * Create a new command instance.

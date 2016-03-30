@@ -24,13 +24,19 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
     /**
+     * @var string
+     */
+    private $users;
+
+    /**
      * Create a new job instance.
      *
+     * @param string $users
      * @return \App\Jobs\FetchDuoUsers
      */
-    public function __construct()
+    public function __construct($users = '')
     {
-
+        $this->users = $users;
     }
 
     /**
@@ -45,14 +51,23 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         //Create Duo Admin Client
         $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
 
-        //Query Duo REST API for Users (all)
-        $response = $duoAdmin->users();
+        //If the users object is not empty
+        if($this->users != '')
+        {
+            //Query Duo REST API for a single User
+            $response = $duoAdmin->users($this->users->realname);
+
+        } else {
+            //The $users array was empty.  Let's get all Duo users
+            //Query Duo REST API for Users (all)
+            $response = $duoAdmin->users();
+        }
 
         //Duo SDK puts results in nested array response[response]
-        $users = $response['response']['response'];
+        $this->users = $response['response']['response'];
 
         //Loop the users
-        foreach($users as $user)
+        foreach($this->users as $user)
         {
             //Begin main process for looping Duo User Data
             $this->extractUserData($user);
@@ -66,7 +81,6 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         $duoUser = User::firstOrCreate([
             'user_id' => $user['user_id']
         ]);
-
 
         //Update Duo User specific fields
         $duoUser->username = $user['username'];

@@ -2,6 +2,7 @@
 
 <script type="text/javascript">
     $('#select-group').select2({
-        placeholder: "Add a group association...."
+        placeholder: "Add a group association....",
+        theme: "bootstrap"
     });
 </script>

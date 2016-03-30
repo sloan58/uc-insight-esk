@@ -14,13 +14,11 @@
                     <div class="box-header with-border">
                         <h2 class="box-title">Viewing Duo User - {{$user->realname}}</h2>
                         <div class="box-tools pull-right">
-                            <div class="col-md-6 text-right">
-                                <a role="button" href="{{route('duo.user.group.report',[$user->id])}}" class="btn btn-success btn-md">
-                                    <i class="fa fa-check-circle fa-lg"></i>
+                            <div class="btn-group">
+                                <a href="{{route('duo.user.group.report',[$user->id])}}" class="btn btn-success btn-md">
                                     On-Demand Report
                                 </a>
-                                <a role="button" href="{{route('duo.user.sync',[$user->id])}}" class="btn btn-warning btn-md">
-                                    <i class="fa fa-check-circle fa-lg"></i>
+                                <a href="{{route('duo.user.sync',[$user->id])}}" class="btn btn-warning btn-md">
                                     Sync User with Duo API
                                 </a>
                             </div>
