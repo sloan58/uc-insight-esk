@@ -143,6 +143,7 @@ class DuoController extends Controller
      */
     public function onDemandUserSync($id)
     {
+
         $user = DuoUser::find($id);
 
         $this->dispatch(new FetchDuoUsers($user));

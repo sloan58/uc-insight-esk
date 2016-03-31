@@ -146,6 +146,13 @@ class ProductionSeeder extends Seeder
             'description'   => 'Allows a user to manage the IOS config templates.',
             'enabled'       => true,
         ]);
+        // Create permission for managing Duo Users
+        $permManageDuoUsers    = Permission::create([
+            'name'          => 'duo-users-admin',
+            'display_name'  => 'Manage Duo Users',
+            'description'   => 'Allows a user to manage the Duo user accounts.',
+            'enabled'       => true,
+        ]);
 
         ////////////////////////////////////
         // Associate open-to-all permission to some routes
@@ -355,6 +362,15 @@ class ProductionSeeder extends Seeder
             "enabled"       => true
         ]);
         $roleIosConfigAdmin->perms()->attach($permManageIosConfigTemplates->id);
+        // Create role: duo-user-admin
+        // Assign permission: permManageDuoUsers
+        $roleDuoUserAdmin = Role::create([
+            "name"          => "duo-user-admin",
+            "display_name"  => "Duo User Admin",
+            "description"   => "Duo User Admins manage the Duo User accounts.",
+            "enabled"       => true
+        ]);
+        $roleDuoUserAdmin->perms()->attach($permManageDuoUsers->id);
 
 
         ////////////////////////////////////

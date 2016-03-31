@@ -108,12 +108,12 @@
                 </li>
             </li>
             @endif
-            @if(\Auth::user()->hasRole('admins'))
+            @if(\Auth::user()->hasRole(['admins','duo-user-admin']))
             <li class="treeview {{ areActiveRoutes([
                 'duo.index',
                 'duo.show'
             ]) }}">
-                <a href="#"><i class="fa fa-file-pdf-o"></i> <span>Duo Auth</span> <i class="fa fa-angle-left pull-right"></i></a>
+                <a href="#"><i class="fa fa-tty"></i> <span>Duo Auth</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
                     <li><a href="{{ url('/duo') }}">Users</a></li>
                 </ul>
