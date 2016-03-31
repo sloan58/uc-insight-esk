@@ -242,6 +242,7 @@ Route::group(['middleware' => 'authorize'], function () {
     Route::put('duo/user/groups/{id}', ['as' => 'duo.user.groups.update', 'uses' => 'DuoController@updateUserGroups']);
     Route::get('duo/user/{id}/groups/report/', ['as' => 'duo.user.group.report', 'uses' => 'DuoController@onDemandGroupReport']);
     Route::get('duo/user/{id}/sync', ['as' => 'duo.user.sync', 'uses' => 'DuoController@onDemandUserSync']);
+    Route::get('duo/user/{id}/migrate', ['as' => 'duo.user.migrate', 'uses' => 'DuoController@migrateUser']);
 
 }); // end of AUTHORIZE group
 

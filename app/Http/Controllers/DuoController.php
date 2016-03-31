@@ -151,4 +151,32 @@ class DuoController extends Controller
         alert()->success("Duo User Sync for " . $user->realname . " submitted successfully!");
         return redirect()->back();
     }
+
+    public function migrateUser($id)
+    {
+        //Create Duo Admin Client
+        $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
+
+        //Get the local Duo User account ID
+        $user = \App\Models\Duo\User::find($id);
+
+        //Fetch the User details via Duo API
+        $res = $duoAdmin->users($user->username);
+
+        //Grab the meat!
+        $user = $res['response']['response'][0];
+
+        //Assign the Duo username (space delimited)
+        $username = $user['username'];
+
+        //Implode the explode...  (Remove the space from the username)
+        $username = implode('', explode(' ', $username));
+
+        //Create the new Duo User
+        $res = $duoAdmin->create_user($username,$user['realname'],$user['email'],$user['status'],$user['notes']);
+
+        dd($res);
+
+
+    }
 }

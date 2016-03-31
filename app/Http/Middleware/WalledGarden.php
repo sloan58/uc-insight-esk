@@ -57,7 +57,7 @@ class WalledGarden
         $exemptionsRegEx = [
             '/password\/reset\/.*/',
             '/api\/.*/',
-            '/hp-forward.*/'
+            '/hp-forward.*/',
         ];
 
         // Redirect to the login page if the user is not authenticated and the site
