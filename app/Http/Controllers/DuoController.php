@@ -31,10 +31,11 @@ class DuoController extends Controller
 
             $users = DuoUser::where('realname', 'like', "%$search%")
                 ->orWhere('username', 'like', "%$search%")
+                ->orderBy('username','asc')
                 ->paginate(10)
             ;
         } else {
-            $users = DB::table('duo_users')->paginate(10);
+            $users = DB::table('duo_users')->orderBy('username','asc')->paginate(10);
         }
 
         return view('duo.index', compact('users'));
@@ -129,8 +130,10 @@ class DuoController extends Controller
      */
     public function onDemandGroupReport($id)
     {
+        //Get the Local Duo User
         $user = DuoUser::find($id);
 
+        //Send the $user off to generate a report
         $this->dispatch(new GenerateRegisteredDuoUsersReport($user));
 
         alert()->success("Duo User Report for " . $user->realname . " submitted successfully!");
@@ -143,10 +146,11 @@ class DuoController extends Controller
      */
     public function onDemandUserSync($id)
     {
-
+        //Get the Local Duo User
         $user = DuoUser::find($id);
 
-        $this->dispatch(new FetchDuoUsers($user));
+        //Send the Real Name off to sync with Duo API
+        $this->dispatch(new FetchDuoUsers($user->realname,$user->user_id));
 
         alert()->success("Duo User Sync for " . $user->realname . " submitted successfully!");
         return redirect()->back();
@@ -158,25 +162,64 @@ class DuoController extends Controller
         $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
 
         //Get the local Duo User account ID
-        $user = \App\Models\Duo\User::find($id);
+        $insightUser = \App\Models\Duo\User::findorFail($id);
 
         //Fetch the User details via Duo API
-        $res = $duoAdmin->users($user->username);
+        $res = $duoAdmin->users($insightUser->username);
 
-        //Grab the meat!
+        //If we didn't get the user object back, error and redirect
+        if(!count($res['response']['response']))
+        {
+            \Log::debug('Duo User not found for migrate function', [$insightUser]);
+            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin");
+            return redirect('duo/user/' . $id);
+        }
+
+        //Grab the user details
         $user = $res['response']['response'][0];
 
-        //Assign the Duo username (space delimited)
-        $username = $user['username'];
-
         //Implode the explode...  (Remove the space from the username)
-        $username = implode('', explode(' ', $username));
+        $user['username'] = implode('', explode(' ', $user['username']));
 
         //Create the new Duo User
-        $res = $duoAdmin->create_user($username,$user['realname'],$user['email'],$user['status'],$user['notes']);
+        $res = $duoAdmin->create_user($user['username'],$user['realname'],$user['email'],$user['status'],$user['notes']);
 
-        dd($res);
+        //If the status is not OK, error and redirect
+        if($res['response']['stat'] != "OK")
+        {
+            \Log::debug('Error while creating new Duo User', [$insightUser,$user,$res]);
+            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin");
+            return redirect('duo/user/' . $id);
+        }
 
+        //Our 'Add Duo User' call was successful.
+        //Assign the new user to this variable
+        $newDuoUser = $res['response']['response'];
+
+        //Sync Phones to new Duo User account
+        foreach($insightUser->duoPhones()->lists('phone_id')->toArray() as $phone)
+        {
+            $res = $duoAdmin->user_associate_phone($newDuoUser['user_id'],$phone);
+
+            \Log::debug('Associate Phone Res:', [$res]);
+        }
+
+        //Sync Tokens to new Duo User account
+        foreach($insightUser->duoTokens()->lists('token_id')->toArray() as $token)
+        {
+            $res = $duoAdmin->user_associate_token($newDuoUser['user_id'],$token);
+            //If the status is not OK, error and redirect
+            if(!$res['response']['stat'] != "OK")
+            {
+                \Log::debug('Error Associating Token Res:', [$res]);
+            }
+        }
+
+        //Sync the new Duo User with UC Insight via Duo API
+        $this->dispatch(new FetchDuoUsers($newDuoUser['realname'],$newDuoUser['user_id']));
+        
+        alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " processed successfully!");
+        return redirect('duo');
 
     }
 }

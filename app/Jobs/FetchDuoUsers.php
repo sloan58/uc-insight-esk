@@ -24,19 +24,27 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
     /**
-     * @var string
+     * @var
      */
     private $users;
+    /**
+     * @var string
+     */
+    private $realname;
 
     /**
-     * Create a new job instance.
-     *
-     * @param string $users
-     * @return \App\Jobs\FetchDuoUsers
+     * @var bool
      */
-    public function __construct($users = '')
+    private $user_id;
+
+    /**
+     * @param string $realname
+     * @param bool $user_id
+     */
+    public function __construct($realname = NULL, $user_id = FALSE)
     {
-        $this->users = $users;
+        $this->realname = $realname;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -51,30 +59,31 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         //Create Duo Admin Client
         $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
 
-        //If the users object is not empty
-        if($this->users != '')
-        {
-            //Query Duo REST API for a single User
-            $response = $duoAdmin->users($this->users->realname);
+        //Query Duo REST API
+        $response = $duoAdmin->users($this->realname,$this->user_id);
 
-        } else {
-            //The $users array was empty.  Let's get all Duo users
-            //Query Duo REST API for Users (all)
-            $response = $duoAdmin->users();
-        }
-
-        //Duo SDK puts results in nested array response[response]
+        //Duo SDK puts results in nested array [response][response]
         $this->users = $response['response']['response'];
 
-        //Loop the users
-        foreach($this->users as $user)
+        //If we only queried for one user
+        //there's just one user to process
+        if(!isset($this->users[0]))
         {
             //Begin main process for looping Duo User Data
-            $this->extractUserData($user);
+            $this->extractUserData($this->users);
+        } else {
+            //Loop the array of users
+            foreach($this->users as $user)
+            {
+                //Begin main process for looping Duo User Data
+                $this->extractUserData($user);
+            }
         }
-
     }
 
+    /**
+     * @param $user
+     */
     private function extractUserData($user)
     {
         //Get an existing Duo User or create a new one
@@ -140,6 +149,10 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
     }
 
+    /**
+     * @param User $duoUser
+     * @param $user
+     */
     private function extractUserPhoneData(User $duoUser, $user)
     {
         //Create array to hold list of users phones

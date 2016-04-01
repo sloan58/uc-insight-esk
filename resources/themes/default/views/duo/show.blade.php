@@ -18,8 +18,15 @@
                                 <a href="{{route('duo.user.group.report',[$user->id])}}" class="btn btn-success btn-md">
                                     On-Demand Report
                                 </a>
+                            </div>
+                            <div class="btn-group">
                                 <a href="{{route('duo.user.sync',[$user->id])}}" class="btn btn-warning btn-md">
                                     Sync User with Duo API
+                                </a>
+                            </div>
+                            <div class="btn-group">
+                                <a href="{{route('duo.user.migrate',[$user->id])}}" class="btn btn-danger btn-md">
+                                    Migrate User Data
                                 </a>
                             </div>
                         </div>
