@@ -217,9 +217,20 @@ class DuoController extends Controller
 
         //Sync the new Duo User with UC Insight via Duo API
         $this->dispatch(new FetchDuoUsers($newDuoUser['realname'],$newDuoUser['user_id']));
-        
+
         alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " processed successfully!");
         return redirect('duo');
 
+    }
+
+    public function registeredUsersReport()
+    {
+        //Get the users that have a phone or token
+        $phoneUsers = \App\Models\Duo\User::has('duoPhones')->get();
+        $tokenUsers = \App\Models\Duo\User::has('duoTokens')->get();
+
+        $users = $phoneUsers->merge($tokenUsers);
+
+        return view('duo.registered-report',compact('users'));
     }
 }
