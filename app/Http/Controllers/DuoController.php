@@ -164,6 +164,9 @@ class DuoController extends Controller
         //Get the local Duo User account ID
         $insightUser = \App\Models\Duo\User::findorFail($id);
 
+        //Get a fresh copy of the current User data before adding the new user.
+        $this->dispatch(new FetchDuoUsers($insightUser->realname,$insightUser->user_id));
+
         //Fetch the User details via Duo API
         $res = $duoAdmin->users($insightUser->username);
 
@@ -215,9 +218,22 @@ class DuoController extends Controller
             }
         }
 
+        //Sync the User Groups to the new Duo User account
+        foreach($insightUser->duoGroups()->lists('group_id')->toArray() as $group)
+        {
+            $res = $duoAdmin->user_associate_group($newDuoUser['user_id'],$group);
+            //If the status is not OK, error and redirect
+            if(!$res['response']['stat'] != "OK")
+            {
+                \Log::debug('Error Associating Token Res:', [$res]);
+            }
+        }
+
         //Sync the new Duo User with UC Insight via Duo API
         $this->dispatch(new FetchDuoUsers($newDuoUser['realname'],$newDuoUser['user_id']));
 
+        //TODO: Sync User UC Insight report subscriptions
+        
         alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " processed successfully!");
         return redirect('duo');
 
