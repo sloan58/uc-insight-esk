@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Jobs\Job;
 use App\Models\Duo\Group;
+use App\Libraries\DuoAdmin;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Bus\SelfHandling;
@@ -32,8 +33,9 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
     {
         set_time_limit(0);
 
-        //Create Duo Admin Client
-        $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
+        //Create the Duo Admin Client and set the timeout higher than default
+        $duoAdmin = new DuoAdmin();
+        $duoAdmin->setRequesterOption('timeout','6000000');
 
         $response = $duoAdmin->groups();
 

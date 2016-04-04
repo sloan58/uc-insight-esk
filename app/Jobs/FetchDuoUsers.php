@@ -6,6 +6,7 @@ use App\Jobs\Job;
 use App\Models\Duo\Group;
 use App\Models\Duo\Phone;
 use App\Models\Duo\Token;
+use App\Libraries\DuoAdmin;
 use App\Models\Duo\Capability;
 use App\Models\Duo\User as User;
 use Illuminate\Queue\SerializesModels;
@@ -30,21 +31,15 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     /**
      * @var string
      */
-    private $realname;
+    private $username;
+
 
     /**
-     * @var bool
+     * @param null $username
      */
-    private $user_id;
-
-    /**
-     * @param string $realname
-     * @param bool $user_id
-     */
-    public function __construct($realname = NULL, $user_id = FALSE)
+    public function __construct($username = NULL)
     {
-        $this->realname = $realname;
-        $this->user_id = $user_id;
+        $this->username = $username;
     }
 
     /**
@@ -56,11 +51,12 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     {
         set_time_limit(0);
 
-        //Create Duo Admin Client
-        $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
+        //Create the Duo Admin Client and set the timeout higher than default
+        $duoAdmin = new DuoAdmin();
+        $duoAdmin->setRequesterOption('timeout','6000000');
 
         //Query Duo REST API
-        $response = $duoAdmin->users($this->realname,$this->user_id);
+        $response = $duoAdmin->users($this->username);
 
         //Duo SDK puts results in nested array [response][response]
         $this->users = $response['response']['response'];

@@ -6,6 +6,7 @@ use DB;
 use App\Models\Report;
 use App\Http\Requests;
 use App\Models\Duo\Group;
+use App\Libraries\DuoAdmin;
 use App\Jobs\FetchDuoUsers;
 use Illuminate\Http\Request;
 use App\Models\Duo\User as DuoUser;
@@ -150,7 +151,7 @@ class DuoController extends Controller
         $user = DuoUser::find($id);
 
         //Send the Real Name off to sync with Duo API
-        $this->dispatch(new FetchDuoUsers($user->realname,$user->user_id));
+        $this->dispatch(new FetchDuoUsers($user->username));
 
         alert()->success("Duo User Sync for " . $user->realname . " submitted successfully!")->autoclose(3500);;
         return redirect()->back();
@@ -159,13 +160,13 @@ class DuoController extends Controller
     public function migrateUser($id)
     {
         //Create Duo Admin Client
-        $duoAdmin = new \DuoAPI\Admin(env('DUO_IKEY'),env('DUO_SKEY'),env('DUO_HOST'));
+        $duoAdmin = new DuoAdmin();
 
         //Get the local Duo User account ID
-        $insightUser = \App\Models\Duo\User::findorFail($id);
+        $insightUser = DuoUser::findorFail($id);
 
         //Get a fresh copy of the current User data before adding the new user.
-        $this->dispatch(new FetchDuoUsers($insightUser->realname,$insightUser->user_id));
+        $this->dispatch(new FetchDuoUsers($insightUser->username));
 
         //Fetch the User details via Duo API
         $res = $duoAdmin->users($insightUser->username);
@@ -236,10 +237,14 @@ class DuoController extends Controller
         }
 
         //Sync the new Duo User with UC Insight via Duo API
-        $this->dispatch(new FetchDuoUsers($newDuoUser['realname'],$newDuoUser['user_id']));
+        $this->dispatch(new FetchDuoUsers($newDuoUser['username']));
 
-        //TODO: Sync User UC Insight report subscriptions
-        
+
+        //Sync the local Duo report subscriptions
+        $newInsightUser = DuoUser::where('username',$newDuoUser['username'])->first();
+        $reports = $insightUser->reports()->get();
+        $newInsightUser->reports()->sync($reports);
+
         alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " processed successfully!");
         return redirect('duo');
 
