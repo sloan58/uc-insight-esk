@@ -77,7 +77,7 @@ class DuoController extends Controller
             $user->reports()->sync($request->reports);
         }
 
-        alert()->success("Duo User " . $user->realname . " updated successfully!");
+        alert()->success("Duo User " . $user->realname . " updated successfully!")->autoclose(3500);
         return redirect()->back();
     }
 
@@ -120,7 +120,7 @@ class DuoController extends Controller
         //Sync the users groups
         $user->duoGroups()->sync($groups);
 
-        alert()->success("Duo User " . $user->realname . " updated successfully!");
+        alert()->success("Duo User " . $user->realname . " updated successfully!")->autoclose(3500);;
         return redirect()->back();
     }
 
@@ -136,7 +136,7 @@ class DuoController extends Controller
         //Send the $user off to generate a report
         $this->dispatch(new GenerateRegisteredDuoUsersReport($user));
 
-        alert()->success("Duo User Report for " . $user->realname . " submitted successfully!");
+        alert()->success("Duo User Report for " . $user->realname . " submitted successfully!")->autoclose(3500);;
         return redirect()->back();
     }
 
@@ -152,7 +152,7 @@ class DuoController extends Controller
         //Send the Real Name off to sync with Duo API
         $this->dispatch(new FetchDuoUsers($user->realname,$user->user_id));
 
-        alert()->success("Duo User Sync for " . $user->realname . " submitted successfully!");
+        alert()->success("Duo User Sync for " . $user->realname . " submitted successfully!")->autoclose(3500);;
         return redirect()->back();
     }
 
@@ -174,7 +174,7 @@ class DuoController extends Controller
         if(!count($res['response']['response']))
         {
             \Log::debug('Duo User not found for migrate function', [$insightUser]);
-            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin");
+            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
             return redirect('duo/user/' . $id);
         }
 
@@ -191,7 +191,7 @@ class DuoController extends Controller
         if($res['response']['stat'] != "OK")
         {
             \Log::debug('Error while creating new Duo User', [$insightUser,$user,$res]);
-            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin");
+            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
             return redirect('duo/user/' . $id);
         }
 
@@ -203,8 +203,12 @@ class DuoController extends Controller
         foreach($insightUser->duoPhones()->lists('phone_id')->toArray() as $phone)
         {
             $res = $duoAdmin->user_associate_phone($newDuoUser['user_id'],$phone);
-
-            \Log::debug('Associate Phone Res:', [$res]);
+            //If the status is not OK, error and redirect
+            if(!$res['response']['stat'] != "OK")
+            {
+                \Log::debug('Error Associating Phone Res:', [$res]);
+                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+            }
         }
 
         //Sync Tokens to new Duo User account
@@ -215,6 +219,7 @@ class DuoController extends Controller
             if(!$res['response']['stat'] != "OK")
             {
                 \Log::debug('Error Associating Token Res:', [$res]);
+                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
             }
         }
 
@@ -226,6 +231,7 @@ class DuoController extends Controller
             if(!$res['response']['stat'] != "OK")
             {
                 \Log::debug('Error Associating Token Res:', [$res]);
+                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
             }
         }
 
