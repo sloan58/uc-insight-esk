@@ -143,7 +143,7 @@ class GenerateRegisteredDuoUsersReport extends Job implements SelfHandling
             $message
                 ->from('duo_reports@ao.uscourts.gov','Duo Reporting')
                 ->to($this->user->email)
-                ->cc(['martin_sloan@ao.uscourts.gov','fadi_tahan@ao.uscourts.gov'])
+//                ->cc(['martin_sloan@ao.uscourts.gov','fadi_tahan@ao.uscourts.gov'])
                 ->subject('Duo Registered Users Report')
                 ->attach($fileName);
         });
