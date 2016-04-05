@@ -38,20 +38,39 @@ class IosConfigGeneratorController extends Controller
      */
     public function create($fileName)
     {
+
         $contents = Storage::get('ios-config-templates/' .  $fileName);
 
-        preg_match_all('/<<.+?>>/',$contents,$matches);
-
-        $matches = $matches[0];
-
         $viewVariables = [];
-        foreach($matches as $match)
+
+        preg_match_all('/{.+?}/',$contents,$begTags);
+
+        foreach($begTags[0] as $index => $tag)
         {
-            preg_match('/<<(.*)>>/',$match,$out);
-            $viewVariables[] = $out;
+            if($index % 2 != 0) continue;
+
+            $viewHeader = trim(str_replace(['{','}'],'',$tag));
+
+            $beginPos = strpos($contents,$tag);
+            $endPos = strpos($contents,$begTags[0][$index + 1]);
+            $length = abs($beginPos - $endPos);
+
+            $between = substr($contents, $beginPos, $length);
+
+            preg_match_all('/<<.+?>>/',$between,$matches);
+
+            $matches = $matches[0];
+
+            foreach($matches as $match)
+            {
+                preg_match('/<<(.*)>>/',$match,$out);
+                $viewVariables[$viewHeader][] = $out;
+
+            }
 
         }
 
+        dd($viewVariables);
         return view('ios-config-generator.create',compact('viewVariables','fileName'));
     }
 
