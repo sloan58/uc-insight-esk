@@ -55,4 +55,7 @@ i.disabled {
 input[type="button"] {
   cursor: pointer; }
 
+.config-panel-title {
+  color: #00a65a; }
+
 /*# sourceMappingURL=app.css.map */
