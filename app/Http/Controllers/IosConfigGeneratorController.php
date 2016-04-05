@@ -70,7 +70,7 @@ class IosConfigGeneratorController extends Controller
 
         }
 
-        dd($viewVariables);
+//        dd($viewVariables);
         return view('ios-config-generator.create',compact('viewVariables','fileName'));
     }
 
