@@ -396,7 +396,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/dingo/api/zipball/3062aac74327d589e0fed92d276225ee7aaab377",
+                "url": "https://api.github.com/repos/dingo/api/zipball/f2726db0675e6a8cd9b68024bdc181d36672d4ce",
                 "reference": "9bf29beb501613d0eee342ac3e962113debddbce",
                 "shasum": ""
             },
@@ -837,7 +837,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/61e1f860a304c3fb6961ecbec36927b5f20b71c6",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/3df22ccdf20a68fafe34cb1ae452aee7cde7d442",
                 "reference": "bfe166af1e52b85f1101db19f3437ae87a7e291b",
                 "shasum": ""
             },
@@ -1066,12 +1066,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/duosecurity/duo_api_php.git",
-                "reference": "5230ff0b398a6513f65d2e3f1622b4b56fe896ff"
+                "reference": "56a80b7afde52d3fd8558b4056d7af5a8cb69c40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duosecurity/duo_api_php/zipball/5230ff0b398a6513f65d2e3f1622b4b56fe896ff",
-                "reference": "5230ff0b398a6513f65d2e3f1622b4b56fe896ff",
+                "url": "https://api.github.com/repos/duosecurity/duo_api_php/zipball/56a80b7afde52d3fd8558b4056d7af5a8cb69c40",
+                "reference": "56a80b7afde52d3fd8558b4056d7af5a8cb69c40",
                 "shasum": ""
             },
             "require": {
@@ -1091,7 +1091,7 @@
             "notification-url": "https://packagist.org/downloads/",
             "description": "A PHP implementation of the Duo API.",
             "homepage": "https://www.duosecurity.com/",
-            "time": "2016-01-29 19:14:04"
+            "time": "2016-04-04 19:02:30"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -2343,7 +2343,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/e120e780751e5556bf4f864e03316d9912798352",
+                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/4d73e613dcabee02060122d5b1a332785ebdfe6d",
                 "reference": "420400f36655d79894fae8ce970516a71ea8f5f5",
                 "shasum": ""
             },
@@ -2406,7 +2406,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Snowfire/Beautymail/zipball/c2d49af498bda74393b8eee7585870f81df9ef48",
+                "url": "https://api.github.com/repos/Snowfire/Beautymail/zipball/e9c1814c4b1fafbec600d4e20edcbccd7f8862af",
                 "reference": "873e4f9291bc8bba9fda8a761fb47f6fa69ef245",
                 "shasum": ""
             },
@@ -3707,7 +3707,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Zizaco/entrust/zipball/be28aa634c44551ae5187894c903094a8ce8baee",
+                "url": "https://api.github.com/repos/Zizaco/entrust/zipball/3936ecf81efe2e124998b657a7adf03106e279e6",
                 "reference": "3a768eb52300ec4efe9d6a6685b9bf0db6a50ffd",
                 "shasum": ""
             },
@@ -4098,7 +4098,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Jeroen-G/laravel-packager/zipball/b327387efa89f6ad9741d4b631f72189e4a3e323",
+                "url": "https://api.github.com/repos/Jeroen-G/laravel-packager/zipball/ee94ea3ee4d1fce9e1074605f8ce04e7b8e12a04",
                 "reference": "22167696e0b6d499095a76c3f39de03a693968e8",
                 "shasum": ""
             },
