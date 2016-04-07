@@ -225,16 +225,16 @@ class DuoController extends Controller
         }
 
         //Sync the User Groups to the new Duo User account
-        foreach($insightUser->duoGroups()->lists('group_id')->toArray() as $group)
-        {
-            $res = $duoAdmin->user_associate_group($newDuoUser['user_id'],$group);
-            //If the status is not OK, error and redirect
-            if(!$res['response']['stat'] != "OK")
-            {
-                \Log::debug('Error Associating Token Res:', [$res]);
-                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
-            }
-        }
+//        foreach($insightUser->duoGroups()->lists('group_id')->toArray() as $group)
+//        {
+//            $res = $duoAdmin->user_associate_group($newDuoUser['user_id'],$group);
+//            //If the status is not OK, error and redirect
+//            if(!$res['response']['stat'] != "OK")
+//            {
+//                \Log::debug('Error Associating Token Res:', [$res]);
+//                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+//            }
+//        }
 
         //Sync the new Duo User with UC Insight via Duo API
         $this->dispatch(new FetchDuoUsers($newDuoUser['username']));
