@@ -252,6 +252,8 @@ class DuoController extends Controller
 
     public function registeredUsersReport()
     {
+        ini_set('memory_limit', '248M');
+        
         //Get the users that have a phone or token
         $phoneUsers = \App\Models\Duo\User::has('duoPhones')->get();
         $tokenUsers = \App\Models\Duo\User::has('duoTokens')->get();
