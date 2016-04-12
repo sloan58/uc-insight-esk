@@ -23,7 +23,14 @@ class RisSoap extends SoapClient{
                 'location' => 'https://' . $this->cluster->ip . ':8443/realtimeservice/services/RisPort',
                 'login' => $this->cluster->username,
                 'password' => $this->cluster->password,
-                'stream_context' => $this->cluster->verify_peer ?: stream_context_create(array('ssl' => array('verify_peer' => false, 'verify_peer_name' => false)))
+                'stream_context' => $this->cluster->verify_peer ?: stream_context_create([
+                            'ssl' => [
+                                'verify_peer' => false,
+                                'verify_peer_name' => false,
+                                'ciphers' => 'SHA1'
+                            ]
+                        ]
+                    ),
             ]
         );
     }
