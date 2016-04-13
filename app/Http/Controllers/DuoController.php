@@ -174,7 +174,7 @@ class DuoController extends Controller
         //If we didn't get the user object back, error and redirect
         if(!count($res['response']['response']))
         {
-            \Log::debug('Duo User not found for migrate function', [$insightUser]);
+            \Log::debug('Source Duo User not found for migrate function', [$insightUser]);
             alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
             return redirect('duo/user/' . $id);
         }
@@ -185,22 +185,35 @@ class DuoController extends Controller
         //Implode the explode...  (Remove the space from the username)
         $user['username'] = implode('', explode(' ', $user['username']));
 
-        //Create the new Duo User
-        $res = $duoAdmin->create_user($user['username'],$user['realname'],$user['email'],$user['status'],$user['notes']);
+        //Query the Duo API to see if the destination
+        //user already exists in Duo
+        $res = $duoAdmin->users($user['username']);
 
-        \Log::debug('Create User Response', [$res]);
-
-        //If the status is not OK, error and redirect
-        if($res['response']['stat'] != "OK")
+        //If we didn't get the user object back, let's create the new Duo user
+        if(!count($res['response']['response']))
         {
-            \Log::debug('Error while creating new Duo User', [$insightUser,$user,$res]);
-            alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
-            return redirect('duo/user/' . $id);
-        }
+            //Create the new Duo User
+            $res = $duoAdmin->create_user($user['username'],$user['realname'],$user['email'],$user['status'],$user['notes']);
 
-        //Our 'Add Duo User' call was successful.
-        //Assign the new user to this variable
-        $newDuoUser = $res['response']['response'];
+            \Log::debug('Create new Duo User Response', [$res]);
+
+            //If the status is not OK, error and redirect
+            if($res['response']['stat'] != "OK")
+            {
+                \Log::debug('Error while creating new Duo User', [$insightUser,$user,$res]);
+                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+                return redirect('duo/user/' . $id);
+            }
+
+            //Our 'Add Duo User' call was successful.
+            //Assign the new user to this variable
+            $newDuoUser = $res['response']['response'];
+
+        } else {
+            //Our 'Add Duo User' call was successful.
+            //Assign the new user to this variable
+            $newDuoUser = $res['response']['response'][0];
+        }
 
         //Sync Phones to new Duo User account
         foreach($insightUser->duoPhones()->lists('phone_id')->toArray() as $phone)

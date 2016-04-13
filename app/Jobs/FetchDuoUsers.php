@@ -84,8 +84,6 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     private function extractUserData($user)
     {
 
-        var_dump(memory_get_usage());
-
         //Get an existing Duo User or create a new one
         $duoUser = User::firstOrCreate([
             'user_id' => $user['user_id']

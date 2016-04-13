@@ -10,7 +10,7 @@
     <div class="col-md-10 col-md-offset-1">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h2 class="box-title">Viewing Duo User - {{$user->realname}}</h2>
+                <h2 class="box-title">Viewing Duo User - {{$user->username}}</h2>
                 <div class="box-tools pull-right">
                     <div class="btn-group">
                         <a href="{{route('duo.user.group.report',[$user->id])}}" class="btn btn-success btn-md">
@@ -34,8 +34,8 @@
                 <table class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Real Name</th>
                         <th>User Name</th>
+                        <th>Real Name</th>
                         <th>Email Address</th>
                         <th>Status</th>
                         <th>Last Login</th>
@@ -46,8 +46,8 @@
                     </tfoot>
                     <tbody>
                     <tr>
-                        <td>{{$user->realname}}</td>
                         <td>{{$user->username}}</td>
+                        <td>{{$user->realname}}</td>
                         <td>{{$user->email}}</td>
                         <td>{{$user->status}}</td>
                         <td>{{$user->last_login}}</td>
