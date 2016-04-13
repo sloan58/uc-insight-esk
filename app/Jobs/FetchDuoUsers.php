@@ -50,6 +50,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         set_time_limit(0);
+        ini_set('memory_limit', '2048M');
 
         //Create the Duo Admin Client and set the timeout higher than default
         $duoAdmin = new DuoAdmin();
@@ -82,6 +83,9 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
      */
     private function extractUserData($user)
     {
+
+        var_dump(memory_get_usage());
+
         //Get an existing Duo User or create a new one
         $duoUser = User::firstOrCreate([
             'user_id' => $user['user_id']
