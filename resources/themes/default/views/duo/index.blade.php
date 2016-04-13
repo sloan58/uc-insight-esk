@@ -18,8 +18,8 @@
                         <table class="table table-hover">
                             <thead>
                             <tr>
-                                <th>Real Name</th>
                                 <th>User Name</th>
+                                <th>Real Name</th>
                                 <th>Email Address</th>
                                 <th>Status</th>
                                 <th>Last Login</th>
@@ -33,10 +33,10 @@
                             <tr>
                                 <td>
                                     <a class="sql-link" href="/duo/user/{{$user->id}}">
-                                        {{$user->realname}}
+                                        {{$user->username}}
                                     </a>
                                 </td>
-                                <td>{{$user->username}}</td>
+                                <td>{{$user->realname}}</td>
                                 <td>{{$user->email}}</td>
                                 <td>{{$user->status}}</td>
                                 <td>{{$user->last_login}}</td>
