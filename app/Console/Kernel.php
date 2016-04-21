@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
 
         //Generate Duo User report
         $schedule->command('duo:user-report')
-                 ->dailyAt('08:00');
+                 ->weekly()->mondays()->at('08:00');
 
     }
 }
