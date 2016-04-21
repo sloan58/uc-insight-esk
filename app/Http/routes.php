@@ -257,3 +257,10 @@ $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
 
 //Hunt-Pilot Forwarding App
 Route::get('hp-forward/', 'HuntPilotForwardController@getForward');
+
+// Upload Routes
+get('upload', 'UploadController@index');
+post('admin/upload/file', 'UploadController@uploadFile');
+delete('admin/upload/file', 'UploadController@deleteFile');
+post('admin/upload/folder', 'UploadController@createFolder');
+delete('admin/upload/folder', 'UploadController@deleteFolder');

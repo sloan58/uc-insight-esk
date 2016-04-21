@@ -46,7 +46,8 @@
         "snowfire/beautymail": "dev-master",
         "dingo/api": "1.0.x@dev",
         "duosecurity/duo_api_php": "dev-master",
-        "aws/aws-sdk-php": "^3.17"
+        "aws/aws-sdk-php": "^3.17",
+        "dflydev/apache-mime-types": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
