@@ -165,6 +165,14 @@ class DuoController extends Controller
         //Get the local Duo User account ID
         $insightUser = DuoUser::findorFail($id);
 
+        //Make sure the source user has spaces in their name
+        //If not, return an error
+        if(!preg_match('/\s/',$insightUser['username'])) {
+            \Log::debug('The source Duo User does not have a space in their username', [$insightUser]);
+            alert()->error("The source Duo User does not have a space in their username")->persistent('Close');
+            return redirect('duo/user/' . $id);
+        }
+
         //Get a fresh copy of the current User data before adding the new user.
         $this->dispatch(new FetchDuoUsers($insightUser->username));
 
