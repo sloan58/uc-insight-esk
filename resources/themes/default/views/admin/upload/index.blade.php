@@ -34,7 +34,7 @@
                             @foreach ($subfolders as $path => $name)
                             <tr>
                                 <td>
-                                    <a href="/admin/upload?folder={{ $path }}">
+                                    <a href="upload?folder={{ $path }}">
                                         <i class="fa fa-folder fa-lg fa-fw"></i>
                                         {{ $name }}
                                     </a>

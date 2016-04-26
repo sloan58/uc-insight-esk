@@ -22,6 +22,11 @@ class UploadController extends Controller
     public function index(Request $request)
     {
         $folder = $request->get('folder');
+
+        if($folder == '') {
+            $folder = 'ios-config-templates/';
+        }
+
         $data = $this->manager->folderInfo($folder);
 
         return view('admin.upload.index', $data);
