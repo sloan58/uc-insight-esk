@@ -13,7 +13,7 @@
             </div>
             <div class="box-body">
 
-                {!! Form::open( ['route' => jfs.config-generator] ) !!}
+                {!! Form::open( ['route' => 'jfs.configs'] ) !!}
 
                 @include('partials._ios-config-generator_form')
 

@@ -34,7 +34,7 @@
                             @foreach ($shortNames as $shortName)
                             <tr>
                                 <td>
-                                    <a href="{{ route('jfs.config.show', [ $shortName ]) }}">
+                                    <a href="{{ route('jfs.configs.create', [ $shortName ]) }}">
                                         <div>
                                             {{ $shortName }}
                                         </div>
@@ -42,11 +42,8 @@
                                 </td>
                                 @if(\Auth::user()->hasRole(['admins','ios-config-admin']))
                                 <td>
-                                    <a href="{!! route('jfs.config.download', $shortName) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-download"></i></a>
-                                    <!--                                        <i class="fa fa-pencil-square-o text-muted" title="{{ trans('cluster/general.error.cant-be-edited') }}"></i>-->
-
-                                    <a href="{!! route('jfs.config.confirm-delete', $shortName) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
-                                    <!--                                        <i class="fa fa-trash-o text-muted" title="{{ trans('cluster/general.error.cant-be-deleted') }}"></i>-->
+                                    <a href="{!! route('jfs.configs.download', $shortName) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-download"></i></a>
+                                    <a href="{!! route('jfs.configs.confirm-delete', $shortName) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
                                 </td>
                                 @endif
                             </tr>
@@ -68,7 +65,7 @@
     <div class="modal fade" id="modal-ios-configs">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="POST" action="{{route('jfs.config.store')}}"
+                <form method="POST" action="{{ route('jfs.configs.loadfile') }}"
                       class="form-horizontal" enctype="multipart/form-data">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="folder" value="">
@@ -84,7 +81,7 @@
                                 File Selection
                             </label>
                             <div class="col-sm-8">
-                                <input type="file" id="file" name="file">
+                                <input type="file" name="file">
                             </div>
                         </div>
                     </div>

@@ -225,15 +225,52 @@ Route::group(['middleware' => 'authorize'], function () {
     });
 
     /*
-     * IOS Config Generator Routes
+     * JFS Routes
      */
-    Route::get('ios-config-generator', ['as' => 'ios-config-generator.create','uses' => 'IosConfigGeneratorController@index']);
-    Route::get('ios-config-generator/{fileName}', ['as' => 'ios-config-generator.create','uses' => 'IosConfigGeneratorController@create']);
-    Route::post('ios-config-generator/', ['as' => 'ios-config-generator.store','uses' => 'IosConfigGeneratorController@store']);
-    Route::post('ios-config-generator/load-file',['as' => 'ios-config-generator.loadfile','uses' => 'IosConfigGeneratorController@loadFile']);
-    Route::get('ios-config-generator/{fileName}/confirm-delete', ['as' => 'ios-config-generator.confirm-delete', 'uses' => 'IosConfigGeneratorController@getModalDelete']);
-    Route::get('ios-config-generator/{fileName}/delete', ['as' => 'ios-config-generator.delete', 'uses' => 'IosConfigGeneratorController@destroy']);
-    Route::get('ios-config-generator/{fileName}/download', ['as' => 'ios-config-generator.download', 'uses' => 'IosConfigGeneratorController@download']);
+    Route::group(['prefix' => 'jfs'], function () {
+
+        /*
+         * Dashboard Routes
+         */
+        Route::get('dashboard', [
+            'as' => 'jfs.dashboard.index',
+            'uses' => 'JfsController@dashboardIndex'
+        ]);
+
+        /*
+         * Config Generator Routes
+         */
+        Route::get('configs',[
+            'as' => 'jfs.configs',
+            'uses' => 'Jfs\ConfigController@index'
+        ]);
+        Route::get('configs/{fileName}',[
+            'as' => 'jfs.configs.create',
+            'uses' => 'Jfs\ConfigController@create'
+        ]);
+        Route::post('configs/', [
+            'as' => 'jfs.configs.store',
+            'uses' => 'Jfs\ConfigController@store',
+        ]);
+        Route::post('configs/{filename}',[
+            'as' => 'jfs.configs.loadfile',
+            'uses' => 'Jfs\ConfigController@loadfile'
+        ]);
+        Route::get('configs/{fileName}/confirm-delete', [
+            'as' => 'jfs.configs.confirm-delete',
+            'uses' => 'Jfs\ConfigController@getModalDelete'
+        ]);
+        Route::get('configs/{fileName}/delete', [
+            'as' => 'jfs.configs.delete',
+            'uses' => 'Jfs\ConfigController@destroy'
+        ]);
+        Route::get('configs/{fileName}/download', [
+            'as' => 'jfs.configs.download',
+            'uses' => 'Jfs\ConfigController@download'
+        ]);
+        //End Config Generator Routes
+
+    }); // End JFS Routes
 
     //Duo Routes
     Route::get('duo', ['as' => 'duo.index', 'uses' => 'DuoController@index']);

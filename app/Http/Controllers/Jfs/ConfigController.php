@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Jfs;
 
 use Illuminate\Http\Request;
 
@@ -13,12 +13,12 @@ use App\Http\Controllers\Controller;
  * Class IosConfigGeneratorController
  * @package App\Http\Controllers
  */
-class JfsController extends Controller
+class ConfigController extends Controller
 {
     /**
      * @return \BladeView|bool|\Illuminate\View\View
      */
-    public function configGeneratorIndex()
+    public function index()
     {
         $files = Storage::files('jfs-config-templates/');
 
@@ -29,7 +29,7 @@ class JfsController extends Controller
             $shortNames[] = array_pop($chunks);
         }
 
-        return view('jfs.config-generator.index', compact('shortNames'));
+        return view('jfs.configs.index', compact('shortNames'));
     }
 
     /**
@@ -83,7 +83,7 @@ class JfsController extends Controller
 
         }
 
-        return view('jfs.create',compact('viewVariables','fileName'));
+        return view('jfs.configs.create',compact('viewVariables','fileName'));
     }
 
     /**
@@ -126,7 +126,7 @@ class JfsController extends Controller
 
     }
 
-    public function configGeneratorLoadFile(Request $request)
+    public function loadFile(Request $request)
     {
         $file = $request->file('file');
 
@@ -160,7 +160,7 @@ class JfsController extends Controller
         $modal_cancel = trans('general.button.cancel');
         $modal_ok = trans('general.button.ok');
 
-        $modal_route = route('jfs.delete', ['name' => $fileName]);
+        $modal_route = route('jfs.configs.delete', ['name' => $fileName]);
 
         $modal_body = trans('jfs/dialog.delete-confirm.body', ['name' => $fileName]);
 
