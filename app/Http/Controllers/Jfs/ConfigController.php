@@ -13,14 +13,14 @@ use App\Http\Controllers\Controller;
  * Class IosConfigGeneratorController
  * @package App\Http\Controllers
  */
-class IosConfigGeneratorController extends Controller
+class JfsController extends Controller
 {
     /**
      * @return \BladeView|bool|\Illuminate\View\View
      */
-    public function index()
+    public function configGeneratorIndex()
     {
-        $files = Storage::files('ios-config-templates/');
+        $files = Storage::files('jfs-config-templates/');
 
         $shortNames= [];
         foreach($files as $file)
@@ -29,7 +29,7 @@ class IosConfigGeneratorController extends Controller
             $shortNames[] = array_pop($chunks);
         }
 
-        return view('ios-config-generator.index', compact('shortNames'));
+        return view('jfs.config-generator.index', compact('shortNames'));
     }
 
     /**
@@ -39,7 +39,7 @@ class IosConfigGeneratorController extends Controller
     public function create($fileName)
     {
         //Get the file from storage
-        $contents = Storage::get('ios-config-templates/' .  $fileName);
+        $contents = Storage::get('jfs-config-templates/' .  $fileName);
 
         //Create an empty array to fill with config headers and vars
         $viewVariables = [];
@@ -83,7 +83,7 @@ class IosConfigGeneratorController extends Controller
 
         }
 
-        return view('ios-config-generator.create',compact('viewVariables','fileName'));
+        return view('jfs.create',compact('viewVariables','fileName'));
     }
 
     /**
@@ -96,7 +96,7 @@ class IosConfigGeneratorController extends Controller
         $input = $request->input();
 
         //Get the file from storage
-        $contents = Storage::get('ios-config-templates/' .  $input['fileName']);
+        $contents = Storage::get('jfs-config-templates/' .  $input['fileName']);
 
         //Find all the variables in the file
         preg_match_all('/<<.+?>>/',$contents,$matches);
@@ -118,7 +118,7 @@ class IosConfigGeneratorController extends Controller
             $contents = str_replace($tag,'',$contents);
         }
 
-        $tempFileName = 'ios-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . \Carbon\Carbon::now()->timestamp . '.txt';
+        $tempFileName = 'jfs-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . \Carbon\Carbon::now()->timestamp . '.txt';
 
         Storage::put($tempFileName,$contents);
 
@@ -126,7 +126,7 @@ class IosConfigGeneratorController extends Controller
 
     }
 
-    public function loadFile(Request $request)
+    public function configGeneratorLoadFile(Request $request)
     {
         $file = $request->file('file');
 
@@ -136,7 +136,7 @@ class IosConfigGeneratorController extends Controller
             return redirect()->back();
         }
 
-        $file->move(storage_path() . '/ios-config-templates/', $file->getClientOriginalName());
+        $file->move(storage_path() . '/jfs-config-templates/', $file->getClientOriginalName());
 
         alert()->success('New IOS Config Submitted!');
         return redirect()->back();
@@ -145,7 +145,7 @@ class IosConfigGeneratorController extends Controller
 
     public function destroy($fileName)
     {
-        Storage::delete('ios-config-templates/' . $fileName);
+        Storage::delete('jfs-config-templates/' . $fileName);
 
         alert()->success("IOS configs removed successfully");
 
@@ -156,13 +156,13 @@ class IosConfigGeneratorController extends Controller
     {
         $error = null;
 
-        $modal_title = trans('ios-config-generator/dialog.delete-confirm.title');
+        $modal_title = trans('jfs/dialog.delete-confirm.title');
         $modal_cancel = trans('general.button.cancel');
         $modal_ok = trans('general.button.ok');
 
-        $modal_route = route('ios-config-generator.delete', ['name' => $fileName]);
+        $modal_route = route('jfs.delete', ['name' => $fileName]);
 
-        $modal_body = trans('ios-config-generator/dialog.delete-confirm.body', ['name' => $fileName]);
+        $modal_body = trans('jfs/dialog.delete-confirm.body', ['name' => $fileName]);
 
         return view('modal_confirmation', compact('error', 'modal_route',
             'modal_title', 'modal_body', 'modal_cancel', 'modal_ok'));
@@ -171,6 +171,6 @@ class IosConfigGeneratorController extends Controller
 
     public function download($fileName)
     {
-        return response()->download(storage_path() . '/ios-config-templates/' .  $fileName);
+        return response()->download(storage_path() . '/jfs-config-templates/' .  $fileName);
     }
 }
