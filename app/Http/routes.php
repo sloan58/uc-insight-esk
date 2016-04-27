@@ -236,6 +236,7 @@ Route::group(['middleware' => 'authorize'], function () {
             'as' => 'jfs.dashboard.index',
             'uses' => 'JfsController@dashboardIndex'
         ]);
+        //End Dashboard Routes
 
         /*
          * Config Generator Routes
