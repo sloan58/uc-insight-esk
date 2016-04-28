@@ -14,8 +14,9 @@ class CreateJfsTasksTable extends Migration
     {
         Schema::create('jfs_tasks', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->boolean('completed');
+            $table->string('name')->unique();
+            $table->integer('jfs_workflow_id')->unsigned()->index()->nullable();
+            $table->foreign('jfs_workflow_id')->references('id')->on('jfs_workflows');
             $table->timestamps();
         });
     }

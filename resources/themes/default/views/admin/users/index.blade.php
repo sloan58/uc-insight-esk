@@ -111,7 +111,7 @@
 @endsection
 
 
-            <!-- Optional bottom section for modals etc... -->
+<!-- Optional bottom section for modals etc... -->
 @section('body_bottom')
     <script language="JavaScript">
         function toggleCheckbox() {

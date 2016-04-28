@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Workflow extends Model
 {
+
+    /**
+     * @var string
+     */
+    protected $table = 'jfs_workflows';
+
     /**
      * @var array
      */
@@ -20,7 +26,7 @@ class Workflow extends Model
      */
     public function sites()
     {
-        return $this->belongsToMany('Models\Jfs\Site');
+        return $this->belongsToMany('App\Models\Jfs\Site', 'jfs_workflow_jfs_site', 'jfs_workflow_id', 'jfs_site_id');
     }
 
     /**
@@ -28,6 +34,6 @@ class Workflow extends Model
      */
     public function tasks()
     {
-        return $this->belongsToMany('Models\Jfs\Task');
+        return $this->hasMany('App\Models\Jfs\Task', 'jfs_workflow_id');
     }
 }

@@ -10,6 +10,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Site extends Model
 {
+
+    /**
+     * @var string
+     */
+    protected $table = 'jfs_sites';
+
     /**
      * @var array
      */
@@ -20,14 +26,32 @@ class Site extends Model
      */
     public function workflows()
     {
-        return $this->belongsToMany('Models\Jfs\Workflow');
+        return $this->belongsToMany('App\Models\Jfs\Workflow', 'jfs_workflow_jfs_site', 'jfs_site_id', 'jfs_workflow_id');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tasks()
     {
-        return $this->hasManyThrough('Models\Jfs\Task', 'Models\Jfs\Workflow');
+        return $this->belongsToMany('App\Models\Jfs\Task', 'jfs_site_jfs_task', 'jfs_site_id', 'jfs_task_id')->withPivot('completed');
+    }
+
+    /**
+     * Return a list of incomplete tasks for this site
+     * @return mixed
+     */
+    public function incompleteTasks()
+    {
+        return $this->tasks()->where('completed',0)->get();
+    }
+
+    /**
+     * Return a list of completed tasks for this site
+     * @return mixed
+     */
+    public function completedTasks()
+    {
+        return $this->tasks()->where('completed',1)->get();
     }
 }

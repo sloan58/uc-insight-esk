@@ -232,9 +232,17 @@ Route::group(['middleware' => 'authorize'], function () {
         /*
          * Dashboard Routes
          */
-        Route::get('dashboard', [
-            'as' => 'jfs.dashboard.index',
-            'uses' => 'JfsController@dashboardIndex'
+        Route::get('sites', [
+            'as' => 'jfs.sites.index',
+            'uses' => 'Jfs\SiteController@index'
+        ]);
+        Route::get('sites/task', [
+            'as' => 'jfs.site.task.update',
+            'uses' => 'Jfs\SiteController@update'
+        ]);
+        Route::get('sites/{site}', [
+            'as' => 'jfs.sites.show',
+            'uses' => 'Jfs\SiteController@show'
         ]);
         //End Dashboard Routes
 

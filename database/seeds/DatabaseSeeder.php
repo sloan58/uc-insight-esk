@@ -10,7 +10,21 @@ class DatabaseSeeder extends Seeder
      * @var array
      */
     protected $tables = [
-        'audits', 'cluster_user', 'clusters', 'devices', 'erasers','ip_addresses', 'permission_role', 'permission_user', 'permissions', 'role_user', 'roles', 'routes', 'users', 'reports', 'report_user'
+        'audits',
+        'cluster_user',
+        'clusters',
+        'devices',
+        'erasers',
+        'ip_addresses',
+        'permission_role',
+        'permission_user',
+        'permissions',
+        'role_user',
+        'roles',
+        'routes',
+        'users',
+        'reports',
+        'report_user'
     ];
 
     /**
@@ -27,6 +41,7 @@ class DatabaseSeeder extends Seeder
         $this->call('ProductionSeeder');
         $this->call('ReportSeeder');
         $this->call('DuoCapabilitySeeder');
+        $this->call('JfsDashboardSeeder');
 
         if( App::environment() === 'development' )
         {
