@@ -133,17 +133,17 @@ class ProductionSeeder extends Seeder
             'enabled'       => true,
         ]);
         // Create permission for generating IOS configs
-        $permGenerateIosConfigs    = Permission::create([
-            'name'          => 'ios-config-user',
-            'display_name'  => 'Generate IOS Configs',
-            'description'   => 'Allows a user to generate dynamic IOS configs from a template.',
+        $permJfsUser    = Permission::create([
+            'name'          => 'jfs-user',
+            'display_name'  => 'JFS R/O',
+            'description'   => 'Allows a user to view JFS features.',
             'enabled'       => true,
         ]);
         // Create permission for generating IOS configs
-        $permManageIosConfigTemplates    = Permission::create([
-            'name'          => 'ios-config-admin',
-            'display_name'  => 'Manage IOS Config Tempalates',
-            'description'   => 'Allows a user to manage the IOS config templates.',
+        $permJfsAdmin    = Permission::create([
+            'name'          => 'jfs-admin',
+            'display_name'  => 'Manage all things JFS',
+            'description'   => 'Allows a user to manage the JFS features.',
             'enabled'       => true,
         ]);
         // Create permission for managing Duo Users
@@ -345,23 +345,24 @@ class ProductionSeeder extends Seeder
 
         // Create role: ios-config-user
         // Assign permission: permAutoDialer
-        $roleIosConfigUser = Role::create([
-            "name"          => "ios-config-user",
-            "display_name"  => "IOS Config User",
-            "description"   => "IOS Config Users can generate dynamic configs from existing templates.",
+        $roleJfsUser = Role::create([
+            "name"          => "jfs-user",
+            "display_name"  => "JFS User",
+            "description"   => "JFS Users can view JFS features.",
             "enabled"       => true
         ]);
-        $roleIosConfigUser->perms()->attach($permGenerateIosConfigs->id);
+        $roleJfsUser->perms()->attach($permJfsUser->id);
 
         // Create role: ios-config-admin
         // Assign permission: permAutoDialer
-        $roleIosConfigAdmin = Role::create([
-            "name"          => "ios-config-admin",
-            "display_name"  => "IOS Config Admin",
-            "description"   => "IOS Config Admins manage the existing IOS config templates.",
+        $roleJfsAdmin = Role::create([
+            "name"          => "jfs-admin",
+            "display_name"  => "JFS Admin",
+            "description"   => "JFS Admins manage the JFS features.",
             "enabled"       => true
         ]);
-        $roleIosConfigAdmin->perms()->attach($permManageIosConfigTemplates->id);
+        $roleJfsAdmin->perms()->attach($permJfsAdmin->id);
+
         // Create role: duo-user-admin
         // Assign permission: permManageDuoUsers
         $roleDuoUserAdmin = Role::create([

@@ -98,7 +98,7 @@
                     </ul>
                 </li>
             @endif
-            @if(\Auth::user()->hasRole(['admins','ios-config-user']))
+            @if(\Auth::user()->hasRole(['admins','jfs-user', 'jfs-admin']))
             <li class="treeview {{ areActiveRoutes([
                 'jfs.sites.index',
                 'jfs.configs',

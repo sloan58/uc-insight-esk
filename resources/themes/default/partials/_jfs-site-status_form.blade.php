@@ -6,15 +6,25 @@
         <div class="panel-body">
             @foreach($workflow->tasks as $task)
             <ul>
-                <li>{{ $task->name }}
-                    <input type="checkbox"
-                    @if($site->tasks()->where('id',$task->id)->first()->pivot->completed)
-                        checked
-                    @endif
-                        onclick="save_checkbox('{{ $site->id }}', '{{$task->id }}')">
-                    <br>
-                    {{--<i class="fa fa-check" aria-hidden="true"></i>--}}
-                </li>
+                @if(\Auth::user()->hasRole(['admins','jfs-admin']))
+                    <li>{{ $task->name }}
+                        <input type="checkbox"
+                        @if($site->tasks()->where('id',$task->id)->first()->pivot->completed)
+                               checked
+                               @endif
+                               onclick="save_checkbox('{{ $site->id }}', '{{$task->id }}')">
+                        <br>
+                        {{--<i class="fa fa-check" aria-hidden="true"></i>--}}
+                    </li>
+                @else
+                    <li>{{ $task->name }}
+                        @if($site->tasks()->where('id',$task->id)->first()->pivot->completed)
+                            <i class="fa fa-check task-complete" aria-hidden="true">Completed</i>
+                            <br>
+                        @endif
+                    </li>
+                @endif
+
             </ul>
             @endforeach
         </div>
