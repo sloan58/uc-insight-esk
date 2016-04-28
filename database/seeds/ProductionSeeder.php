@@ -385,9 +385,11 @@ class ProductionSeeder extends Seeder
             "email"         => "root@email.com",
             "password"      => "Password1",
             "auth_type"     => "internal",
-            "enabled"       => true
+            "enabled"       => true,
             ]);
         $userRoot->roles()->attach($roleAdmins->id);
+        $department =  \App\Models\Department::first();
+        $department->users()->save($userRoot);
 
 
     }

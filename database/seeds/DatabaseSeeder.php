@@ -38,6 +38,8 @@ class DatabaseSeeder extends Seeder
 
         $this->cleanDatabase();
 
+        $this->call('DepartmentSeeder');
+        $this->call('ClusterSeeder');
         $this->call('ProductionSeeder');
         $this->call('ReportSeeder');
         $this->call('DuoCapabilitySeeder');

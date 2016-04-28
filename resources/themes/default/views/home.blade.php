@@ -4,7 +4,7 @@
     <div id="console-wrapper">
         <p class="console">
             <span id="login" class="termPrompt">
-                @if(\Auth::user()->hasRole(['Network-Insight'])){{\Auth::user()->username}}@jfs-insight:~$@else{{\Auth::user()->username}}@uc-insight:~$@endif</span><span id="caption"></span><span id="cursor">|</span>
+                {{ \Auth::user()->department->name }}:~$</span><span id="caption"></span><span id="cursor">|</span>
         </p>
     </div>
 @endsection
@@ -14,11 +14,7 @@
     var termPrompt = $('span#login').text();
     var newLine = $('span#login').clone();
     var captionLength = 0;
-    @if(\Auth::user()->hasRole(['Network-Insight']))
-    var caption = 'Welcome to JFS Insight.</br>';
-    @else
-    var caption = 'Welcome to UC Insight.</br>';
-    @endif
+    var caption = 'Welcome to {{ \Auth::user()->friendlyDepartmentName() }}.</br>';
     $(document).ready(function() {
         setInterval ('cursorAnimation()', 600);
         captionEl = $('#caption');

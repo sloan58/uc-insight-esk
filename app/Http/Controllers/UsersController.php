@@ -3,6 +3,7 @@
 use Auth;
 use Alert;
 use App\Models\Cluster;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -71,6 +72,7 @@ class UsersController extends Controller {
     {
         $user = $this->user->find($id);
         $clusters = Cluster::lists('name','id');
+        $departments = Department::lists('name','id');
 
 
         Audit::log(Auth::user()->id, trans('admin/users/general.audit-log.category'), trans('admin/users/general.audit-log.msg-show', ['username' => $user->username]));
@@ -82,7 +84,7 @@ class UsersController extends Controller {
 //        $roleList = [''=>''] + $roleCollection->all();
         $perms = $this->perm->pushCriteria(new PermissionsByNamesAscending())->all();
 
-        return view('admin.users.show', compact('user', 'clusters', 'perms', 'page_title', 'page_description'));
+        return view('admin.users.show', compact('user', 'clusters', 'departments', 'perms', 'page_title', 'page_description'));
     }
 
     /**
@@ -121,12 +123,14 @@ class UsersController extends Controller {
         $perms = $this->perm->pushCriteria(new PermissionsByNamesAscending())->all();
         $user = new \App\User();
         $clusters = Cluster::lists('name','id');
+        $departments = Department::lists('name','id');
+
 
 //        $userRoles = $user->roles;
 //        $roleCollection = \App\Models\Role::take(10)->get(['id', 'display_name'])->lists('display_name', 'id');
 //        $roleList = [''=>''] + $roleCollection->all();
 
-        return view('admin.users.create', compact('user', 'clusters', 'perms', 'page_title', 'page_description'));
+        return view('admin.users.create', compact('user', 'clusters', 'departments', 'perms', 'page_title', 'page_description'));
     }
 
     /**
@@ -152,7 +156,7 @@ class UsersController extends Controller {
         // Run the update method to set enabled status and roles membership.
         $user->update($attributes);
 
-//       TODO: Create front end system to manage users and clsuters
+//       TODO: Create front end system to manage users and clusters
 //       TODO: In the meantime, give all users access to every cluster.
 
         $clusters = Cluster::all();
@@ -166,6 +170,13 @@ class UsersController extends Controller {
          * Assign the new user's active cluster
          */
         $user->activateCluster($attributes['activeCluster']);
+
+        /*
+         * Assign the department
+         */
+        $department = Department::find($attributes['department']);
+        $department->users()->save($user);
+
         $user->save();
 
         alert()->success( trans('admin/users/general.status.created') ); // 'User successfully created');
@@ -182,6 +193,7 @@ class UsersController extends Controller {
     {
         $user = $this->user->find($id);
         $clusters = Cluster::lists('name','id');
+        $departments = Department::lists('name','id');
 
 
         Audit::log(Auth::user()->id, trans('admin/users/general.audit-log.category'), trans('admin/users/general.audit-log.msg-edit', ['username' => $user->username]));
@@ -199,7 +211,7 @@ class UsersController extends Controller {
 //        $roleCollection = \App\Models\Role::take(10)->get(['id', 'display_name'])->lists('display_name', 'id');
 //        $roleList = [''=>''] + $roleCollection->all();
 
-        return view('admin.users.edit', compact('user', 'clusters', 'roles', 'perms', 'page_title', 'page_description'));
+        return view('admin.users.edit', compact('user', 'clusters', 'departments', 'roles', 'perms', 'page_title', 'page_description'));
     }
 
     /**
@@ -384,6 +396,13 @@ class UsersController extends Controller {
          * Assign the new user's active cluster
          */
         $user->activateCluster($attributes['activeCluster']);
+
+        /*
+         * Assign the department
+         */
+        $department = Department::find($attributes['department']);
+        $department->users()->save($user);
+
         $user->save();
 
         alert()->success( trans('admin/users/general.status.updated') );
