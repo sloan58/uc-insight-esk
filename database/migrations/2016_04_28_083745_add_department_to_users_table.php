@@ -13,7 +13,7 @@ class AddDepartmentToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->integer('department_id')->unsigned()->index()->nullable()->after('clusters_id');
+            $table->integer('department_id')->unsigned()->index()->nullable()->after('clusters_id')->default(1);
             $table->foreign('department_id')->references('id')->on('departments');
         });
     }
@@ -26,7 +26,8 @@ class AddDepartmentToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_departments_id_foreign');
+            $table->dropForeign('users_department_id_foreign');
+            $table->dropColumn('department_id');
         });
     }
 }

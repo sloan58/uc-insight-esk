@@ -3,6 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+
 class CreateDepartmentsTable extends Migration
 {
     /**
@@ -17,6 +18,8 @@ class CreateDepartmentsTable extends Migration
             $table->string('name')->unique();
             $table->timestamps();
         });
+
+        Artisan::call('db:seed', ['--class' => 'DepartmentSeeder']);
     }
 
     /**
