@@ -3,18 +3,9 @@
 
     <!-- Logo -->
     <a href="{{ route('home') }}" class="logo">
-        @if(\Auth::user()->hasRole(['Network-Insight']))
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>JFS</b>In</span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>JFS</b>Insight</span>
-        @else
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>UC</b>In</span>
-            <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>UC</b>Insight</span>
-        @endif
-
+        <!-- mini logo for sidebar mini 50x50 pixels -->
+        <!-- AND logo for regular state and mobile devices -->
+        {!! \Auth::user()->headerBrandingMini() !!}
     </a>
 
     <!-- Header Navbar -->

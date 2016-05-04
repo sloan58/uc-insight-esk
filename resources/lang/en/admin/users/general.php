@@ -66,6 +66,7 @@ return [
         'last_name'                 =>  'Last name',
         'name'                      =>  'Name',
         'cluster'                   =>  'Active Cluster',
+        'department'                =>  'Department',
         'assigned'                  =>  'Assigned',
         'roles'                     =>  'Roles',
         'roles-not-found'           =>  'Roles not found',

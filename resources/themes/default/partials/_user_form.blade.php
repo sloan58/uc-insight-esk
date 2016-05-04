@@ -6,6 +6,7 @@
         <li class=""><a href="#tab_options" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.options') !!}</a></li>
         <li class=""><a href="#tab_roles" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.roles') !!}</a></li>
         <li class=""><a href="#tab_perms" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.perms') !!}</a></li>
+        <li class=""><a href="#tab_department" data-toggle="tab" aria-expanded="false">{!! trans('general.tabs.department') !!}</a></li>
     </ul>
     <div class="tab-content">
 
@@ -44,6 +45,7 @@
                 {!! Form::label('auth_type', trans('admin/users/general.columns.type')) !!}
                 {!! Form::text('auth_type', null, ['class' => 'form-control', 'readonly']) !!}
             </div>
+
         </div><!-- /.tab-pane -->
 
         <div class="tab-pane" id="tab_cluster">
@@ -59,6 +61,24 @@
                         {!! Form::label('cluster', trans('admin/users/general.columns.cluster')) !!}
                         {!! Form::select('activeCluster', $clusters, key($clusters)) !!}
                     </label>
+                    @endif
+                </div>
+            </div>
+        </div><!-- /.tab-pane -->
+
+        <div class="tab-pane" id="tab_department">
+            <div class="form-group">
+                <div class="checkbox">
+                    @if(isset($user->department()->id))
+                        <label>
+                            {!! Form::label('department', trans('admin/users/general.columns.department')) !!}
+                            {!! Form::select('department', $departments, $user->department->id) !!}
+                        </label>
+                    @else
+                        <label>
+                            {!! Form::label('department', trans('admin/users/general.columns.cluster')) !!}
+                            {!! Form::select('department', $departments, '1') !!}
+                        </label>
                     @endif
                 </div>
             </div>

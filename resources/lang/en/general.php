@@ -34,6 +34,7 @@ return [
         'roles'             => 'Roles',
         'routes'            => 'Routes',
         'data'              => 'Data',
+        'department'        => 'Department'
     ],
 
     'error'              => [

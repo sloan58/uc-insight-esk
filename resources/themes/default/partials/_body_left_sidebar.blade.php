@@ -98,14 +98,17 @@
                     </ul>
                 </li>
             @endif
-            @if(\Auth::user()->hasRole(['admins','ios-config-user']))
+            @if(\Auth::user()->hasRole(['admins','jfs-user', 'jfs-admin']))
             <li class="treeview {{ areActiveRoutes([
-                'ios-config-generator.index',
-                'ios-config-generator.create',
+                'jfs.sites.index',
+                'jfs.configs',
+                'jfs.configs.create',
                 ]) }}">
-                <li>
-                    <a href="{{ url('/ios-config-generator') }}"><i class="fa fa-exchange"></i><span>IOS Config Generator</span></a>
-                </li>
+                <a href="#"><i class="fa fa-exchange"></i><span>JFS</span><i class="fa fa-angle-left pull-right"></i></a>
+                <ul class="treeview-menu">
+                    <li><a href="{{ route('jfs.sites.index') }}">Sites</a></li>
+                    <li><a href="{{ route('jfs.configs') }}">Config Generator</a></li>
+                </ul>
             </li>
             @endif
             @if(\Auth::user()->hasRole(['admins','duo-user-admin']))

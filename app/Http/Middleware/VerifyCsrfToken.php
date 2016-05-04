@@ -13,6 +13,6 @@ class VerifyCsrfToken extends BaseVerifier
      */
     protected $except = [
         'api/phone-reset',
-        'ios-config-generator'
+        'jfs'
     ];
 }
