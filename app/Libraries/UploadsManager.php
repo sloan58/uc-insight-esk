@@ -152,7 +152,7 @@ class UploadsManager
      */
     protected function fileDetails($path)
     {
-        $path = '/' . ltrim($path, '/');
+        $path = ltrim($path, '/');
 
         return [
             'name' => basename($path),

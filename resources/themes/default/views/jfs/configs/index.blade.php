@@ -1,11 +1,12 @@
 @extends('layouts.master')
 @section('content')
+
 <div class='row'>
     <div class='col-md-8 col-md-offset-2'>
         <!-- Box -->
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">IOS Config Generator</h3>
+                <h3 class="box-title">JFS Config Generator</h3>
                 &nbsp;
                 <div class="box-tools pull-right">
                     <div class="col-md-6 text-right">
@@ -21,34 +22,60 @@
                         <table id="table" class="table">
                             <thead>
                             <tr>
-                                <th>File Name</th>
-                                @if(\Auth::user()->hasRole(['admins','ios-config-admin']))
-                                <th>Actions</th>
-                                @endif
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Date</th>
+                                <th>Size</th>
+                                <th data-sortable="false">Actions</th>
                             </tr>
                             </thead>
-                            <tfoot>
-                            </tfoot>
                             <tbody>
-                            @if(isset($shortNames))
-                            @foreach ($shortNames as $shortName)
+
+                            {{-- The Subfolders --}}
+                            @foreach ($subfolders as $path => $name)
                             <tr>
                                 <td>
-                                    <a href="{{ route('jfs.configs.create', [ $shortName ]) }}">
-                                        <div>
-                                            {{ $shortName }}
-                                        </div>
+                                    <a href="configs?folder={{ $path }}">
+                                        <i class="fa fa-folder fa-lg fa-fw"></i>
+                                        {{ $name }}
                                     </a>
                                 </td>
+                                <td>Folder</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>
+                                    <a href="#" data-toggle="modal" onclick="delete_folder('{{ $name }}')"><i class="fa fa-trash-o deletable"></i></a>
+                                </td>
+                            </tr>
+                            @endforeach
+
+                            {{-- The Files --}}
+                            @foreach ($files as $file)
+                            <tr>
+                                <td>
+                                    <a href=" {{ route('jfs.configs.create', [ 'path' => $file['fullPath'] ]) }} ">
+                                        @if (is_image($file['mimeType']))
+                                        <i class="fa fa-file-image-o fa-lg fa-fw"></i>
+                                        @else
+                                        <i class="fa fa-file-o fa-lg fa-fw"></i>
+                                        @endif
+                                        {{ $file['name'] }}
+                                    </a>
+                                </td>
+                                <td>{{ $file['mimeType'] or 'Unknown' }}</td>
+                                <td>{{ $file['modified']->format('j-M-y g:ia') }}</td>
+                                <td>{{ human_filesize($file['size']) }}</td>
                                 @if(\Auth::user()->hasRole(['admins','ios-config-admin']))
                                 <td>
-                                    <a href="{!! route('jfs.configs.download', $shortName) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-download"></i></a>
-                                    <a href="{!! route('jfs.configs.confirm-delete', $shortName) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
+                                    <a href="{!! route('jfs.configs.download', [ 'path' => $file['fullPath'] ]) !!}" title="{{ trans('general.button.edit') }}"><i class="fa fa-download"></i></a>
+                                    <!--                                        <i class="fa fa-pencil-square-o text-muted" title="{{ trans('cluster/general.error.cant-be-edited') }}"></i>-->
+
+                                    <a href="{!! route('jfs.configs.confirm-delete', [ 'path' => $file['fullPath'] ]) !!}" data-toggle="modal" data-target="#modal_dialog" title="{{ trans('general.button.delete') }}"><i class="fa fa-trash-o deletable"></i></a>
+                                    <!--                                        <i class="fa fa-trash-o text-muted" title="{{ trans('cluster/general.error.cant-be-deleted') }}"></i>-->
                                 </td>
                                 @endif
                             </tr>
                             @endforeach
-                            @endif
                             </tbody>
                         </table>
                     </div> <!-- table-responsive -->
@@ -65,10 +92,10 @@
     <div class="modal fade" id="modal-ios-configs">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form method="POST" action="{{ route('jfs.configs.loadfile') }}"
+                <form method="POST" action="{{route('jfs.configs.loadfile')}}"
                       class="form-horizontal" enctype="multipart/form-data">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                    <input type="hidden" name="folder" value="">
+                    <input type="hidden" name="folder" id="folder" value="{{ $folder }}">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">
                             ×
@@ -81,7 +108,7 @@
                                 File Selection
                             </label>
                             <div class="col-sm-8">
-                                <input type="file" name="file">
+                                <input type="file" id="file" name="file">
                             </div>
                         </div>
                     </div>
@@ -112,5 +139,6 @@
         function load_ios_configs() {
             $("#modal-ios-configs").modal("show");
         }
+
     </script>
     @endsection

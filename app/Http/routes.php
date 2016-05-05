@@ -253,7 +253,7 @@ Route::group(['middleware' => 'authorize'], function () {
             'as' => 'jfs.configs',
             'uses' => 'Jfs\ConfigController@index'
         ]);
-        Route::get('configs/{fileName}',[
+        Route::get('configs/file',[
             'as' => 'jfs.configs.create',
             'uses' => 'Jfs\ConfigController@create'
         ]);
@@ -265,15 +265,15 @@ Route::group(['middleware' => 'authorize'], function () {
             'as' => 'jfs.configs.loadfile',
             'uses' => 'Jfs\ConfigController@loadfile'
         ]);
-        Route::get('configs/{fileName}/confirm-delete', [
+        Route::get('configs/confirm-delete', [
             'as' => 'jfs.configs.confirm-delete',
             'uses' => 'Jfs\ConfigController@getModalDelete'
         ]);
-        Route::get('configs/{fileName}/delete', [
+        Route::get('configs/delete', [
             'as' => 'jfs.configs.delete',
             'uses' => 'Jfs\ConfigController@destroy'
         ]);
-        Route::get('configs/{fileName}/download', [
+        Route::get('configs/download', [
             'as' => 'jfs.configs.download',
             'uses' => 'Jfs\ConfigController@download'
         ]);
@@ -300,13 +300,3 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->post('phone-reset/', 'App\Api\Controllers\PhoneController@resetPhone');
 });
-
-//Hunt-Pilot Forwarding App
-Route::get('hp-forward/', 'HuntPilotForwardController@getForward');
-
-// Upload Routes
-get('upload', 'UploadController@index');
-post('admin/upload/file', 'UploadController@uploadFile');
-delete('admin/upload/file', 'UploadController@deleteFile');
-post('admin/upload/folder', 'UploadController@createFolder');
-delete('admin/upload/folder', 'UploadController@deleteFolder');

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Jfs;
 
-use Illuminate\Http\Request;
-
 use Storage;
+use Carbon\Carbon;
 use App\Http\Requests;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Libraries\UploadsManager;
 use App\Http\Controllers\Controller;
+
 
 /**
  * Class IosConfigGeneratorController
@@ -15,31 +17,37 @@ use App\Http\Controllers\Controller;
  */
 class ConfigController extends Controller
 {
-    /**
-     * @return \BladeView|bool|\Illuminate\View\View
-     */
-    public function index()
+
+    protected $manager;
+
+    public function __construct(UploadsManager $manager)
     {
-        $files = Storage::files('jfs-config-templates/');
-
-        $shortNames= [];
-        foreach($files as $file)
-        {
-            $chunks = explode('/',$file);
-            $shortNames[] = array_pop($chunks);
-        }
-
-        return view('jfs.configs.index', compact('shortNames'));
+        $this->manager = $manager;
     }
 
     /**
-     * @param $fileName
+     * @param Request $request
      * @return \BladeView|bool|\Illuminate\View\View
      */
-    public function create($fileName)
+    public function index(Request $request)
     {
+        $folder = $request->get('folder');
+
+        if($folder == '') {
+            $folder = 'jfs-config-templates/';
+        }
+
+        $data = $this->manager->folderInfo($folder);
+
+        return view('jfs.configs.index', $data);
+    }
+
+    public function create(Request $request)
+    {
+        $fileNameAndPath = $request->input('path');
+
         //Get the file from storage
-        $contents = Storage::get('jfs-config-templates/' .  $fileName);
+        $contents = Storage::get($fileNameAndPath);
 
         //Create an empty array to fill with config headers and vars
         $viewVariables = [];
@@ -83,6 +91,9 @@ class ConfigController extends Controller
 
         }
 
+        $filePath = explode('/', $fileNameAndPath);
+        $fileName = end($filePath);
+
         return view('jfs.configs.create',compact('viewVariables','fileName'));
     }
 
@@ -94,6 +105,8 @@ class ConfigController extends Controller
     {
         //Get the form input
         $input = $request->input();
+
+        dd($input);
 
         //Get the file from storage
         $contents = Storage::get('jfs-config-templates/' .  $input['fileName']);
@@ -118,7 +131,7 @@ class ConfigController extends Controller
             $contents = str_replace($tag,'',$contents);
         }
 
-        $tempFileName = 'jfs-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . \Carbon\Carbon::now()->timestamp . '.txt';
+        $tempFileName = 'jfs-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . Carbon::now()->timestamp . '.txt';
 
         Storage::put($tempFileName,$contents);
 
@@ -129,6 +142,7 @@ class ConfigController extends Controller
     public function loadFile(Request $request)
     {
         $file = $request->file('file');
+        $folder = $request->input('folder');
 
         if ($file->getClientMimeType() != "text" && $file->getClientOriginalExtension() != "txt")
         {
@@ -136,41 +150,45 @@ class ConfigController extends Controller
             return redirect()->back();
         }
 
-        $file->move(storage_path() . '/jfs-config-templates/', $file->getClientOriginalName());
+        $file->move(storage_path() . '/' . $folder . '/', $file->getClientOriginalName());
 
-        alert()->success('New IOS Config Submitted!');
+        alert()->success('New JFS Config Submitted!');
         return redirect()->back();
     }
 
 
-    public function destroy($fileName)
+    public function destroy(Request $request)
     {
-        Storage::delete('jfs-config-templates/' . $fileName);
+        $fileNameAndPath = $request->input('name');
 
-        alert()->success("IOS configs removed successfully");
+        Storage::delete($fileNameAndPath);
+
+        alert()->success("JFS configs removed successfully");
 
         return redirect()->back();
     }
 
-    public function getModalDelete($fileName)
+    public function getModalDelete(Request $request)
     {
+        $fileNameAndPath = $request->input('path');
+
         $error = null;
 
         $modal_title = trans('jfs/dialog.delete-confirm.title');
         $modal_cancel = trans('general.button.cancel');
         $modal_ok = trans('general.button.ok');
 
-        $modal_route = route('jfs.configs.delete', ['name' => $fileName]);
+        $modal_route = route('jfs.configs.delete', ['name' => $fileNameAndPath]);
 
-        $modal_body = trans('jfs/dialog.delete-confirm.body', ['name' => $fileName]);
+        $modal_body = trans('jfs/dialog.delete-confirm.body', ['name' => $fileNameAndPath]);
 
         return view('modal_confirmation', compact('error', 'modal_route',
             'modal_title', 'modal_body', 'modal_cancel', 'modal_ok'));
 
     }
 
-    public function download($fileName)
+    public function download(Request $request)
     {
-        return response()->download(storage_path() . '/jfs-config-templates/' .  $fileName);
+        return response()->download(storage_path() . '/' . $request->input('path'));
     }
 }

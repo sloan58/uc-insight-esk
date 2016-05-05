@@ -24,7 +24,7 @@ class UploadController extends Controller
         $folder = $request->get('folder');
 
         if($folder == '') {
-            $folder = 'ios-config-templates/';
+            $folder = 'jfs-config-templates/';
         }
 
         $data = $this->manager->folderInfo($folder);
