@@ -139,6 +139,34 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function department()
+    {
+        return $this->belongsTo('App\Models\Department');
+    }
+
+    public function friendlyDepartmentName()
+    {
+        $departmentPieces = explode('-', $this->department->name);
+
+        $departmentPieces[0] = strtoupper($departmentPieces[0]);
+        $departmentPieces[1] = ucfirst($departmentPieces[1]);
+
+        return implode(' ', $departmentPieces);
+    }
+
+    public function headerBrandingMini()
+    {
+        $departmentPieces = explode('-', $this->department->name);
+
+        $departmentPieces[0] = strtoupper($departmentPieces[0]);
+        $departmentPieces[1] = ucfirst($departmentPieces[1]);
+
+        return "<span class='logo-mini'><b>$departmentPieces[0]</b>In</span>
+                <span class='logo-lg'><b>$departmentPieces[0]</b>Insight</span>";
+    }
+    /**
      * Alias to eloquent many-to-many relation's sync() method.
      *
      * @param array $attributes

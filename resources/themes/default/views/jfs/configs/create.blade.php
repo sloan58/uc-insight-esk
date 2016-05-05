@@ -13,9 +13,9 @@
             </div>
             <div class="box-body">
 
-                {!! Form::open( ['route' => 'ios-config-generator.store'] ) !!}
+                {!! Form::open( ['route' => 'jfs.configs'] ) !!}
 
-                @include('partials._ios-config-generator_form')
+                @include('partials._jfs-config-generator_form')
 
                 <!-- If the file has no variables, don't show the submit button-->
                 @if(!count($viewVariables) == 0)

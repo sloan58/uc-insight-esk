@@ -58,4 +58,7 @@ input[type="button"] {
 .config-panel-title {
   color: #00a65a; }
 
+.task-complete {
+  padding-left: 10px; }
+
 /*# sourceMappingURL=app.css.map */

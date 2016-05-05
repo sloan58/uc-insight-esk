@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+
 use App\Jobs\Job;
 use App\Models\Duo\Group;
 use App\Models\Duo\Phone;
@@ -61,6 +62,9 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
         //Duo SDK puts results in nested array [response][response]
         $this->users = $response['response']['response'];
+
+        //Remove local Duo accounts that no longer exist in the Duo online database
+        $this->removeStaleAccounts($this->users);
 
         //If we only queried for one user
         //there's just one user to process
@@ -201,5 +205,28 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
         //Sync the Users Duo Phones
         $duoUser->duoPhones()->sync($userPhoneList);
+    }
+
+    /**
+     * @param $freshDuoUserList
+     */
+    private function removeStaleAccounts($freshDuoUserList) {
+
+        //Move the fresh list of usernames from Duo API to an array
+        $newDuoUsernames = [];
+        foreach($freshDuoUserList as $user) {
+            $newDuoUsernames[] = $user['username'];
+        }
+
+        //Get a list of local Duo usernames
+        $localDuoUsers = User::lists('username')->toArray();
+
+        //Compare the two arrays
+        $staleUsers = array_diff($localDuoUsers,$newDuoUsernames);
+
+        //Remove the 'stale' user accounts from the local database
+        foreach($staleUsers as $dead) {
+            User::where('username', $dead)->delete();
+        }
     }
 }
