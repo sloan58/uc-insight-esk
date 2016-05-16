@@ -155,15 +155,30 @@ class ConfigController extends Controller
 
     public function loadFile(Request $request)
     {
+        // Get the file and folder submitted in the form
         $file = $request->file('file');
         $folder = $request->input('folder');
 
+        // Check to see if the file type is correct
         if ($file->getClientMimeType() != "text" && $file->getClientOriginalExtension() != "txt")
         {
-            alert()->error('File type invalid.  Please use a .txt file format.');
+            alert()->error('File type invalid.  Please use a .txt file format.')->persistent('Close');
             return redirect()->back();
         }
 
+        // Get all the variable names set in the config file.
+        preg_match_all('/<<.+?>>/', file_get_contents($file), $matches);
+        $variables = $matches[0];
+
+        // Make sure each variable name conforms to standards
+        foreach($variables as $variable) {
+            if(preg_match('/\s/',$variable)) {
+                alert()->error('Variable names cannot contain spaces.')->persistent('Close');
+                return redirect()->back();
+            }
+        }
+
+        // Move the file to persistent storage.
         $file->move(storage_path() . '/' . $folder . '/', $file->getClientOriginalName());
 
         alert()->success('New JFS Config Submitted!');
