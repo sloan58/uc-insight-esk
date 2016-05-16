@@ -48,6 +48,11 @@ class SqlController extends Controller
 
         $sql = $request->input('sqlStatement');
 
+        if (! \Auth::user()->activeCluster()) {
+            alert()->error('Please set your active CUCM Cluster')->persistent('Close');
+            return redirect()->action('SqlController@index');
+        }
+
         $data = Utils::executeQuery($sql,\Auth::user()->activeCluster());
 
         if(is_null($data))
@@ -74,6 +79,11 @@ class SqlController extends Controller
 
         $sql = $this->sql->find($sql);
         $sql = $sql->sql;
+
+        if (! \Auth::user()->activeCluster()) {
+            alert()->error('Please set your active CUCM Cluster')->persistent('Close');
+            return redirect()->action('SqlController@index');
+        }
 
         $data = Utils::executeQuery($sql,\Auth::user()->activeCluster());
 
