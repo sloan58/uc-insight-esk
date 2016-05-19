@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bbc7e908e494ba4e6d808e5bc043403c",
-    "content-hash": "c163b9689b4c70e6e646161d2df4e1eb",
+    "hash": "805331c7d0e20ce8164d30855d967adc",
+    "content-hash": "515426e8ca846f47831bd952be84f6f8",
     "packages": [
         {
             "name": "adldap2/adldap2",
@@ -972,7 +972,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/dbal/zipball/3df22ccdf20a68fafe34cb1ae452aee7cde7d442",
+                "url": "https://api.github.com/repos/doctrine/dbal/zipball/1c6f63dff60f1f8c073087833edae2da96d37287",
                 "reference": "bfe166af1e52b85f1101db19f3437ae87a7e291b",
                 "shasum": ""
             },
@@ -1205,7 +1205,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/duosecurity/duo_api_php/zipball/f4a2eaecc52ea0ab32ee7dded2b4581f7b88865a",
+                "url": "https://api.github.com/repos/duosecurity/duo_api_php/zipball/22a933719296166715e113332e7cc0fede7ea0bd",
                 "reference": "56a80b7afde52d3fd8558b4056d7af5a8cb69c40",
                 "shasum": ""
             },
@@ -2065,6 +2065,46 @@
             "time": "2015-02-05 07:51:20"
         },
         {
+            "name": "mistic100/randomcolor",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mistic100/RandomColor.php.git",
+                "reference": "a0cfb1322c2184bcc0bd177c77658a0b750cc33e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mistic100/RandomColor.php/zipball/a0cfb1322c2184bcc0bd177c77658a0b750cc33e",
+                "reference": "a0cfb1322c2184bcc0bd177c77658a0b750cc33e",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Colors\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Damien \"Mistic\" Sorel",
+                    "email": "contact@git.strangeplanet.fr",
+                    "homepage": "http://www.strangeplanet.fr"
+                }
+            ],
+            "description": "Generate attractive random colors",
+            "homepage": "https://github.com/mistic100/RandomColor.php",
+            "keywords": [
+                "color",
+                "generator",
+                "random"
+            ],
+            "time": "2015-09-30 18:54:16"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.16.0",
             "source": {
@@ -2753,7 +2793,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/4d73e613dcabee02060122d5b1a332785ebdfe6d",
+                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/54e3dab7730e09529a03ab2e67e15d3ce54a5db3",
                 "reference": "420400f36655d79894fae8ce970516a71ea8f5f5",
                 "shasum": ""
             },
@@ -2816,7 +2856,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Snowfire/Beautymail/zipball/8459bce0ce800eea66028be22ebe7c66dc55c15c",
+                "url": "https://api.github.com/repos/Snowfire/Beautymail/zipball/8ac08c7494266c4412d0548388a455e666b0455d",
                 "reference": "873e4f9291bc8bba9fda8a761fb47f6fa69ef245",
                 "shasum": ""
             },
@@ -2859,7 +2899,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sroutier/eloquent-ldap/zipball/f2d19bc8a9ec562bbf6a7ec471695e1ae4d47832",
+                "url": "https://api.github.com/repos/sroutier/eloquent-ldap/zipball/f945119619d5f274de391e2eb024330fc37f119a",
                 "reference": "0241bd441093e8ab04f53bf4967aabdc07021ca7",
                 "shasum": ""
             },
@@ -4337,7 +4377,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Jeroen-G/laravel-packager/zipball/ee94ea3ee4d1fce9e1074605f8ce04e7b8e12a04",
+                "url": "https://api.github.com/repos/Jeroen-G/laravel-packager/zipball/dd721f31fd5d036eea0ff70456e3edc15f108e7b",
                 "reference": "22167696e0b6d499095a76c3f39de03a693968e8",
                 "shasum": ""
             },

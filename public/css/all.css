@@ -1329,6 +1329,12 @@ input[type="button"] {
 .task-complete {
   padding-left: 10px; }
 
+.chart-legend li span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px; }
+
 /*# sourceMappingURL=app.css.map */
 
 /*# sourceMappingURL=all.css.map */
