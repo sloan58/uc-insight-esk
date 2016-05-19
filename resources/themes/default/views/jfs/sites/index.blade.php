@@ -119,10 +119,21 @@
             type: 'bar',
             data: data,
             options: {
+                scaleLabel: {
+                    display: true
+                },
                 scales: {
                     yAxes: [{
                         ticks: {
                             beginAtZero:true,
+                            fontStyle: "bold"
+//                            max:100
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            beginAtZero:true,
+                            fontStyle: "bold"
 //                            max:100
                         }
                     }]

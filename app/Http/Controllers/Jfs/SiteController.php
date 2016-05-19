@@ -58,7 +58,7 @@ class SiteController extends Controller
                 $res = \DB::select('SELECT DISTINCT count(jfs_tasks.name) AS count FROM jfs_site_jfs_task INNER JOIN jfs_tasks ON jfs_site_jfs_task.jfs_task_id = jfs_tasks.id WHERE jfs_tasks.name = "' . $taskName . '" AND completed = 1 GROUP BY jfs_task_id');
                 
                 if(count($res)) {
-                    $reportData[$flow->name][$taskName]['count'] = number_format($res[0]->count / $totalSites, 3);
+                    $reportData[$flow->name][$taskName]['count'] = number_format($res[0]->count / $totalSites, 3) * 100;
                 } else {
                     $reportData[$flow->name][$taskName]['count'] = 0;
                 }
