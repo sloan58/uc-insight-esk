@@ -46,7 +46,7 @@ class SiteController extends Controller
         $workFlows = Workflow::all();
         $totalSites = Site::all()->count();
         $colors = [
-            'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink', 'monochrome'
+            'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink',
         ];
 
         foreach($workFlows as $flow) {
@@ -64,7 +64,7 @@ class SiteController extends Controller
                 }
                 
                 $reportData[$flow->name][$taskName]['backgroundColor'] = RandomColor::one([ 'hue' => $colors[array_rand($colors, 1)]]);
-                $reportData[$flow->name][$taskName]['hoverBackgroundColor'] = "#FF6384";
+                $reportData[$flow->name][$taskName]['hoverBackgroundColor'] = "#00C0EF";
             }
         }
 
