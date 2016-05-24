@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\CallManagerReportingCommand::class,
         Commands\FetchDuoApiDataCommand::class,
         Commands\GenerateRegisteredDuoUsersReportCommand::class,
+        Commands\FetchDuoAuthLogDataCommand::class,
     ];
 
     /**
