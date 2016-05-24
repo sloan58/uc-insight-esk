@@ -100,13 +100,15 @@ class DuoAdmin extends Admin {
         return self::jsonApiCall($method, $endpoint, $params);
     }
 
-    public function logs($mintime = null)
+    public function logs($mintime = NULL)
     {
         $method = "GET";
         $endpoint = "/admin/v1/logs/authentication";
-        $params = array(
-//            "mintime" => $mintime,
-        );
+        $params = array();
+
+        if($mintime) {
+            $endpoint .= ("/" . $mintime);
+        }
 
         return self::jsonApiCall($method, $endpoint, $params);
     }
