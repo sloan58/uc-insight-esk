@@ -290,6 +290,8 @@ Route::group(['middleware' => 'authorize'], function () {
     Route::get('duo/user/registration/report/', ['as' => 'duo.user.registration.report', 'uses' => 'DuoController@registeredUsersReport']);
     Route::get('duo/user/{id}/sync', ['as' => 'duo.user.sync', 'uses' => 'DuoController@onDemandUserSync']);
     Route::get('duo/user/{id}/migrate', ['as' => 'duo.user.migrate', 'uses' => 'DuoController@migrateUser']);
+    Route::get('duo/auth/logs', ['as' => 'duo.auth.logs', 'uses' => 'DuoController@logs']);
+    Route::get('duo/auth/logs/data', ['as' => 'duo.auth.logs.data', 'uses' => 'DuoController@logData']);
 
 }); // end of AUTHORIZE group
 

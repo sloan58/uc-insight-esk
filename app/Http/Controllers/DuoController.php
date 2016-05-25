@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Duo\Log;
 use DB;
 use App\Models\Report;
 use App\Http\Requests;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Models\Duo\User as DuoUser;
 use App\Jobs\GenerateRegisteredDuoUsersReport;
 use App\Console\Commands\GenerateRegisteredDuoUsersReportCommand;
+use Yajra\Datatables\Datatables;
 
 /**
  * Class DuoController
@@ -266,5 +268,27 @@ class DuoController extends Controller
         $users = $phoneUsers->merge($tokenUsers);
 
         return view('duo.registered-report',compact('users'));
+    }
+
+
+    /*
+     * Auth Log Routes
+     */
+
+    public function logs()
+    {
+        return view('duo.authlogs.index');
+    }
+
+    public function logData()
+    {
+
+        $logs = Log::select(['device', 'factor', 'integration', 'ip', 'new_enrollment', 'reason', 'result', 'timestamp'])->orderBy('device', 'desc')->with('duoUser.username');
+
+        return Datatables::of($logs)
+            ->editColumn('timestamp', function ($log) {
+                return $log->timestamp->format('Y/m/d');
+            })
+            ->make();
     }
 }
