@@ -40,13 +40,16 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
         $count = 1000;
         $backoff = 10;
         while($count == 1000) {
+
             \Log::debug('Start Log gathering', ['count' => $count, 'backoff' => $backoff]);
 
             //Query Duo REST API
             $response = $duoAdmin->logs($this->getMinTime());
 
             if(isset($response['response']['code']) && $response['response']['code'] == '42901') {
+
                 \Log::debug('Received backoff notice', ['response' => $response, 'backoff' => $backoff]);
+
                 sleep($backoff);
                 $backoff += 10;
                 continue;
@@ -54,19 +57,18 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 
             //Duo SDK puts results in nested array [response][response]
             $logs = $response['response']['response'];
-            \Log::debug('Received Duo Response Object.  Adding new entries ', [ 'object-count' => count($logs)]);
 
+            \Log::debug('Received Duo Response Object.  Adding new entries ', [ 'object-count' => count($logs)]);
 
             // Loop each log to save
             foreach($logs as $log) {
 
                 // Get the DuoUser ID to create a relation
-                $duoUserId = User::where('username', $log['username'])->select('id')->first();
+                $duoUserId = User::where('username', $log['username'])->first();
 
                 // Sometimes the 'username' from Duo doesn't exist locally....
                 if($duoUserId) {
-                    $duoUserId = $duoUserId->toArray();
-                    $log['duo_user_id'] = $duoUserId['id'];
+                    $log['duo_user_id'] = $duoUserId->id;
                 } else {
                     $log['duo_user_id'] = NULL;
                 }
@@ -110,10 +112,11 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 
         // If there are no logs, there is no $mintime to set
         // Otherwise set it to the latest timestamp in our database
-        if (is_null($lastLog)) {
+        if (is_null($lastLog['timestamp'])) {
             $mintime = NULL;
         } else {
-            $mintime = $lastLog['timestamp'] + 1;
+            $mintime = $lastLog['timestamp']->timestamp + 1;
+
         }
 
         \Log::debug('Calculated Mintime: ', [ 'mintime' => $mintime, 'lastLog' => $lastLog]);

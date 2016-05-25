@@ -20,7 +20,7 @@ class Log extends Model
     /**
      *  Mass assignable fields
      */
-    protected $fillable = ['device', 'factor', 'integration', 'ip', 'new_enrollment', 'reason', 'result', 'timestamp', 'username'];
+    protected $fillable = ['device', 'factor', 'integration', 'ip', 'new_enrollment', 'reason', 'result', 'timestamp', 'username', 'duo_user_id'];
 
     /**
      *  Relations to include

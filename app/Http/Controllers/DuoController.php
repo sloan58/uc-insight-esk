@@ -283,12 +283,27 @@ class DuoController extends Controller
     public function logData()
     {
 
-        $logs = Log::select(['device', 'factor', 'integration', 'ip', 'new_enrollment', 'reason', 'result', 'timestamp'])->orderBy('device', 'desc')->with('duoUser.username');
+        $logs = Log::join('duo_users', 'duo_logs.duo_user_id', '=', 'duo_users.id')
+            ->join('duo_group_duo_user', 'duo_users.id', '=', 'duo_group_duo_user.duo_user_id')
+            ->join('duo_groups', 'duo_groups.id', '=', 'duo_group_duo_user.duo_group_id')
+            ->select([
+                'duo_logs.integration',
+                'duo_logs.factor',
+                'duo_logs.device',
+                'duo_logs.ip',
+                'duo_logs.new_enrollment',
+                'duo_logs.reason',
+                'duo_logs.result',
+                'duo_logs.timestamp',
+                'duo_users.username',
+                'duo_groups.name'
+            ])
+            ->orderBy('duo_logs.integration', 'asc');
 
         return Datatables::of($logs)
-            ->editColumn('timestamp', function ($log) {
+            ->editColumn('duo_logs.timestamp', function ($log) {
                 return $log->timestamp->format('Y/m/d');
             })
-            ->make();
+            ->make(true);
     }
 }

@@ -21,7 +21,7 @@ class CreateDuoLogsTable extends Migration
             $table->boolean('new_enrollment');
             $table->string('reason')->nullable();
             $table->string('result');
-            $table->integer('timestamp');
+            $table->timestamp('timestamp');
             $table->string('username');
             $table->integer('duo_user_id')->unsigned()->index()->nullable();
             $table->timestamps();
