@@ -75,23 +75,6 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 
                 // Save the log
                 Log::create($log);
-
-//            $record = Log::firstOrCreate([
-//                'username' => $log['username'],
-//                'timestamp' => $log['timestamp']
-//            ]);
-//
-//            $record->device = $log['device'];
-//            $record->factor = $log['factor'];
-//            $record->integration = $log['integration'];
-//            $record->ip = $log['ip'];
-//            $record->new_enrollment = $log['new_enrollment'];
-//            $record->reason = $log['reason'];
-//            $record->result = $log['result'];
-//            $record->duo_user_id = $log['duo_user_id'];
-//
-//            $record->save();
-
             }
 
             // Set the count to number of logs returned in the last call.
