@@ -275,17 +275,25 @@ class DuoController extends Controller
      * Auth Log Routes
      */
 
+
+    /**
+     *  Display the Auth Logs Index Page
+     */
     public function logs()
     {
         return view('duo.authlogs.index');
     }
 
+
+    /**
+     *  Get the Auth Logs table data
+     */
     public function logData()
     {
 
-        $logs = Log::join('duo_users', 'duo_logs.duo_user_id', '=', 'duo_users.id')
-            ->join('duo_group_duo_user', 'duo_users.id', '=', 'duo_group_duo_user.duo_user_id')
-            ->join('duo_groups', 'duo_groups.id', '=', 'duo_group_duo_user.duo_group_id')
+        $logs = Log::join('duo_users', 'duo_logs.duo_user_id', '=', 'duo_users.id', 'left outer' )
+            ->leftJoin('duo_group_duo_user', 'duo_users.id', '=', 'duo_group_duo_user.duo_user_id')
+            ->leftJoin('duo_groups', 'duo_groups.id', '=', 'duo_group_duo_user.duo_group_id')
             ->select([
                 'duo_logs.integration',
                 'duo_logs.factor',
