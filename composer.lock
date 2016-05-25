@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "805331c7d0e20ce8164d30855d967adc",
-    "content-hash": "515426e8ca846f47831bd952be84f6f8",
+    "hash": "b30b3c8244f6e868e78314f7a6c90a90",
+    "content-hash": "f64135eb26a0af16fdb194fbdfc5c5e4",
     "packages": [
         {
             "name": "adldap2/adldap2",
@@ -2793,7 +2793,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/54e3dab7730e09529a03ab2e67e15d3ce54a5db3",
+                "url": "https://api.github.com/repos/fruux/sabre-xml/zipball/4b9900f28b29175797684535d0e9858e276bee86",
                 "reference": "420400f36655d79894fae8ce970516a71ea8f5f5",
                 "shasum": ""
             },
@@ -2856,7 +2856,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Snowfire/Beautymail/zipball/8ac08c7494266c4412d0548388a455e666b0455d",
+                "url": "https://api.github.com/repos/Snowfire/Beautymail/zipball/6fcc97799f01ca14da50d6b1d864d954ee6d5ce2",
                 "reference": "873e4f9291bc8bba9fda8a761fb47f6fa69ef245",
                 "shasum": ""
             },
@@ -4092,16 +4092,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v6.1.3",
+            "version": "v6.11.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "354c043b1aace638c10480198656d9806dcf0525"
+                "reference": "e7c0aa99b66ce690ec034c10f2db565f89ca8698"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/354c043b1aace638c10480198656d9806dcf0525",
-                "reference": "354c043b1aace638c10480198656d9806dcf0525",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/e7c0aa99b66ce690ec034c10f2db565f89ca8698",
+                "reference": "e7c0aa99b66ce690ec034c10f2db565f89ca8698",
                 "shasum": ""
             },
             "require": {
@@ -4145,7 +4145,7 @@
                 "laravel4",
                 "laravel5"
             ],
-            "time": "2016-01-09 09:40:45"
+            "time": "2016-05-20 14:32:45"
         },
         {
             "name": "zizaco/entrust",
