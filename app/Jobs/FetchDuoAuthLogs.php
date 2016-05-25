@@ -38,7 +38,7 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 
         // Set the log $count value to 1000
         $count = 1000;
-        $backoff = 10;
+        $backoff = NULL;
         while($count == 1000) {
 
             \Log::debug('Start Log gathering', ['count' => $count, 'backoff' => $backoff]);
@@ -48,10 +48,11 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 
             if(isset($response['response']['code']) && $response['response']['code'] == '42901') {
 
-                \Log::debug('Received backoff notice', ['response' => $response, 'backoff' => $backoff]);
+                $backoff += 10;
+
+                \Log::debug('Received backoff notice', ['response' => $response, 'set-backoff' => $backoff]);
 
                 sleep($backoff);
-                $backoff += 10;
                 continue;
             }
 
