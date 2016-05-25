@@ -22,12 +22,6 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 {
     use InteractsWithQueue, SerializesModels, DispatchesJobs;
 
-
-    public function __construct()
-    {
-
-    }
-
     /**
      * Execute the job.
      *
@@ -42,27 +36,44 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
         $duoAdmin = new DuoAdmin();
         $duoAdmin->setRequesterOption('timeout','6000000');
 
-        //Query Duo REST API
-        $response = $duoAdmin->logs();
+        // Set the log $count value to 1000
+        $count = 1000;
+        $backoff = 10;
+        while($count == 1000) {
+            \Log::debug('Start Log gathering', ['count' => $count, 'backoff' => $backoff]);
 
-        //Duo SDK puts results in nested array [response][response]
-        $logs = $response['response']['response'];
+            //Query Duo REST API
+            $response = $duoAdmin->logs($this->getMinTime());
 
-        foreach($logs as $log) {
-
-
-            $duoUserId = User::where('username',$log['username'])->select('id')->first();
-            if($duoUserId) {
-                $duoUserId = $duoUserId->toArray();
-                $log['duo_user_id'] = $duoUserId['id'];
-            } else {
-                $log['duo_user_id'] = NULL;
+            if(isset($response['response']['code']) && $response['response']['code'] == '42901') {
+                \Log::debug('Received backoff notice', ['response' => $response, 'backoff' => $backoff]);
+                sleep($backoff);
+                $backoff += 10;
+                continue;
             }
 
-            \Log::debug('Log ', $log);
+            //Duo SDK puts results in nested array [response][response]
+            $logs = $response['response']['response'];
+            \Log::debug('Received Duo Response Object.  Adding new entries ', [ 'object-count' => count($logs)]);
 
-            Log::create($log);
-            
+
+            // Loop each log to save
+            foreach($logs as $log) {
+
+                // Get the DuoUser ID to create a relation
+                $duoUserId = User::where('username', $log['username'])->select('id')->first();
+
+                // Sometimes the 'username' from Duo doesn't exist locally....
+                if($duoUserId) {
+                    $duoUserId = $duoUserId->toArray();
+                    $log['duo_user_id'] = $duoUserId['id'];
+                } else {
+                    $log['duo_user_id'] = NULL;
+                }
+
+                // Save the log
+                Log::create($log);
+
 //            $record = Log::firstOrCreate([
 //                'username' => $log['username'],
 //                'timestamp' => $log['timestamp']
@@ -79,7 +90,34 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
 //
 //            $record->save();
 
+            }
+
+            // Set the count to number of logs returned in the last call.
+            // If it's less than 1000, we've reached the end of the logs
+            \Log::debug('Added new log entries.  Setting count: ', [ 'count' => count($logs)]);
+            $count = count($logs);
         }
 
+    }
+
+    /**
+     * @return null
+     */
+    private function getMinTime()
+    {
+        // Get the last Duo log based on Unix Timestamp
+        $lastLog = Log::orderBy('timestamp', 'desc')->first();
+
+        // If there are no logs, there is no $mintime to set
+        // Otherwise set it to the latest timestamp in our database
+        if (is_null($lastLog)) {
+            $mintime = NULL;
+        } else {
+            $mintime = $lastLog['timestamp'] + 1;
+        }
+
+        \Log::debug('Calculated Mintime: ', [ 'mintime' => $mintime, 'lastLog' => $lastLog]);
+
+        return $mintime;
     }
 }

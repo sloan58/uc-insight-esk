@@ -107,7 +107,7 @@ class DuoAdmin extends Admin {
         $params = array();
 
         if($mintime) {
-            $endpoint .= ("/" . $mintime);
+            $params['mintime'] = $mintime;
         }
 
         return self::jsonApiCall($method, $endpoint, $params);
