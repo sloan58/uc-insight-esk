@@ -9,6 +9,15 @@
                     <h3 class="box-title">Search Duo Logs</h3>
                     <div class="box-tools pull-right">
                     </div>
+                    <div class="box-tools pull-right">
+                        <div class="col-md-6 text-right">
+                            <button type="button" class="btn btn-success btn-md"
+                                    onclick="export_table()">
+                                <i class="fa fa-plus-circle fa-lg"></i>
+                                Export Data
+                            </button>
+                        </div>
+                    </div>
                     <div class="box-body">
                         <div class="table-responsive">
                             <table class="table table-hover" id="table">
@@ -52,7 +61,7 @@
 @section('body_bottom')
 
     <script>
-        $('#table').DataTable({
+        var table = $('#table').DataTable({
             processing: true,
             serverSide: true,
             ajax: '{!! route('duo.auth.logs.data') !!}',
@@ -79,6 +88,12 @@
                 });
             }
         });
-    </script>
 
+        // This function exports the Duo Auth Logs based with the current search parameters 
+        function export_table() {
+            var uri = new URI("?" + $.param($('#table').DataTable().ajax.params()));
+            uri.removeSearch("length");
+            window.location = '/duo/auth/logs/export?' + uri.toString();
+        }
+    </script>
 @endsection
