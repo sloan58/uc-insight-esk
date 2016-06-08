@@ -16,7 +16,7 @@
                                 <tr>
                                     <th>Name</th>
                                     <th>Completed Tasks</th>
-                                    <th>Incomplet Tasks</th>
+                                    <th>Incomplete Tasks</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
