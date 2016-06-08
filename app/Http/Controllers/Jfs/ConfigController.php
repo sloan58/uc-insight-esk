@@ -31,14 +31,22 @@ class ConfigController extends Controller
      */
     public function index(Request $request)
     {
+        // Get the folder name passed in the Request
         $folder = $request->get('folder');
 
+        // If no folder was provided, we're at the root folder
         if($folder == '') {
             $folder = 'jfs-config-templates/';
         }
 
+        // Get all subfolders
         $data = $this->manager->folderInfo($folder);
 
+        // Remove the temp folder if it exists
+        if(isset($data['subfolders']['/jfs-config-templates/temp'])) {
+            unset($data['subfolders']['/jfs-config-templates/temp']);
+        }
+        
         return view('jfs.configs.index', $data);
     }
 
@@ -58,17 +66,16 @@ class ConfigController extends Controller
         $configSections = $begTags[0];
 
         //Loop each header
-        if(count($configSections)) {
+        foreach($configSections as $index => $tag) {
 
-            foreach($configSections as $index => $tag)
-            {
+            if (count($configSections)) {
                 //The headers are stored with the 'start' marker in
                 //even indices.  If it's not even, it's an 'end' marker
                 //and we can continue;
-                if($index % 2 != 0) continue;
+                if ($index % 2 != 0) continue;
 
                 //Rip out { } from the headers to display nicely in HTML
-                $viewHeader = trim(str_replace(['{','}'],'',$tag));
+                $viewHeader = trim(str_replace(['{', '}'], '', $tag));
 
                 //Get the beginning position of the section
                 $beginPos = strpos($contents, $tag);
@@ -81,30 +88,28 @@ class ConfigController extends Controller
                 $between = substr($contents, $beginPos, $length);
 
                 //Get an array of variable within the section
-                preg_match_all('/<<.+?>>/',$between,$matches);
+                preg_match_all('/<<.+?>>/', $between, $matches);
+                $matches = array_unique($matches[0]);
+
+            } else {
+
+                $viewHeader = "Configs";
+
+                //Get an array of variable within the section
+                preg_match_all('/<<.+?>>/', $contents, $matches);
                 $matches = array_unique($matches[0]);
 
             }
 
-        } else {
+            //Loop the variables and create friendly display
+            //names for the HTML
+            foreach($matches as $match)
+            {
+                preg_match('/<<(.*)>>/',$match,$out);
+                $viewVariables[$viewHeader][] = $out;
 
-            $viewHeader = "Configs";
-
-            //Get an array of variable within the section
-            preg_match_all('/<<.+?>>/',$contents,$matches);
-            $matches = array_unique($matches[0]);
-
+            }
         }
-
-        //Loop the variables and create friendly display
-        //names for the HTML
-        foreach($matches as $match)
-        {
-            preg_match('/<<(.*)>>/',$match,$out);
-            $viewVariables[$viewHeader][] = $out;
-
-        }
-
 
         $filePath = explode('/', $fileNameAndPath);
         $fileName = end($filePath);
