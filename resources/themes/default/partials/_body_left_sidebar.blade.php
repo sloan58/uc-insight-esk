@@ -101,6 +101,7 @@
             @if(\Auth::user()->hasRole(['admins','jfs-user', 'jfs-admin']))
             <li class="treeview {{ areActiveRoutes([
                 'jfs.sites.index',
+                'jfs.sites.show',
                 'jfs.configs',
                 'jfs.configs.create',
                 ]) }}">
