@@ -39,19 +39,27 @@ class Site extends Model
 
     /**
      * Return a list of incomplete tasks for this site
+     * @param bool $getCount
      * @return mixed
      */
-    public function incompleteTasks()
+    public function incompleteTasks($getCount = false)
     {
+        if($getCount) {
+            return count($this->tasks()->where('completed',0)->get());
+        }
         return $this->tasks()->where('completed',0)->get();
     }
 
     /**
      * Return a list of completed tasks for this site
+     * @param bool $getCount
      * @return mixed
      */
-    public function completedTasks()
+    public function completedTasks($getCount = false)
     {
+        if($getCount) {
+            return count($this->tasks()->where('completed',1)->get());
+        }
         return $this->tasks()->where('completed',1)->get();
     }
 }

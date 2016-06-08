@@ -7,15 +7,15 @@ use Carbon\Carbon;
 use App\Models\Report;
 use App\Http\Requests;
 use App\Models\Duo\Log;
+use Keboola\Csv\CsvFile;
 use App\Models\Duo\Group;
 use App\Libraries\DuoAdmin;
 use App\Jobs\FetchDuoUsers;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use App\Models\Duo\User as DuoUser;
 use App\Jobs\GenerateRegisteredDuoUsersReport;
 use App\Console\Commands\GenerateRegisteredDuoUsersReportCommand;
-use Keboola\Csv\CsvFile;
-use Yajra\Datatables\Datatables;
 
 /**
  * Class DuoController
@@ -271,11 +271,6 @@ class DuoController extends Controller
 
         return view('duo.registered-report',compact('users'));
     }
-
-
-    /*
-     * Auth Log Routes
-     */
 
 
     /**

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Jfs;
 
 use App\Http\Requests;
+use Colors\RandomColor;
 use App\Models\Jfs\Site;
 use App\Models\Jfs\Task;
-use Colors\RandomColor;
 use App\Models\Jfs\Workflow;
 use Illuminate\Http\Request;
+use Yajra\Datatables\Datatables;
 use App\Http\Controllers\Controller;
+
 
 
 /**
@@ -25,29 +27,15 @@ class SiteController extends Controller
      */
     public function index(Request $request)
     {
-        //Check if there was a search parameter sent
-        if($request->input('search'))
-        {
-            //Get the search term
-            $search = $request->get('search');
-
-            //Filter our query
-            $sites = Site::where('name', 'like', "%$search%")
-                ->paginate(10);
-
-        } else {
-
-            //No search terms given, get all records
-            $sites = Site::paginate(10);
-
-        }
-
         $reportData = [];
         $workFlows = Workflow::all();
         $totalSites = Site::all()->count();
         $colors = [
             'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink',
         ];
+
+        //No search terms given, get all records
+        $sites = Site::paginate(10);
 
         foreach($workFlows as $flow) {
 
@@ -68,8 +56,27 @@ class SiteController extends Controller
             }
         }
 
-        return view('jfs.sites.index', compact('sites', 'reportData'));
+        return view('jfs.sites.index', compact('dt', 'reportData'));
 
+    }
+
+    public function indexDatatables()
+    {
+        //No search terms given, get all records
+        $sites = Site::select('id','name');
+
+        // Return the Datatables object from the query
+        return Datatables::of($sites)
+            ->addColumn('Completed Tasks', function ($site) {
+                return $site->completedTasks(true);
+            })
+            ->addColumn('Incomplete Tasks', function ($site) {
+                return $site->incompleteTasks(true);
+            })
+            ->editColumn('name', function($site) {
+                return '<a class="sql-link" href="sites/' . $site->id . '">' . $site->name . '</a>';
+            })
+            ->make(true);
     }
 
     /**

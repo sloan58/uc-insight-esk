@@ -236,6 +236,10 @@ Route::group(['middleware' => 'authorize'], function () {
             'as' => 'jfs.sites.index',
             'uses' => 'Jfs\SiteController@index'
         ]);
+        Route::get('sites/data', [
+            'as' => 'jfs.sites.index.data',
+            'uses' => 'Jfs\SiteController@indexDatatables'
+        ]);
         Route::get('sites/task', [
             'as' => 'jfs.site.task.update',
             'uses' => 'Jfs\SiteController@update'

@@ -8,40 +8,25 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Search JFS Sites</h3>
                     <div class="box-tools pull-right">
-                        <form action="{{ route('jfs.sites.index')  }}" method="GET">
-                            <input type="text" name="search" value=""/>
-                            <button type"submit">Search</button>
-                        </form>
                     </div>
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="table">
                                 <thead>
                                 <tr>
-                                    <th>Site Name</th>
+                                    <th>Name</th>
                                     <th>Completed Tasks</th>
-                                    <th>Incomplete Tasks</th>
+                                    <th>Incomplet Tasks</th>
                                 </tr>
                                 </thead>
                                 <tfoot>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Completed Tasks</th>
+                                    <th>Incomplete Tasks</th>
+                                </tr>
                                 </tfoot>
-                                <tbody>
-                                @if(isset($sites))
-                                    @foreach($sites as $site)
-                                        <tr>
-                                            <td>
-                                                <a class="sql-link" href="{{ route('jfs.sites.show', [ $site->id ]) }}">
-                                                    {{ $site->name }}
-                                                </a>
-                                            </td>
-                                            <td>{{ $site->completedTasks()->count() }}</td>
-                                            <td>{{ $site->incompleteTasks()->count() }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
                             </table>
-                            {!! $sites->appends(['search' => Input::get('search')])->render() !!}
-                            @endif
                         </div> <!-- table-responsive -->
                     </div><!-- /.box-body -->
                 </div><!-- /.box -->
@@ -73,6 +58,20 @@
 
 @section('body_bottom')
 
+    {{-- Datatables serverSide --}}
+    <script>
+        var table = $('#table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{!! route('jfs.sites.index.data') !!}',
+            columns: [
+                {data: 'name', name: 'name'},
+                {data: 'Completed Tasks', name: 'Completed Tasks'},
+                {data: 'Incomplete Tasks', name: 'Incomplete Tasks'},
+            ]
+        });
+    </script>
+
     @foreach($reportData as $flowName => $flow)
 
     <script>
@@ -82,9 +81,7 @@
         var data = {
             labels: [
             @foreach($flow as $taskName => $count)
-
-                "{{ $taskName }}",
-
+                "{!! $taskName !!}",
             @endforeach
         ],
         datasets: [
@@ -92,24 +89,18 @@
             label: 'Percentage of Sites Completed',
             data: [
             @foreach($flow as $taskName)
-
                     {{ $taskName['count'] }},
-
             @endforeach
         ],
             backgroundColor: [
             @foreach($flow as $taskName)
-
                 "{{ $taskName['backgroundColor'] }}",
-
             @endforeach
 
             ],
             hoverBackgroundColor: [
             @foreach($flow as $taskName)
-
                 "{{ $taskName['hoverBackgroundColor'] }}",
-
             @endforeach
             ]
             }]
