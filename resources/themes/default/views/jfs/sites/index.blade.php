@@ -34,7 +34,7 @@
         </div><!-- /.row -->
     </div>
     <div class="row">
-        @foreach($reportData as $flowName => $tasks)
+        @foreach($graphData as $flowName => $tasks)
         <div class="col-md-4">
             <div class="box box-primary">
                 <div class="box-header with-border">
@@ -66,13 +66,13 @@
             ajax: '{!! route('jfs.sites.index.data') !!}',
             columns: [
                 {data: 'name', name: 'name'},
-                {data: 'Completed Tasks', name: 'Completed Tasks'},
-                {data: 'Incomplete Tasks', name: 'Incomplete Tasks'},
+                {data: 'Completed Tasks', name: 'Completed Tasks', searchable: false},
+                {data: 'Incomplete Tasks', name: 'Incomplete Tasks', searchable: false},
             ]
         });
     </script>
 
-    @foreach($reportData as $flowName => $flow)
+    @foreach($graphData as $flowName => $flow)
 
     <script>
 
