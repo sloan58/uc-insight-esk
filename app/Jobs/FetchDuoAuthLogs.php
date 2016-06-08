@@ -59,7 +59,9 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
             //Duo SDK puts results in nested array [response][response]
             $logs = $response['response']['response'];
 
-            \Log::debug('Received Duo Response Object.  Adding new entries ', [ 'object-count' => count($logs)]);
+            $backoff = NULL;
+
+            \Log::debug('Received Duo Response Object.  Adding new entries ', [ 'object-count' => count($logs), 'set-backoff' => $backoff]);
 
             // Loop each log to save
             foreach($logs as $log) {
