@@ -14,7 +14,7 @@
     </div>
 </div>
 <div>
-    <input type="hidden" name="fileName" value="{{$fileName}}"/>
+    <input type="hidden" name="fileName" value="{{$fileNameAndPath}}"/>
 </div>
 @endforeach
 @endif

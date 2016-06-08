@@ -52,10 +52,10 @@ class ConfigController extends Controller
 
     public function create(Request $request)
     {
-        $fileName = $request->input('path');
+        $fileNameAndPath = $request->input('path');
 
         //Get the file from storage
-        $contents = Storage::get($fileName);
+        $contents = Storage::get($fileNameAndPath);
 
         //Create an empty array to fill with config headers and vars
         $viewVariables = [];
@@ -111,7 +111,10 @@ class ConfigController extends Controller
             }
         }
 
-        return view('jfs.configs.create',compact('viewVariables','fileName'));
+        $filePath = explode('/', $fileNameAndPath);
+        $fileName = end($filePath);
+
+        return view('jfs.configs.create',compact('viewVariables', 'fileNameAndPath', 'fileName'));
     }
 
     /**
