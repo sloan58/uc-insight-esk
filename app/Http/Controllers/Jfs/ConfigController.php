@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Jfs;
 
 use Storage;
-use Carbon\Carbon;
 use App\Http\Requests;
+use App\Libraries\Jfs\ConfigGeneratorService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Libraries\UploadsManager;
 use App\Http\Controllers\Controller;
 
 
@@ -18,14 +17,20 @@ use App\Http\Controllers\Controller;
 class ConfigController extends Controller
 {
 
-    protected $manager;
+    protected $configGeneratorService;
 
-    public function __construct(UploadsManager $manager)
+    /**
+     * ConfigController constructor.
+     * @param ConfigGeneratorService $configGeneratorService
+     */
+    public function __construct(ConfigGeneratorService $configGeneratorService)
     {
-        $this->manager = $manager;
+        $this->configGeneratorService = $configGeneratorService;
     }
 
     /**
+     * Return a list of JFS files and/or folders
+     *
      * @param Request $request
      * @return \BladeView|bool|\Illuminate\View\View
      */
@@ -35,11 +40,17 @@ class ConfigController extends Controller
         $folder = $request->get('folder');
 
         // Get the JFS folder data
-        $data = $this->getJfsFolderData($folder);
+        $data = $this->configGeneratorService->getJfsFolderData($folder);
         
         return view('jfs.configs.index', $data);
     }
 
+    /**
+     * Create the form variables with JFS config placeholders
+     *
+     * @param Request $request
+     * @return \Illuminate\View\View
+     */
     public function create(Request $request)
     {
         $fileNameAndPath = $request->input('path');
@@ -48,7 +59,7 @@ class ConfigController extends Controller
         $contents = Storage::get($fileNameAndPath);
 
         // Get the JFS Config Variables that will be returned
-        $viewVariables = $this->getJfsViewVariables($contents);
+        $viewVariables = $this->configGeneratorService->getJfsViewVariables($contents);
 
         $filePath = explode('/', $fileNameAndPath);
         $fileName = end($filePath);
@@ -57,6 +68,8 @@ class ConfigController extends Controller
     }
 
     /**
+     *  Generate new JFS configs with variables submitted from the front end form.
+     *
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
      */
@@ -69,12 +82,18 @@ class ConfigController extends Controller
         $contents = Storage::get($input['fileName']);
 
         // Get the temp file name for the JFS configs
-        $tempFileName = $this->getJfsTempFileName($contents, $input);
+        $tempFileName = $this->configGeneratorService->getJfsTempFileName($contents, $input);
 
         return response()->download(storage_path() . '/' . $tempFileName)->deleteFileAfterSend(true);
 
     }
 
+    /**
+     * Load a new JFS config file
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function loadFile(Request $request)
     {
         // Get the file and folder submitted in the form
@@ -82,7 +101,7 @@ class ConfigController extends Controller
         $folder = $request->input('folder');
 
         // Make sure the file type and variable formatting is correct
-        $this->validateJfsConfigData($file);
+        $this->configGeneratorService->validateJfsConfigData($file);
         
         // Move the file to persistent storage.
         $file->move(storage_path() . '/' . $folder . '/', $file->getClientOriginalName());
@@ -125,152 +144,5 @@ class ConfigController extends Controller
     public function download(Request $request)
     {
         return response()->download(storage_path() . '/' . $request->input('path'));
-    }
-
-
-    /**
-     * Produce the JFS config variables from the source file
-     *
-     * @param $contents
-     * @return array
-     */
-    private function getJfsViewVariables($contents) {
-        //Create an empty array to fill with config headers and vars
-        $viewVariables = [];
-
-        //Find all the headers (begin and end)
-        preg_match_all('/{.+?}/',$contents,$begTags);
-
-        $configSections = $begTags[0];
-
-        //Loop each header
-        foreach($configSections as $index => $tag) {
-
-            if (count($configSections)) {
-                //The headers are stored with the 'start' marker in
-                //even indices.  If it's not even, it's an 'end' marker
-                //and we can continue;
-                if ($index % 2 != 0) continue;
-
-                //Rip out { } from the headers to display nicely in HTML
-                $viewHeader = trim(str_replace(['{', '}'], '', $tag));
-
-                //Get the beginning position of the section
-                $beginPos = strpos($contents, $tag);
-                //Get the ending position of the section
-                $endPos = strpos($contents, $configSections[$index + 1], $beginPos + 1);
-                //Get the length between beginning and end
-                $length = abs($beginPos - $endPos);
-
-                //Extract the text between the header markers
-                $between = substr($contents, $beginPos, $length);
-
-                //Get an array of variable within the section
-                preg_match_all('/<<.+?>>/', $between, $matches);
-                $matches = array_unique($matches[0]);
-
-            } else {
-
-                $viewHeader = "Configs";
-
-                //Get an array of variable within the section
-                preg_match_all('/<<.+?>>/', $contents, $matches);
-                $matches = array_unique($matches[0]);
-
-            }
-
-            //Loop the variables and create friendly display
-            //names for the HTML
-            foreach($matches as $match)
-            {
-                preg_match('/<<(.*)>>/',$match,$out);
-                $viewVariables[$viewHeader][] = $out;
-
-            }
-        }
-
-        return $viewVariables;
-    }
-
-    /**
-     * Get the folder data from disk
-     *
-     * @param $folder
-     * @return array
-     */
-    private function getJfsFolderData($folder) {
-        // If no folder was provided, we're at the root folder
-        if($folder == '') {
-            $folder = 'jfs-config-templates/';
-        }
-
-        // Get all subfolders
-        $data = $this->manager->folderInfo($folder);
-
-        // Remove the temp folder if it exists
-        if(isset($data['subfolders']['/jfs-config-templates/temp'])) {
-            unset($data['subfolders']['/jfs-config-templates/temp']);
-        }
-
-        return $data;
-    }
-
-    private function getJfsTempFileName($contents, $input) {
-
-        //Find all the variables in the file
-        preg_match_all('/<<.+?>>/',$contents,$matches);
-        $matches = array_unique($matches[0]);
-
-        //Loop each variable and replace with the
-        //actual data submitted in the form
-        foreach($matches as $match)
-        {
-            $contents = str_replace($match,$input[$match],$contents);
-        }
-
-        //Find all the headers (begin and end)
-        preg_match_all('/{.+?}/',$contents,$begTags);
-
-        //Loop each header to remove it from the final file
-        foreach($begTags[0] as $index => $tag)
-        {
-            $contents = str_replace($tag,'',$contents);
-        }
-
-        // Create the temp file name
-        $tempFileName = 'jfs-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . Carbon::now()->timestamp . '.txt';
-
-        // Save the file to disk
-        Storage::put($tempFileName,$contents);
-
-        return $tempFileName;
-    }
-
-    /**
-     * Validate JFS config file type and the variables formatting
-     *
-     * @param $file
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    private function validateJfsConfigData($file) {
-
-        // Check to see if the file type is correct
-        if ($file->getClientMimeType() != "text" && $file->getClientOriginalExtension() != "txt")
-        {
-            alert()->error('File type invalid.  Please use a .txt file format.')->persistent('Close');
-            return redirect()->back();
-        }
-
-        // Get all the variable names set in the config file.
-        preg_match_all('/<<.+?>>/', file_get_contents($file), $matches);
-        $variables = $matches[0];
-
-        // Make sure each variable name conforms to standards
-        foreach($variables as $variable) {
-            if(preg_match('/\s/',$variable)) {
-                alert()->error('Variable names cannot contain spaces.')->persistent('Close');
-                return redirect()->back();
-            }
-        }
     }
 }
