@@ -52,10 +52,10 @@ class ConfigController extends Controller
 
     public function create(Request $request)
     {
-        $fileNameAndPath = $request->input('path');
+        $fileName = $request->input('path');
 
         //Get the file from storage
-        $contents = Storage::get($fileNameAndPath);
+        $contents = Storage::get($fileName);
 
         //Create an empty array to fill with config headers and vars
         $viewVariables = [];
@@ -111,9 +111,6 @@ class ConfigController extends Controller
             }
         }
 
-        $filePath = explode('/', $fileNameAndPath);
-        $fileName = end($filePath);
-
         return view('jfs.configs.create',compact('viewVariables','fileName'));
     }
 
@@ -128,7 +125,7 @@ class ConfigController extends Controller
 
 
         //Get the file from storage
-        $contents = Storage::get('jfs-config-templates/' .  $input['fileName']);
+        $contents = Storage::get($input['fileName']);
 
         //Find all the variables in the file
         preg_match_all('/<<.+?>>/',$contents,$matches);
