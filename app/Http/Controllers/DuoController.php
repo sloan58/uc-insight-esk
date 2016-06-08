@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use DB;
+use Carbon\Carbon;
 use App\Models\Report;
 use App\Http\Requests;
+use App\Models\Duo\Log;
 use App\Models\Duo\Group;
 use App\Libraries\DuoAdmin;
 use App\Jobs\FetchDuoUsers;
@@ -12,6 +14,8 @@ use Illuminate\Http\Request;
 use App\Models\Duo\User as DuoUser;
 use App\Jobs\GenerateRegisteredDuoUsersReport;
 use App\Console\Commands\GenerateRegisteredDuoUsersReportCommand;
+use Keboola\Csv\CsvFile;
+use Yajra\Datatables\Datatables;
 
 /**
  * Class DuoController
@@ -266,5 +270,110 @@ class DuoController extends Controller
         $users = $phoneUsers->merge($tokenUsers);
 
         return view('duo.registered-report',compact('users'));
+    }
+
+
+    /*
+     * Auth Log Routes
+     */
+
+
+    /**
+     *  Display the Auth Logs Index Page
+     */
+    public function logs()
+    {
+        return view('duo.authlogs.index');
+    }
+
+
+    /**
+     *  Get the Auth Logs table data
+     */
+    public function logData()
+    {
+
+        // Define the SQL query
+        $logs = Log::join('duo_users', 'duo_logs.duo_user_id', '=', 'duo_users.id', 'left outer' )
+            ->leftJoin('duo_group_duo_user', 'duo_users.id', '=', 'duo_group_duo_user.duo_user_id')
+            ->leftJoin('duo_groups', 'duo_groups.id', '=', 'duo_group_duo_user.duo_group_id')
+            ->select([
+                'duo_logs.integration',
+                'duo_logs.factor',
+                'duo_logs.device',
+                'duo_logs.ip',
+                'duo_logs.new_enrollment',
+                'duo_logs.reason',
+                'duo_logs.result',
+                'duo_logs.timestamp',
+                'duo_users.username',
+                'duo_groups.name'
+            ])
+            ->orderBy('duo_logs.integration', 'asc');
+
+        // Return the Datatables object from the query
+        return Datatables::of($logs)
+            ->editColumn('duo_logs.timestamp', function ($log) {
+                return $log->timestamp->format('Y/m/d');
+            })
+            ->make(true);
+    }
+
+    /**
+     *
+     * Export Duo Auth Log data as csv
+     *
+     */
+    public function exportLogData()
+    {
+
+        // Define the SQL query
+        $logs = Log::join('duo_users', 'duo_logs.duo_user_id', '=', 'duo_users.id', 'left outer' )
+            ->leftJoin('duo_group_duo_user', 'duo_users.id', '=', 'duo_group_duo_user.duo_user_id')
+            ->leftJoin('duo_groups', 'duo_groups.id', '=', 'duo_group_duo_user.duo_group_id')
+            ->select([
+                'duo_logs.integration',
+                'duo_logs.factor',
+                'duo_logs.device',
+                'duo_logs.ip',
+                'duo_logs.new_enrollment',
+                'duo_logs.reason',
+                'duo_logs.result',
+                'duo_logs.timestamp',
+                'duo_users.username',
+                'duo_groups.name'
+            ])
+            ->orderBy('duo_logs.integration', 'asc');
+
+        // Create the Datatables object from the query
+        $data = Datatables::of($logs)
+            ->editColumn('duo_logs.timestamp', function ($log) {
+                return $log->timestamp->format('Y/m/d');
+            })
+            ->make()->getData(true);
+
+        // Get the query data and column names
+        $rowData = $data['data'];
+        $columns = $data['input']['columns'];
+
+        // Create the csv column headers
+        $headers = [];
+        foreach($columns as $column) {
+            array_push($headers,  ucfirst($column['data']));
+        }
+        
+        // Create the CsvFile object to store our data
+        $csvFile = new CsvFile(storage_path() . '/reports/duo/auth-logs/' . Carbon::now()->toDateTimeString() . '-' . \Auth::user()->username . '.csv');
+
+        // Write the header row
+        $csvFile->writeRow(array_slice($headers, 0, 10));
+        
+        // Write the data rows
+        foreach($rowData as $row) {
+            $csvFile->writeRow(array_slice($row, 0, 10));
+        }
+
+        // Return the csv file
+        return response()->download($csvFile);
     }
 }

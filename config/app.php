@@ -171,6 +171,7 @@ return [
         Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider::class,
         Snowfire\Beautymail\BeautymailServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
+        Yajra\Datatables\DatatablesServiceProvider::class
 
     ],
 

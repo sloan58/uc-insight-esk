@@ -24,6 +24,9 @@ elixir(function(mix) {
     ).copy(
         bowerLoc + 'sweetalert/dist/sweetalert.css',
         resourceLoc + 'css/sweetalert.css'
+    ).copy(
+        bowerLoc + 'datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css',
+        resourceLoc + 'css/dataTables.bootstrap.css'
     );
 
     // Copy JS Dependencies
@@ -58,6 +61,7 @@ elixir(function(mix) {
         //'vendor.css',
         'codemirror.css',
         'sweetalert.css',
+        'dataTables.bootstrap.css',
         'app.css',
     ], null, 'public/css');
 

@@ -8,14 +8,39 @@ class Log extends Model
 {
 
     /**
-     * @var string
+     *  The database table name
      */
     protected $table = 'duo_logs';
 
-    protected $fillable = ['device', 'factor', 'integration', 'ip', 'new_enrollment', 'reason', 'result', 'timestamp', 'username'];
+    /**
+     *  Table fields that should be used as Carbon objects
+     */
+    protected $dates = ['timestamp'];
 
-    public function duoUsers()
+    /**
+     *  Mass assignable fields
+     */
+    protected $fillable = ['device', 'factor', 'integration', 'ip', 'new_enrollment', 'reason', 'result', 'timestamp', 'username', 'duo_user_id'];
+
+    /**
+     *  Relations to include
+     */
+    protected $with =['duoUser'];
+
+    /**
+     *  Duo Logs belong to a Duo User
+     */
+    public function duoUser()
     {
         return $this->belongsTo('App\Models\Duo\User');
+    }
+    
+    /**
+     *  Check if the new_enrollment value is true
+     *  Return Yes or No
+     */
+    public function getNewEnrollmentAttribute($value)
+    {
+        return $value ? 'Yes' : 'No';
     }
 }
