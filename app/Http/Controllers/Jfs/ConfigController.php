@@ -34,18 +34,8 @@ class ConfigController extends Controller
         // Get the folder name passed in the Request
         $folder = $request->get('folder');
 
-        // If no folder was provided, we're at the root folder
-        if($folder == '') {
-            $folder = 'jfs-config-templates/';
-        }
-
-        // Get all subfolders
-        $data = $this->manager->folderInfo($folder);
-
-        // Remove the temp folder if it exists
-        if(isset($data['subfolders']['/jfs-config-templates/temp'])) {
-            unset($data['subfolders']['/jfs-config-templates/temp']);
-        }
+        // Get the JFS folder data
+        $data = $this->getJfsFolderData($folder);
         
         return view('jfs.configs.index', $data);
     }
@@ -57,6 +47,94 @@ class ConfigController extends Controller
         //Get the file from storage
         $contents = Storage::get($fileNameAndPath);
 
+        // Get the JFS Config Variables that will be returned
+        $viewVariables = $this->getJfsViewVariables($contents);
+
+        $filePath = explode('/', $fileNameAndPath);
+        $fileName = end($filePath);
+
+        return view('jfs.configs.create',compact('viewVariables', 'fileNameAndPath', 'fileName'));
+    }
+
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function store(Request $request)
+    {
+        //Get the form input
+        $input = $request->input();
+
+        //Get the file from storage
+        $contents = Storage::get($input['fileName']);
+
+        // Get the temp file name for the JFS configs
+        $tempFileName = $this->getJfsTempFileName($contents, $input);
+
+        return response()->download(storage_path() . '/' . $tempFileName)->deleteFileAfterSend(true);
+
+    }
+
+    public function loadFile(Request $request)
+    {
+        // Get the file and folder submitted in the form
+        $file = $request->file('file');
+        $folder = $request->input('folder');
+
+        // Make sure the file type and variable formatting is correct
+        $this->validateJfsConfigData($file);
+        
+        // Move the file to persistent storage.
+        $file->move(storage_path() . '/' . $folder . '/', $file->getClientOriginalName());
+
+        alert()->success('New JFS Config Submitted!');
+        return redirect()->back();
+    }
+
+
+    public function destroy(Request $request)
+    {
+        $fileNameAndPath = $request->input('name');
+
+        Storage::delete($fileNameAndPath);
+
+        alert()->success("JFS configs removed successfully");
+
+        return redirect()->back();
+    }
+
+    public function getModalDelete(Request $request)
+    {
+        $fileNameAndPath = $request->input('path');
+
+        $error = null;
+
+        $modal_title = trans('jfs/dialog.delete-confirm.title');
+        $modal_cancel = trans('general.button.cancel');
+        $modal_ok = trans('general.button.ok');
+
+        $modal_route = route('jfs.configs.delete', ['name' => $fileNameAndPath]);
+
+        $modal_body = trans('jfs/dialog.delete-confirm.body', ['name' => $fileNameAndPath]);
+
+        return view('modal_confirmation', compact('error', 'modal_route',
+            'modal_title', 'modal_body', 'modal_cancel', 'modal_ok'));
+
+    }
+
+    public function download(Request $request)
+    {
+        return response()->download(storage_path() . '/' . $request->input('path'));
+    }
+
+
+    /**
+     * Produce the JFS config variables from the source file
+     *
+     * @param $contents
+     * @return array
+     */
+    private function getJfsViewVariables($contents) {
         //Create an empty array to fill with config headers and vars
         $viewVariables = [];
 
@@ -111,24 +189,33 @@ class ConfigController extends Controller
             }
         }
 
-        $filePath = explode('/', $fileNameAndPath);
-        $fileName = end($filePath);
-
-        return view('jfs.configs.create',compact('viewVariables', 'fileNameAndPath', 'fileName'));
+        return $viewVariables;
     }
 
     /**
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     * Get the folder data from disk
+     *
+     * @param $folder
+     * @return array
      */
-    public function store(Request $request)
-    {
-        //Get the form input
-        $input = $request->input();
+    private function getJfsFolderData($folder) {
+        // If no folder was provided, we're at the root folder
+        if($folder == '') {
+            $folder = 'jfs-config-templates/';
+        }
 
+        // Get all subfolders
+        $data = $this->manager->folderInfo($folder);
 
-        //Get the file from storage
-        $contents = Storage::get($input['fileName']);
+        // Remove the temp folder if it exists
+        if(isset($data['subfolders']['/jfs-config-templates/temp'])) {
+            unset($data['subfolders']['/jfs-config-templates/temp']);
+        }
+
+        return $data;
+    }
+
+    private function getJfsTempFileName($contents, $input) {
 
         //Find all the variables in the file
         preg_match_all('/<<.+?>>/',$contents,$matches);
@@ -150,19 +237,22 @@ class ConfigController extends Controller
             $contents = str_replace($tag,'',$contents);
         }
 
+        // Create the temp file name
         $tempFileName = 'jfs-config-templates/temp/'. $input['fileName'] . '-' . 'completed' . '-' . Carbon::now()->timestamp . '.txt';
 
+        // Save the file to disk
         Storage::put($tempFileName,$contents);
 
-        return response()->download(storage_path() . '/' . $tempFileName)->deleteFileAfterSend(true);
-
+        return $tempFileName;
     }
 
-    public function loadFile(Request $request)
-    {
-        // Get the file and folder submitted in the form
-        $file = $request->file('file');
-        $folder = $request->input('folder');
+    /**
+     * Validate JFS config file type and the variables formatting
+     *
+     * @param $file
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    private function validateJfsConfigData($file) {
 
         // Check to see if the file type is correct
         if ($file->getClientMimeType() != "text" && $file->getClientOriginalExtension() != "txt")
@@ -182,47 +272,5 @@ class ConfigController extends Controller
                 return redirect()->back();
             }
         }
-
-        // Move the file to persistent storage.
-        $file->move(storage_path() . '/' . $folder . '/', $file->getClientOriginalName());
-
-        alert()->success('New JFS Config Submitted!');
-        return redirect()->back();
-    }
-
-
-    public function destroy(Request $request)
-    {
-        $fileNameAndPath = $request->input('name');
-
-        Storage::delete($fileNameAndPath);
-
-        alert()->success("JFS configs removed successfully");
-
-        return redirect()->back();
-    }
-
-    public function getModalDelete(Request $request)
-    {
-        $fileNameAndPath = $request->input('path');
-
-        $error = null;
-
-        $modal_title = trans('jfs/dialog.delete-confirm.title');
-        $modal_cancel = trans('general.button.cancel');
-        $modal_ok = trans('general.button.ok');
-
-        $modal_route = route('jfs.configs.delete', ['name' => $fileNameAndPath]);
-
-        $modal_body = trans('jfs/dialog.delete-confirm.body', ['name' => $fileNameAndPath]);
-
-        return view('modal_confirmation', compact('error', 'modal_route',
-            'modal_title', 'modal_body', 'modal_cancel', 'modal_ok'));
-
-    }
-
-    public function download(Request $request)
-    {
-        return response()->download(storage_path() . '/' . $request->input('path'));
     }
 }
