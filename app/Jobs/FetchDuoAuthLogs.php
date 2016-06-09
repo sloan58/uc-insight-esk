@@ -39,7 +39,7 @@ class FetchDuoAuthLogs extends Job implements SelfHandling, ShouldQueue
         // Set the log $count value to 1000
         $count = 1000;
         $backoff = NULL;
-        while($count == 1000) {
+        while($count >= 1000) {
 
             \Log::debug('Start Log gathering', ['count' => $count, 'backoff' => $backoff]);
 
