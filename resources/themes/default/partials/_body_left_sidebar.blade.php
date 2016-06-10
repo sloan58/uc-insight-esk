@@ -116,13 +116,15 @@
             <li class="treeview {{ areActiveRoutes([
                 'duo.index',
                 'duo.show',
-                'duo.auth.logs'
+                'duo.auth.logs',
+                'duo.auth.reports'
             ]) }}">
                 <a href="#"><i class="fa fa-tty"></i> <span>Duo Auth</span> <i class="fa fa-angle-left pull-right"></i></a>
                 <ul class="treeview-menu">
                     <li><a href="{{ url('/duo') }}">Search Users</a></li>
                     <li><a href="{{ url('/duo/user/registration/report') }}">Registered Users Report</a></li>
                     <li><a href="{{ url('/duo/auth/logs') }}">Authentication Logs</a></li>
+                    <li><a href="{{ url('/duo/auth/reports') }}">Authentication Log Reports</a></li>
                 </ul>
             </li>
             @endif

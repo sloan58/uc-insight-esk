@@ -297,6 +297,7 @@ Route::group(['middleware' => 'authorize'], function () {
     Route::get('duo/auth/logs', ['as' => 'duo.auth.logs', 'uses' => 'DuoController@logs']);
     Route::get('duo/auth/logs/data', ['as' => 'duo.auth.logs.data', 'uses' => 'DuoController@logData']);
     Route::get('duo/auth/logs/export', ['as' => 'duo.auth.logs.export', 'uses' => 'DuoController@exportLogData']);
+    Route::get('duo/auth/reports', ['as' => 'duo.auth.reports', 'uses' => 'DuoController@authReports']);
 
 }); // end of AUTHORIZE group
 

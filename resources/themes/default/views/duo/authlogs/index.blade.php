@@ -95,5 +95,7 @@
             uri.removeSearch("length");
             window.location = '/duo/auth/logs/export?' + uri.toString();
         }
+
     </script>
+
 @endsection

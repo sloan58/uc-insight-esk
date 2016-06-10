@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\Report;
 use App\Http\Requests;
 use App\Models\Duo\Log;
+use Colors\RandomColor;
 use Keboola\Csv\CsvFile;
 use App\Models\Duo\Group;
 use App\Libraries\DuoAdmin;
@@ -14,6 +15,7 @@ use App\Jobs\FetchDuoUsers;
 use Illuminate\Http\Request;
 use Yajra\Datatables\Datatables;
 use App\Models\Duo\User as DuoUser;
+use App\Models\Duo\Log as DuoLog;
 use App\Jobs\GenerateRegisteredDuoUsersReport;
 use App\Console\Commands\GenerateRegisteredDuoUsersReportCommand;
 
@@ -370,5 +372,29 @@ class DuoController extends Controller
 
         // Return the csv file
         return response()->download($csvFile);
+    }
+
+    public function authReports()
+    {
+        $reportData = ['factor', 'integration', 'reason', 'result'];
+        $colors = [
+            'red', 'orange', 'yellow', 'green', 'blue', 'purple', 'pink',
+        ];
+
+        $totalLogs = DuoLog::select('id')->count();
+
+        foreach($reportData as $report) {
+
+            $res = \DB::select("SELECT DISTINCT $report, count(*) as count FROM duo_logs GROUP BY $report");
+
+            foreach($res as $graph) {
+                $graphData[$report][$graph->{$report}]['count'] = number_format($graph->count / $totalLogs, 3) * 100;;
+                $graphData[$report][$graph->{$report}]['backgroundColor'] = RandomColor::one([ 'hue' => $colors[array_rand($colors, 1)]]);
+                $graphData[$report][$graph->{$report}]['hoverBackgroundColor'] = "#00C0EF";
+            }
+
+        }
+
+        return view('duo.authlogs.reports', compact('graphData'));
     }
 }
