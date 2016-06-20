@@ -170,6 +170,7 @@ class DuoController extends Controller
 
         //Get the local Duo User account ID
         $insightUser = DuoUser::findorFail($id);
+        \Log::debug('Found local DuoUser account to migrate - ', [$insightUser]);
 
         //Make sure the source user has spaces in their name
         //If not, return an error
@@ -181,10 +182,10 @@ class DuoController extends Controller
 
         //Get a fresh copy of the current User data before adding the new user.
         $this->dispatch(new FetchDuoUsers($insightUser->username));
+        \Log::debug('Refreshed local DuoUser with Duo API - ', [$insightUser]);
 
         //Fetch the User details via Duo API
         $res = $duoAdmin->users($insightUser->username);
-
         //If we didn't get the user object back, error and redirect
         if(!count($res['response']['response']))
         {
@@ -195,22 +196,22 @@ class DuoController extends Controller
 
         //Grab the user details
         $user = $res['response']['response'][0];
+        \Log::debug('Got response for user details from Duo API - ', [$user]);
 
         //Implode the explode...  (Remove the space from the username)
         $user['username'] = implode('', explode(' ', $user['username']));
+        \Log::debug('Setting new space-less username - ', [$user['username']]);
 
         //Query the Duo API to see if the destination
         //user already exists in Duo
         $res = $duoAdmin->users($user['username']);
-
         //If we didn't get the user object back, let's create the new Duo user
-        if(!count($res['response']['response']))
-        {
+        if(!count($res['response']['response'])) {
+
+            \Log::debug('The new username does not currently exist in Duo.  Let\'s create the account - ', [$user['username']]);
+
             //Create the new Duo User
             $res = $duoAdmin->create_user($user['username'],$user['realname'],$user['email'],$user['status'],$user['notes']);
-
-            \Log::debug('Create new Duo User Response', [$res]);
-
             //If the status is not OK, error and redirect
             if($res['response']['stat'] != "OK")
             {
@@ -222,41 +223,50 @@ class DuoController extends Controller
             //Our 'Add Duo User' call was successful.
             //Assign the new user to this variable
             $newDuoUser = $res['response']['response'];
+            \Log::debug('Create new Duo User was successful', [$newDuoUser]);
 
         } else {
-            //Our 'Add Duo User' call was successful.
-            //Assign the new user to this variable
+            // The new user account already exists in Duo.
             $newDuoUser = $res['response']['response'][0];
+            \Log::debug('The new username does exist in Duo.  No need to create - ', [$newDuoUser]);
         }
 
+        \Log::debug('Syncing Duo Phones with the new account');
         //Sync Phones to new Duo User account
         foreach($insightUser->duoPhones()->lists('phone_id')->toArray() as $phone)
         {
             $res = $duoAdmin->user_associate_phone($newDuoUser['user_id'],$phone);
-            //If the status is not OK, error and redirect
-            if(!$res['response']['stat'] != "OK")
+            //If the status is not OK, log the error
+            if($res['response']['stat'] != "OK")
             {
-                \Log::debug('Error Associating Phone Res:', [$res]);
-                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+                \Log::debug('Error Associating Phone '. $phone . ' with User ' . $newDuoUser['user_id'] . ' - ', [$res]);
+//                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+                continue;
             }
+            \Log::debug('Successfully associated Phone '. $phone . ' with User ' . $newDuoUser['user_id'] . ' - ', [$res]);
         }
 
         //Sync Tokens to new Duo User account
+        \Log::debug('Syncing Duo Tokens with the new account');
         foreach($insightUser->duoTokens()->lists('token_id')->toArray() as $token)
         {
             $res = $duoAdmin->user_associate_token($newDuoUser['user_id'],$token);
             //If the status is not OK, error and redirect
-            if(!$res['response']['stat'] != "OK")
+            if($res['response']['stat'] != "OK")
             {
-                \Log::debug('Error Associating Token Res:', [$res]);
-                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+                \Log::debug('Error Associating Token '. $token . ' with User ' . $newDuoUser['user_id'] . ' - ', [$res]);
+//                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
+                continue;
             }
+            \Log::debug('Successfully associated Token '. $token . ' with User ' . $newDuoUser['user_id'] . ' - ', [$res]);
+
         }
 
         //Sync the new Duo User with UC Insight via Duo API
         $this->dispatch(new FetchDuoUsers($newDuoUser['username']));
+        \Log::debug('Refreshed local DuoUser with Duo API - ', [$newDuoUser['username']]);
 
-        alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " processed successfully!");
+        alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " completed");
         return redirect('duo');
 
     }
