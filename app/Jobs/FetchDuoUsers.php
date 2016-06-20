@@ -218,6 +218,10 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             $newDuoUsernames[] = $user['username'];
         }
 
+        // If there's only 1 user, we're just doing an on-demand
+        // user sync, so we shouldn't worry about stale accounts.
+        if(count($newDuoUsernames) ==1) return;
+
         //Get a list of local Duo usernames
         $localDuoUsers = User::lists('username')->toArray();
 
