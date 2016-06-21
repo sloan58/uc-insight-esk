@@ -3,6 +3,7 @@
 namespace App\Models\Duo;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * Class DuoUser
@@ -10,10 +11,12 @@ use Illuminate\Database\Eloquent\Model;
  */
 class User extends Model
 {
+    use SoftDeletes;
+
     /**
      * @var array
      */
-    protected $dates = ['last_login'];
+    protected $dates = ['last_login', 'deleted_at'];
 
     /**
      * @var array
