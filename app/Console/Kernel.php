@@ -40,7 +40,7 @@ class Kernel extends ConsoleKernel
                  ->weekly()->mondays()->at('08:00');
 
         //Gather Duo Auth Logs
-        $schedule->command('duo:fetch-authlogs')
-                 ->hourly();
+//        $schedule->command('duo:fetch-authlogs')
+//                 ->hourly();
     }
 }
