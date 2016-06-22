@@ -165,6 +165,8 @@ class DuoController extends Controller
 
     public function migrateUser($id)
     {
+        \Log::debug('Starting new DuoUser migration process with request from UC Insight User - ', [\Auth::user()->username]);
+
         //Create Duo Admin Client
         $duoAdmin = new DuoAdmin();
 
