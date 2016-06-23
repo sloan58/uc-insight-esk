@@ -16,8 +16,6 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
 
     /**
      * Create a new job instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -32,18 +30,22 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
     public function handle()
     {
         set_time_limit(0);
+        \Log::debug('Set PHP time limit to zero (no limit)');
 
         //Create the Duo Admin Client and set the timeout higher than default
         $duoAdmin = new DuoAdmin();
         $duoAdmin->setRequesterOption('timeout','6000000');
+        \Log::debug('Created new DuoAdmin object', [$duoAdmin]);
 
         $response = $duoAdmin->groups();
-
         $groups = $response['response']['response'];
+        \Log::debug('Obtained Groups from Duo API - ', [count($groups)]);
 
         //Loop Duo Groups
         foreach($groups as $group)
         {
+            \Log::debug('Processing Duo Group', [$group]);
+            
             //Get an existing Duo Group or create a new one
             $duoGroup = Group::firstOrCreate([
                 'group_id' => $group['group_id']
@@ -63,5 +65,6 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
             $duoGroup->save();
 
         }
+        \Log::debug('Completed FetchDuoGroups Job');
     }
 }
