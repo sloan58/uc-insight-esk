@@ -23,9 +23,16 @@
                         </a>
                     </div>
                     <div class="btn-group">
-                        <a href="{{route('duo.user.migrate',[$user->id])}}" class="btn btn-danger btn-md">
-                            Migrate User Data
-                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-danger btn-md dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                Migrate User Data
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                <li><a onclick="confirm_migration()">Migrate Now</a></li>
+                                <li><a onclick="set_custom_name()">Set Custom Name</a></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -155,9 +162,9 @@
                                 @endforeach
                                 @endif
                             </select>
-                                       <span class="input-group-btn">
-                                            <button class="btn btn-primary" type="submit">Save</button>
-                                       </span>
+                           <span class="input-group-btn">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                           </span>
                         </div>
                     </fieldset>
                 </form>
@@ -204,8 +211,89 @@
 </div>
 @endsection
 
+
+{{-- Create Migrate Confirmation Modal --}}
+<div class="modal fade" id="modal-confirm">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{route('duo.user.migrate',[$user->id])}}"
+                  class="form-horizontal">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="folder" value="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="modal-title">Confirm data migration:</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to migrate data for user {{ $user->username }}?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- Create Migrate Custom Name Modal --}}
+<div class="modal fade" id="modal-custom">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{{route('duo.user.migrate',[$user->id])}}"
+                  class="form-horizontal">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="folder" value="">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        ×
+                    </button>
+                    <h4 class="modal-title">Set Custom Duo Username</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">
+                            Username
+                        </label>
+                        <div class="col-sm-8">
+                            <input type="text" id="username" name="username" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @section('body_bottom')
-<!-- Select2 js -->
+<script language="JavaScript">
+
+    // Modal Confirm
+    function confirm_migration() {
+        $("#modal-confirm").modal("show");
+    }
+
+    // Modal Custom
+    function set_custom_name() {
+        $("#modal-custom").modal("show");
+    }
+</script>
+
+    <!-- Select2 js -->
 @include('partials._body_bottom_select2_js_report_search')
 @include('partials._body_bottom_select2_js_group_search')
 @endsection

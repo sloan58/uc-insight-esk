@@ -38,6 +38,7 @@ class DuoController extends Controller
 
             $users = DuoUser::where('realname', 'like', "%$search%")
                 ->orWhere('username', 'like', "%$search%")
+                ->whereNull('deleted_at')
                 ->orderBy('username','asc')
                 ->paginate(10)
             ;
@@ -163,9 +164,12 @@ class DuoController extends Controller
         return redirect()->back();
     }
 
-    public function migrateUser($id)
+    public function migrateUser(Request $request, $id)
     {
         \Log::debug('Starting new DuoUser migration process with request from UC Insight User - ', [\Auth::user()->username]);
+
+        // Get Form input
+        $input = $request->all();
 
         //Create Duo Admin Client
         $duoAdmin = new DuoAdmin();
@@ -200,9 +204,21 @@ class DuoController extends Controller
         $user = $res['response']['response'][0];
         \Log::debug('Got response for user details from Duo API - ', [$user]);
 
-        //Implode the explode...  (Remove the space from the username)
-        $user['username'] = implode('', explode(' ', $user['username']));
-        \Log::debug('Setting new space-less username - ', [$user['username']]);
+        // Check to see if a custom username was submitted
+        if(isset($input['username'])) {
+            //Make sure the new custom username does not have spaces
+            if(preg_match('/\s/',$input['username'])) {
+                \Log::debug('The custom Duo User name has invalid spaces', [$input['username']]);
+                alert()->error("The custom Duo User name has invalid spaces.")->persistent('Close');
+                return redirect('duo/user/' . $id);
+            }
+            $user['username'] = $input['username'];
+        } else {
+            // No custom name supplied.
+            //Implode the explode...  (Remove the space from the username)
+            $user['username'] = implode('', explode(' ', $user['username']));
+            \Log::debug('Setting new space-less username - ', [$user['username']]);
+        }
 
         //Query the Duo API to see if the destination
         //user already exists in Duo
@@ -242,7 +258,6 @@ class DuoController extends Controller
             if($res['response']['stat'] != "OK")
             {
                 \Log::debug('Error Associating Phone '. $phone . ' with User ' . $newDuoUser['user_id'] . ' - ', [$res]);
-//                alert()->error("Not able to migrate $insightUser->realname.  Please contact the UC-Insight Admin")->persistent('Close');
                 continue;
             }
             \Log::debug('Successfully associated Phone '. $phone . ' with User ' . $newDuoUser['user_id'] . ' - ', [$res]);
@@ -269,7 +284,7 @@ class DuoController extends Controller
         \Log::debug('Refreshed local DuoUser with Duo API - ', [$newDuoUser['username']]);
 
         alert()->success("Duo User Migration for " . $newDuoUser['realname'] . " completed");
-        return redirect('duo');
+        return redirect()->back();
 
     }
 
