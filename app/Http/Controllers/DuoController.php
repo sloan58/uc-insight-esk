@@ -43,7 +43,7 @@ class DuoController extends Controller
                 ->paginate(10)
             ;
         } else {
-            $users = DB::table('duo_users')->orderBy('username','asc')->paginate(10);
+            $users = DB::table('duo_users')->whereNull('deleted_at')->orderBy('username','asc')->paginate(10);
         }
 
         return view('duo.index', compact('users'));
