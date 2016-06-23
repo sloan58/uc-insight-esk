@@ -97,10 +97,10 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
     {
         \Log::debug('Extracting Data for user - ', [$user]);
 
-        //Get an existing Duo User or create a new one
-        $duoUser = User::firstOrCreate([
-            'user_id' => $user['user_id']
-        ]);
+        // Get an existing Duo User or create a new one
+        $duoUser = User::where(['user_id' => $user['user_id']])->withTrashed()->first() ?: new User(['user_id' => $user['user_id']]);
+        // If this user was somehow previously trashed then restore the account
+        if ($duoUser->trashed()) $duoUser->restore();
         \Log::debug('Local DuoUser found or created - ', [$duoUser]);
 
         //Update Duo User specific fields
