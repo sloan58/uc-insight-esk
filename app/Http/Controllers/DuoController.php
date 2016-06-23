@@ -178,14 +178,6 @@ class DuoController extends Controller
         $insightUser = DuoUser::findorFail($id);
         \Log::debug('Found local DuoUser account to migrate - ', [$insightUser]);
 
-        //Make sure the source user has spaces in their name
-        //If not, return an error
-        if(!preg_match('/\s/',$insightUser['username'])) {
-            \Log::debug('The source Duo User does not have a space in their username', [$insightUser]);
-            alert()->error("The source Duo User does not have a space in their username")->persistent('Close');
-            return redirect('duo/user/' . $id);
-        }
-
         //Get a fresh copy of the current User data before adding the new user.
         $this->dispatch(new FetchDuoUsers($insightUser->username));
         \Log::debug('Refreshed local DuoUser with Duo API - ', [$insightUser]);
@@ -214,9 +206,17 @@ class DuoController extends Controller
             }
             $user['username'] = $input['username'];
         } else {
-            // No custom name supplied.
-            //Implode the explode...  (Remove the space from the username)
+
+            // No custom username supplied.
+            // Implode the explode...  (Remove the space(s) from the username)
             $user['username'] = implode('', explode(' ', $user['username']));
+
+            if($user['username'] == $insightUser['username']) {
+                // If the source and destination usernames are the same there's nothing to do.
+                \Log::debug('The source and destination usernames are the same.  Nothing to do here.... - ', ['insightUser' => $insightUser['username'], 'New Username' => $user['username']]);
+                alert()->error("The source and destination usernames are the same.  Nothing to do here....")->persistent('Close');
+                return redirect('duo/user/' . $id);
+            }
             \Log::debug('Setting new space-less username - ', [$user['username']]);
         }
 
