@@ -212,8 +212,10 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             {
                 $cap = Capability::where('name',$capability)->first();
 
-                //Populate the array of capabilities
-                $phoneCapabilityList[] = $cap->id;
+                if($cap) {
+                    //Populate the array of capabilities
+                    $phoneCapabilityList[] = $cap->id;
+                }
             }
 
             //Sync the phones capabilities

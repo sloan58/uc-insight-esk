@@ -46,7 +46,7 @@ $app->singleton(
  */
 $app->configureMonologUsing(function(Monolog\Logger $monolog) {
     $filename = storage_path('logs/laravel-'.php_sapi_name().'.log');
-    $handler = new Monolog\Handler\RotatingFileHandler($filename);
+    $handler = new Monolog\Handler\RotatingFileHandler($filename, 2);
     $monolog->pushHandler($handler);
 });
 

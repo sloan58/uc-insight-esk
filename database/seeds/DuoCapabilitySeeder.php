@@ -10,6 +10,10 @@ class DuoCapabilitySeeder extends Seeder
     public function run()
     {
         \App\Models\Duo\Capability::create([
+            'name' => 'auto'
+        ]);
+
+        \App\Models\Duo\Capability::create([
             'name' => 'push'
         ]);
 
