@@ -44,7 +44,7 @@ class FetchDuoGroups extends Job implements SelfHandling, ShouldQueue
         //Loop Duo Groups
         foreach($groups as $group)
         {
-            \Log::debug('Processing Duo Group', [$group]);
+//            \Log::debug('Processing Duo Group', [$group]);
             
             //Get an existing Duo Group or create a new one
             $duoGroup = Group::firstOrCreate([

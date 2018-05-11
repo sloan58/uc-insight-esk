@@ -95,13 +95,13 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
      */
     private function extractUserData($user)
     {
-        \Log::debug('Extracting Data for user - ', [$user]);
+//        \Log::debug('Extracting Data for user - ', [$user]);
 
         // Get an existing Duo User or create a new one
         $duoUser = User::where(['user_id' => $user['user_id']])->withTrashed()->first() ?: new User(['user_id' => $user['user_id']]);
         // If this user was somehow previously trashed then restore the account
         if ($duoUser->trashed()) $duoUser->restore();
-        \Log::debug('Local DuoUser found or created - ', [$duoUser]);
+//        \Log::debug('Local DuoUser found or created - ', [$duoUser]);
 
         //Update Duo User specific fields
         $duoUser->username = $user['username'];
@@ -115,11 +115,11 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         $duoUser->touch();
         $duoUser->save();
 
-        \Log::debug('Local DuoUser saved - ', [$duoUser]);
+//        \Log::debug('Local DuoUser saved - ', [$duoUser]);
 
         if(count($user['tokens']) > 0)
         {
-            \Log::debug('This user has tokens registered - ', [$user['tokens']]);
+//            \Log::debug('This user has tokens registered - ', [$user['tokens']]);
             //Loop Duo User Desktop Tokens
             $tokenList = [];
             foreach($user['tokens'] as $token)
@@ -137,33 +137,34 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
             }
             $duoUser->duoTokens()->sync($tokenList);
 
-            \Log::debug('Finished Processing User tokens');
+//            \Log::debug('Finished Processing User tokens');
             unset($tokenList);
         }
 
         //Get the Duo groups that the user is assigned to
         //in UC Insight for reporting purposes
         $userGroupList = $duoUser->duoGroups()->wherePivot('duo_assigned',false)->lists('id')->toArray();
-        \Log::debug('Syncing Duo User groups ', [$userGroupList]);
+//        \Log::debug('Syncing Duo User groups ', [$userGroupList]);
 
         //Loop Duo-assigned User Groups
         foreach($user['groups'] as $group)
         {
-            //Get the ID of the group that was created
-            //locally during the Duo Group sync
-            $localGroup = Group::where('group_id',$group['group_id'])->first();
-            //Set the duo_assigned attribute to true
-            //since we got this pairing from the Duo API
-            $userGroupList[$localGroup->id] = ['duo_assigned' => true];
+		//Get the ID of the group that was created
+                //locally during the Duo Group sync
+		if($localGroup = Group::where('group_id',$group['group_id'])->first()) {
+			//Set the duo_assigned attribute to true
+	               //since we got this pairing from the Duo API
+			$userGroupList[$localGroup->id] = ['duo_assigned' => true];
+		}
         }
         $duoUser->duoGroups()->sync($userGroupList);
-        \Log::debug('Finished Processing User Groups');
+//        \Log::debug('Finished Processing User Groups');
 
         unset($userGroupList);
 
         //Hand off to process the Duo User phone data
         $this->extractUserPhoneData($duoUser,$user);
-        \Log::debug('Completed User data extraction process', [$duoUser]);
+//        \Log::debug('Completed User data extraction process', [$duoUser]);
 
 
     }
@@ -174,7 +175,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
      */
     private function extractUserPhoneData(User $duoUser, $user)
     {
-        \Log::debug('Processing User Phones', [$user['phones']]);
+//        \Log::debug('Processing User Phones', [$user['phones']]);
 
         //Create array to hold list of users phones
         $userPhoneList = [];
@@ -226,7 +227,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
 
         //Sync the Users Duo Phones
         $duoUser->duoPhones()->sync($userPhoneList);
-        \Log::debug('Finished Processing User Phones');
+//        \Log::debug('Finished Processing User Phones');
 
     }
 
@@ -235,7 +236,7 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
      */
     private function removeStaleAccounts($freshDuoUserList) {
         
-        \Log::debug('Removing stale accounts from UC Insight (soft delete)');
+//        \Log::debug('Removing stale accounts from UC Insight (soft delete)');
         //Move the fresh list of usernames from Duo API to an array
         $newDuoUsers = [];
         foreach($freshDuoUserList as $user) {
@@ -245,21 +246,21 @@ class FetchDuoUsers extends Job implements SelfHandling, ShouldQueue
         // If there's only 1 user, we're just doing an on-demand
         // user sync, so we shouldn't worry about stale accounts.
         if(count($newDuoUsers) == 1) {
-            \Log::debug('We are syncing a single user, no need to remove stale accounts.  Exiting function.');
+//            \Log::debug('We are syncing a single user, no need to remove stale accounts.  Exiting function.');
             return;
         }
 
         //Get a list of local Duo usernames
         $localDuoUsers = User::lists('user_id')->toArray();
-        \Log::debug('Got a list of local DuoUsers - ', [count($localDuoUsers)]);
+//        \Log::debug('Got a list of local DuoUsers - ', [count($localDuoUsers)]);
 
         //Compare the two arrays
         $staleUsers = array_diff($localDuoUsers,$newDuoUsers);
-        \Log::debug('Local DuoUser stale accounts - ', [count($staleUsers)]);
+//        \Log::debug('Local DuoUser stale accounts - ', [count($staleUsers)]);
 
         //Remove the 'stale' user accounts from the local database
         foreach($staleUsers as $dead) {
-            \Log::debug('Removing stale local DuoUser account - ', [$dead]);
+//            \Log::debug('Removing stale local DuoUser account - ', [$dead]);
             User::where('user_id', $dead)->delete();
         }
     }

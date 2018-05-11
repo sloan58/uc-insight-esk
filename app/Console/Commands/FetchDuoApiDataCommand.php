@@ -43,8 +43,8 @@ class FetchDuoApiDataCommand extends Command
      */
     public function handle()
     {
-        \Log::debug('Firing new FetchDuoGroups Job');
-        $this->dispatch(new FetchDuoGroups());
+//        \Log::debug('Firing new FetchDuoGroups Job');
+//        $this->dispatch(new FetchDuoGroups());
 
         \Log::debug('Firing new FetchDuoUsers Job');
         $this->dispatch(new FetchDuoUsers());
