@@ -255,6 +255,11 @@ function setKeys($model,$tleType)
                     ];
                     break;
 
+		case "Cisco 8865":
+                    return [
+			'Key:KeyPad5',
+                    ];
+                    break;
                 case "Cisco 7821":
                 case "Cisco 7841":
                 case "Cisco 7861":

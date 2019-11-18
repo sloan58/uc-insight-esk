@@ -308,3 +308,27 @@ $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', ['middleware' => 'api.auth'], function ($api) {
     $api->post('phone-reset/', 'App\Api\Controllers\PhoneController@resetPhone');
 });
+
+
+// Duo User Cleanup Reports
+Route::get('/duo-cleanup', function() {
+
+	$fetchMode = DB::getFetchMode();
+	DB::setFetchMode(\PDO::FETCH_ASSOC);
+
+	$users = \DB::select('SELECT u.user_id, u.username, u.status, g.name groupname FROM duo_users u JOIN duo_group_duo_user gu ON u.id = gu.duo_user_id JOIN duo_groups g ON g.id = gu.duo_group_id WHERE u.status = "disabled"');
+
+	DB::setFetchMode($fetchMode);
+	
+	$output = fopen("php://output",'w') or die("Can't open php://output");
+	header("Content-Type:application/csv"); 
+	header("Content-Disposition:attachment;filename=duo_disabled_users.csv"); 
+	fputcsv($output, ['user_id', 'username', 'status', 'groupname']);
+	foreach($users as $user) {
+	    fputcsv($output, $user);
+	}
+	
+	fclose($output) or die("Can't close php://output");
+	
+	return response('You got it!', 200);
+});
